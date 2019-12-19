@@ -12,6 +12,7 @@
 
 int main()
 {
+    printf("Nucleo Yoke v2\r\n");
     // Initialise the digital pin LED1 as an output
     DigitalOut systemLed(LED1);
 
