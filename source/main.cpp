@@ -21,13 +21,22 @@ int main()
     DigitalOut systemLed(LED1);
 
     USBHID HID(true, 64, 64, 0x0483, 0x5750, 0x0002);
-    HID_REPORT outputReport = {.length = 64, .data = {1, 2, 3}};
+    HID_REPORT inputReport = {.length = 64, .data = {0}};
+    HID_REPORT outputReport = {.length = 64, .data = {0}};
 
     while (true)
     {
         systemLed = !systemLed;
         thread_sleep_for(BLINKING_RATE_MS);
 
-        HID.send(&outputReport);
+        if(HID.read_nb(&inputReport))
+        {
+            uint8_t i = 0;
+            for(auto byte : inputReport.data)
+            {
+                outputReport.data[i++] = byte+1;
+            }
+            HID.send(&outputReport);
+        }
     }
 }
