@@ -36,10 +36,8 @@ int main()
             {
                 outputReport.data[i++] = byte+1;
             }
-            if(HID.configured())    // send only when device is configured
-            {
-                HID.send(&outputReport);
-            }
+            // non-blocking is safe even when device is not ready
+            HID.send_nb(&outputReport);
         }
     }
 }
