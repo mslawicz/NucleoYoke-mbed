@@ -20,7 +20,12 @@ int main()
     // Initialise the digital pin LED1 as an output
     DigitalOut systemLed(LED1);
 
-    USBHID HID(true, 64, 64, 0x0483, 0x5750, 0x0002);
+    DigitalOut testLed(LED2);   //XXX
+    // start USB HID device in a disconnected state
+    USBHID HID(false, 64, 64, 0x0483, 0x5750, 0x0002);
+    testLed = 1;
+    HID.connect();  //non-blocking !!!
+    testLed = 0;
     HID_REPORT inputReport = {.length = 64, .data = {0}};
     HID_REPORT outputReport = {.length = 64, .data = {0}};
 
