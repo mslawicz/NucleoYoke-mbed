@@ -13,3 +13,15 @@ FlightControl::FlightControl()
 
 }
 
+/*
+ * handler to be called periodically
+ * nominal call frequency 80 Hz
+ */
+void FlightControl::handler(void)
+{
+}
+
+void FlightControl::setTicker(void)
+{
+    //periodicCall.attach_us(callback(this, &FlightControl::handler), 10000);
+}

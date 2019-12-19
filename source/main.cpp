@@ -4,13 +4,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+#include "FlightControl.h"
 #include "mbed.h"
 #include "platform/mbed_thread.h"
 #include "platform/mbed_debug.h"
 #include "drivers/USBHID.h"
 
+
 // Blinking rate in milliseconds
 #define BLINKING_RATE_MS    500
+
 
 int main()
 {
@@ -19,6 +22,10 @@ int main()
 
     // Initialise the digital pin LED1 as an output
     DigitalOut systemLed(LED1);
+
+    // create main flight control object
+    FlightControl flightControl;
+    flightControl.setTicker();
 
     DigitalOut testLed(LED2);   //XXX
     // start USB HID device in a disconnected state
