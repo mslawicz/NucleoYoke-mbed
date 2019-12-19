@@ -359,7 +359,6 @@
 									<listOptionValue builtIn="false" value="MBED_TRAP_ERRORS_ENABLED=1"/>
 									<listOptionValue builtIn="false" value="MBED_DEBUG"/>
 									<listOptionValue builtIn="false" value="MBED_TRAP_ERRORS_ENABLED=1"/>
-									<listOptionValue builtIn="false" value="NDEBUG"/>
 								</option>
 								<option id="gnu.c.compiler.option.include.files.841631399" name="Include files (-include)" superClass="gnu.c.compiler.option.include.files" useByScannerDiscovery="false" valueType="includeFiles">
 									<listOptionValue builtIn="false" value="${ProjDirPath}/mbed_config.h"/>
@@ -711,7 +710,6 @@
 									<listOptionValue builtIn="false" value="MBED_TRAP_ERRORS_ENABLED=1"/>
 									<listOptionValue builtIn="false" value="MBED_DEBUG"/>
 									<listOptionValue builtIn="false" value="MBED_TRAP_ERRORS_ENABLED=1"/>
-									<listOptionValue builtIn="false" value="NDEBUG"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.include.files.604000512" name="Include files (-include)" superClass="gnu.cpp.compiler.option.include.files" useByScannerDiscovery="false" valueType="includeFiles">
 									<listOptionValue builtIn="false" value="${ProjDirPath}/mbed_config.h"/>
