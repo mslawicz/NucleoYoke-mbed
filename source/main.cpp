@@ -36,7 +36,10 @@ int main()
             {
                 outputReport.data[i++] = byte+1;
             }
-            HID.send(&outputReport);
+            if(HID.configured())    // send only when device is configured
+            {
+                HID.send(&outputReport);
+            }
         }
     }
 }
