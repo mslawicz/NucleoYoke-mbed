@@ -410,9 +410,9 @@ const uint8_t *USBHID::string_iinterface_desc()
 const uint8_t *USBHID::string_iproduct_desc()
 {
     static const uint8_t stringIproductDescriptor[] = {
-        0x16,                                                       //bLength
+        0x18,                                                       //bLength
         STRING_DESCRIPTOR,                                          //bDescriptorType 0x03
-        'H', 0, 'I', 0, 'D', 0, ' ', 0, 'D', 0, 'E', 0, 'V', 0, 'I', 0, 'C', 0, 'E', 0 //bString iProduct - HID device
+        'N', 0, 'u', 0, 'c', 0, 'l', 0, 'e', 0, 'o', 0, ' ', 0, 'Y', 0, 'o', 0, 'k', 0, 'e', 0 //bString iProduct - HID device
     };
     return stringIproductDescriptor;
 }
