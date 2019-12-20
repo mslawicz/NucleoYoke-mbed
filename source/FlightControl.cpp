@@ -39,17 +39,7 @@ void FlightControl::handler(void)
     // send output report to simulator
     if(newDataReceived)
     {
-        //XXX test of transmission
-        for(uint8_t k = 0; k < inputReport.data[0]; k++)
-        {
-            printf("%u,", inputReport.data[k+1]);
-            outputReport.data[k+1] = inputReport.data[k+1] + 1;
-        }
-        outputReport.data[0] = inputReport.data[0];
-        printf("\r\n");
-
-        // fill output report data here
-        pConnection->send_nb(&outputReport);
+        sendDataToSimulator();
     }
 }
 
@@ -91,4 +81,51 @@ void FlightControl::parseReceivedData(void)
     simulatorData.throttle = *reinterpret_cast<float*>(inputReport.data+20);
     simulatorData.airSpeed = *reinterpret_cast<float*>(inputReport.data+24);
     simulatorData.propellerSpeed = *reinterpret_cast<float*>(inputReport.data+28);
+}
+
+/*
+ * prepares data in the output report and sends the report to simulator
+ */
+void FlightControl::sendDataToSimulator(void)
+{
+    outputReport.data[0] = 0;
+
+    // bytes 4-7 is the bitfield data register (buttons, switches, encoders)
+    uint32_t buttons = 0;
+    buttons |= (0 << 0);    // bit 0 - flaps up (one shot switch)
+    buttons |= (0 << 1);  // bit 1 - flaps down (one shot switch)
+    buttons |= (0 << 2);  // bit 2 - gear up (one shot switch)
+    buttons |= (0 << 3);  // bit 3 - gear down (one shot switch)
+    buttons |= (0 << 4);  // bit 4 - center pilot's view (analog joystick pushbutton) (one shot switch)
+    buttons |= (1 << 5);  // bit 5 - elevator trim up button, 0=active
+    buttons |= (1 << 6);  // bit 6 - elevator trim down button, 0=active
+    memcpy(outputReport.data+4, &buttons, sizeof(buttons));
+
+    float fParameter;
+    // bytes 8-11 for yoke pitch
+    fParameter = 0.0f;
+    memcpy(outputReport.data+8, &fParameter, sizeof(fParameter));
+    // bytes 12-15 for yoke roll
+    fParameter = 0.0f;
+    memcpy(outputReport.data+12, &fParameter, sizeof(fParameter));
+    // bytes 16-19 for rudder control
+    fParameter = 0.2f;
+    memcpy(outputReport.data+16, &fParameter, sizeof(fParameter));
+    // bytes 20-23 for throttle control
+    fParameter = 0.15f;
+    memcpy(outputReport.data+20, &fParameter, sizeof(fParameter));
+    // bytes 24-27 for mixture control
+    fParameter = 1.0f;
+    memcpy(outputReport.data+24, &fParameter, sizeof(fParameter));
+    // bytes 28-31 for propeller control
+    fParameter = 1.0f;
+    memcpy(outputReport.data+28, &fParameter, sizeof(fParameter));
+    // bytes 32-35 for analog joystick Y (pilot's view yaw)
+    fParameter = 0.0f;
+    memcpy(outputReport.data+32, &fParameter, sizeof(fParameter));
+    // bytes 36-39 for analog joystick X (pilot's view pitch)
+    fParameter = 0.0f;
+    memcpy(outputReport.data+36, &fParameter, sizeof(fParameter));
+
+    pConnection->send_nb(&outputReport);
 }

@@ -40,6 +40,7 @@ public:
 private:
     void markSimulatorDataInactive(void);
     void parseReceivedData(void);
+    void sendDataToSimulator(void);
     USBHID* pConnection;    // pointer to USB HID object
     static const uint8_t HIDBufferLength = 64;
     static const uint16_t USB_VID = 0x0483;
