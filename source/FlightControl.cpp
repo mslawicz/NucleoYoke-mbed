@@ -7,7 +7,8 @@
 
 #include "FlightControl.h"
 
-FlightControl::FlightControl(void)
+FlightControl::FlightControl(void) :
+    testSignal(PC_8)
 {
     // TODO Auto-generated constructor stub
 
@@ -19,6 +20,7 @@ FlightControl::FlightControl(void)
  */
 void FlightControl::handler(void)
 {
+    testSignal = !testSignal;
 }
 
 
