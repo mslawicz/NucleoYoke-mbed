@@ -9,16 +9,15 @@
 #include "platform/mbed_thread.h"
 #include "platform/mbed_debug.h"
 
-
-const uint32_t SystemLedPeriod = 500;   // [ms]
-constexpr float FlightControlPeriod = 1.0f / 80.0f;     // flight control period [s]
+const uint32_t FlightControlFrequency = 100;    // [Hz]
+constexpr uint32_t FlightControlPeriod = 1000 / FlightControlFrequency;     // flight control period [ms]
 
 // create main flight control object
 FlightControl flightControl;
 
 int main()
 {
-    debug("main program start\r\n");
+    debug("\r\nmain program start\r\n");
     printf("Nucleo Yoke v2\r\n");
 
     // Initialise the digital pin LED1 as an output
@@ -26,14 +25,13 @@ int main()
 
     // connect to simulator
     flightControl.connect();
-    // set periodic Flight Control call (80 times per second)
-    Ticker periodicFlightControlCall;
-    periodicFlightControlCall.attach(callback(&flightControl, &FlightControl::handler), FlightControlPeriod);
 
+    uint32_t loopCounter = 0;
     while (true)
     {
-        systemLed = !systemLed;
-        thread_sleep_for(SystemLedPeriod);
+        systemLed = (++loopCounter % FlightControlFrequency) < 15;
+        flightControl.handler();
+        thread_sleep_for(FlightControlPeriod);
     }
 }
 

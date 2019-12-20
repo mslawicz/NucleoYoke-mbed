@@ -35,6 +35,15 @@ void FlightControl::handler(void)
     // send output report to simulator
     if(newDataReceived)
     {
+        //XXX test of transmission
+        for(uint8_t k = 0; k < inputReport.data[0]; k++)
+        {
+            printf("%u,", inputReport.data[k+1]);
+            outputReport.data[k+1] = inputReport.data[k+1] + 1;
+        }
+        outputReport.data[0] = inputReport.data[0];
+        printf("\r\n");
+
         // fill output report data here
         pConnection->send_nb(&outputReport);
     }
