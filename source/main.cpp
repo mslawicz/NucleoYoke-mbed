@@ -29,7 +29,7 @@ int main()
     uint32_t loopCounter = 0;
     while (true)
     {
-        systemLed = (++loopCounter % FlightControlFrequency) < 15;
+        systemLed = (++loopCounter % FlightControlFrequency) < (FlightControlFrequency >> 3);
         flightControl.handler();
         thread_sleep_for(FlightControlPeriod);
     }
