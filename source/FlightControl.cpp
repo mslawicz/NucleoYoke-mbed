@@ -9,15 +9,16 @@
 #include "platform/mbed_debug.h"
 
 FlightControl::FlightControl(void) :
-    inputReportIndicator(LED2)      // blue LED
+    simulatorDataIndicator(LED2)      // blue LED
 {
     pConnection = nullptr;
-    inputReportIndicator = 0;
+    simulatorDataIndicator = 0;
+    simulatorDataActive = false;
 }
 
 /*
  * handler to be called periodically
- * nominal call frequency 80 Hz
+ * nominal call period 10 ms
  */
 void FlightControl::handler(void)
 {
@@ -29,9 +30,10 @@ void FlightControl::handler(void)
     {
         // new data from simulator has been received
         newDataReceived = true;
-        inputReportIndicator = 1;
-        inputReportTimeout.attach(callback(this, &FlightControl::clearInputReportIndicator), 0.2f);
-        // parse data here
+        simulatorDataIndicator = 1;
+        simulatorDataActive = true;
+        simulatorDataTimeout.attach(callback(this, &FlightControl::markSimulatorDataInactive), 0.2f);
+        parseReceivedData();
     }
 
     // send output report to simulator
@@ -61,4 +63,32 @@ void FlightControl::connect(void)
     // start connection process
     pConnection->connect();
     debug("Connecting to PC using USB HID (VID=%#06X PID=%#06X ver=%d)\r\n", USB_VID, USB_PID, USB_VER);
+}
+
+/*
+ * mark simulator data is not up to date and is inactive now
+ * it is called after timeout elapsed after the last data reception
+ */
+void FlightControl::markSimulatorDataInactive(void)
+{
+    simulatorDataActive = false;
+    simulatorDataIndicator = 0;
+}
+
+/*
+ * parse received simulator data into simulator data structure
+ */
+void FlightControl::parseReceivedData(void)
+{
+    simulatorData.booleanFlags = *(inputReport.data+1);
+    simulatorData.gearDeflection[0] = ((*(inputReport.data+3)) >> 0) & 0x03;
+    simulatorData.gearDeflection[1] = ((*(inputReport.data+3)) >> 2) & 0x03;
+    simulatorData.gearDeflection[2] = ((*(inputReport.data+3)) >> 4) & 0x03;
+    simulatorData.flapsDeflection = *reinterpret_cast<float*>(inputReport.data+4);
+    simulatorData.totalPitch = *reinterpret_cast<float*>(inputReport.data+8);
+    simulatorData.totalRoll = *reinterpret_cast<float*>(inputReport.data+12);
+    simulatorData.totalYaw = *reinterpret_cast<float*>(inputReport.data+16);
+    simulatorData.throttle = *reinterpret_cast<float*>(inputReport.data+20);
+    simulatorData.airSpeed = *reinterpret_cast<float*>(inputReport.data+24);
+    simulatorData.propellerSpeed = *reinterpret_cast<float*>(inputReport.data+28);
 }
