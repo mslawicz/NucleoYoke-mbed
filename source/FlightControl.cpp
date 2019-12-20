@@ -20,7 +20,24 @@ FlightControl::FlightControl(void) :
  */
 void FlightControl::handler(void)
 {
-    testSignal = !testSignal;
+    testSignal = !testSignal;   //XXX
+    bool newDataReceived = false;
+
+    // check data received from simulator
+    if((pConnection != nullptr) &&
+       (pConnection->read_nb(&inputReport)))
+    {
+        // new data from simulator has been received
+        newDataReceived = true;
+        // parse data here
+    }
+
+    // send output report to simulator
+    if(newDataReceived)
+    {
+        // fill output report data here
+        pConnection->send_nb(&outputReport);
+    }
 }
 
 /*
