@@ -7,7 +7,7 @@
 
 #include "FlightControl.h"
 
-FlightControl::FlightControl()
+FlightControl::FlightControl(void)
 {
     // TODO Auto-generated constructor stub
 
@@ -21,7 +21,4 @@ void FlightControl::handler(void)
 {
 }
 
-void FlightControl::setTicker(void)
-{
-    //periodicCall.attach_us(callback(this, &FlightControl::handler), 10000);
-}
+

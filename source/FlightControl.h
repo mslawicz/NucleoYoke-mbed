@@ -13,12 +13,9 @@
 class FlightControl
 {
 public:
-    FlightControl();
-    void setTicker(void);
-private:
+    FlightControl(void);
     void handler(void);
-    //Ticker periodicCall;
-    //static constexpr float LoopPeriod = 1.0f / 80.0f;      // loop period [s]
+private:
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */

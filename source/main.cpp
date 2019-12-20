@@ -14,6 +14,8 @@
 // Blinking rate in milliseconds
 #define BLINKING_RATE_MS    500
 
+// create main flight control object
+FlightControl flightControl;
 
 int main()
 {
@@ -23,9 +25,10 @@ int main()
     // Initialise the digital pin LED1 as an output
     DigitalOut systemLed(LED1);
 
-    // create main flight control object
-    FlightControl flightControl;
-    flightControl.setTicker();
+    // set periodic Flight Control call (80 times per second)
+    Ticker periodicFlightControlCall;
+    constexpr float FlightControlPeriod = 1.0f / 80.0f;     // period [s]
+    periodicFlightControlCall.attach(callback(&flightControl, &FlightControl::handler), FlightControlPeriod);
 
     DigitalOut testLed(LED2);   //XXX
     // start USB HID device in a disconnected state
