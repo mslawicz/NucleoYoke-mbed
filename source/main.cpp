@@ -9,6 +9,11 @@
 #include "platform/mbed_thread.h"
 #include "platform/mbed_debug.h"
 
+SPI ledRGB(PB_15, PA_12, PB_13);    //XXX
+DigitalOut testSignal(PC_8);        //XXX
+uint8_t dataBuffer[] = {1, 2, 3, 4, 5, 6};    //XXX
+void dummyCallback(void) {} //XXX
+
 const uint32_t FlightControlFrequency = 100;    // [Hz]
 constexpr uint32_t FlightControlPeriod = 1000 / FlightControlFrequency;     // flight control period [ms]
 
@@ -19,6 +24,8 @@ int main()
 {
     debug("\r\nmain program start\r\n");
     printf("Nucleo Yoke v2\r\n");
+
+    ledRGB.frequency(5328000);
 
     // Initialise the digital pin LED1 as an output
     DigitalOut systemLed(LED1);
@@ -32,6 +39,12 @@ int main()
         systemLed = (++loopCounter % FlightControlFrequency) < (FlightControlFrequency >> 3);
         flightControl.handler();
         thread_sleep_for(FlightControlPeriod);
+
+        // XXX SPI test
+        testSignal = 1;
+        //ledRGB.transfer(dataBuffer, 6, NULL, 0, NULL, 0);
+        ledRGB.write((const char*)dataBuffer, sizeof(dataBuffer), NULL, 0);
+        testSignal = 0;
     }
 }
 
