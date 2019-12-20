@@ -9,9 +9,10 @@
 #include "platform/mbed_debug.h"
 
 FlightControl::FlightControl(void) :
-    testSignal(PC_8)
+    inputReportIndicator(LED2)      // blue LED
 {
     pConnection = nullptr;
+    inputReportIndicator = 0;
 }
 
 /*
@@ -20,7 +21,6 @@ FlightControl::FlightControl(void) :
  */
 void FlightControl::handler(void)
 {
-    testSignal = !testSignal;   //XXX
     bool newDataReceived = false;
 
     // check data received from simulator
@@ -29,6 +29,8 @@ void FlightControl::handler(void)
     {
         // new data from simulator has been received
         newDataReceived = true;
+        inputReportIndicator = 1;
+        inputReportTimeout.attach(callback(this, &FlightControl::clearInputReportIndicator), 0.2f);
         // parse data here
     }
 
