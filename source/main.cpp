@@ -6,7 +6,6 @@
 
 #include "main.h"
 #include "FlightControl.h"
-#include "WS2812.h"
 #include "platform/mbed_thread.h"
 #include "platform/mbed_debug.h"
 
