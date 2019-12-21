@@ -18,8 +18,9 @@ public:
     void update(void);
 private:
     SPI interface;
-    uint16_t numberOfDevices;
-    uint32_t* pRGBData;
+    uint16_t numberOfDevices;       // number of devices in the chain
+    uint32_t* pRGBData;                     // pointer to array of device RGB values
+    std::vector<uint8_t> oneWireBuffer;     // vector of pulses being sent to devices
 };
 
 #endif /* SOURCE_WS2812_H_ */
