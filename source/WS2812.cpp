@@ -19,6 +19,6 @@ WS2812::WS2812(PinName dataPin, PinName clkPin, uint16_t numberOfDevices) :
  */
 void WS2812::update(void)
 {
-    static DigitalOut testSignal(PC_9);
+    static DigitalOut testSignal(PC_9); //XXX
     testSignal = !testSignal;
 }

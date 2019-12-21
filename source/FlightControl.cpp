@@ -5,6 +5,7 @@
  *      Author: Marcin
  */
 
+#include "main.h"
 #include "FlightControl.h"
 #include "platform/mbed_debug.h"
 
@@ -22,6 +23,8 @@ FlightControl::FlightControl(void) :
  */
 void FlightControl::handler(void)
 {
+    static DigitalOut testSignal(PC_8); //XXX
+    testSignal = 1; //XXX
     bool newDataReceived = false;
 
     // check data received from simulator
@@ -41,6 +44,10 @@ void FlightControl::handler(void)
     {
         sendDataToSimulator();
     }
+
+    // test of an event
+    eventQueue.event(callback(&RGBLeds, &WS2812::update));
+    testSignal = 0; //XXX
 }
 
 /*
