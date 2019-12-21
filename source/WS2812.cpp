@@ -11,10 +11,9 @@ WS2812::WS2812(PinName dataPin, PinName clkPin, uint16_t numberOfDevices) :
     interface(dataPin, NC, clkPin),
     numberOfDevices(numberOfDevices)
 {
-    pRGBData = new uint32_t[numberOfDevices];
-    for(uint8_t k=0; k<numberOfDevices; k++) { pRGBData[k] = 0; }
+    RGBData.assign(numberOfDevices, 0);
     interface.frequency(4000000);
-    interface.format(8, 1);
+    interface.format(8, 1);         // 8 bits, MOSI in 0 at idle
 }
 
 /*
@@ -22,9 +21,6 @@ WS2812::WS2812(PinName dataPin, PinName clkPin, uint16_t numberOfDevices) :
  */
 void WS2812::update(void)
 {
-    static DigitalOut testSignal(PC_9); //XXX
-    testSignal = !testSignal;   //XXX
-
     oneWireBuffer.clear();
 
     // iterate through all devices
@@ -33,7 +29,7 @@ void WS2812::update(void)
         // iterate through 3 colors
         for(uint8_t colorIndex = 0; colorIndex < 3; colorIndex++)
         {
-            uint8_t colorValue = ((*(pRGBData + deviceIndex)) >> (2-colorIndex) * 8) & 0xFF;
+            uint8_t colorValue = (RGBData[deviceIndex] >> (2-colorIndex) * 8) & 0xFF;
             // iterate through pairs of bits
             for(uint8_t pairIndex = 0; pairIndex < 4; pairIndex++)
             {
