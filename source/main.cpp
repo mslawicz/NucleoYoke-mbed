@@ -4,12 +4,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+#include "main.h"
 #include "FlightControl.h"
 #include "WS2812.h"
-#include "mbed.h"
 #include "platform/mbed_thread.h"
 #include "platform/mbed_debug.h"
-#include "EventQueue.h"
 
 const uint32_t FlightControlFrequency = 100;    // [Hz]
 constexpr uint32_t FlightControlPeriod = 1000 / FlightControlFrequency;     // flight control period [ms]
