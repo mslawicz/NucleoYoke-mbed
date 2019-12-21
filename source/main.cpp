@@ -5,6 +5,7 @@
  */
 
 #include "FlightControl.h"
+#include "WS2812.h"
 #include "mbed.h"
 #include "platform/mbed_thread.h"
 #include "platform/mbed_debug.h"
@@ -14,6 +15,8 @@ constexpr uint32_t FlightControlPeriod = 1000 / FlightControlFrequency;     // f
 
 // create main flight control object
 FlightControl flightControl;
+// WS2812 RGB LED daisy chain object
+WS2812 RGBLeds(PB_15, PB_13, 11);
 
 int main()
 {
