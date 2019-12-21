@@ -15,6 +15,7 @@ class WS2812
 {
 public:
     WS2812(PinName dataPin, PinName clkPin, uint16_t numberOfDevices);
+    void update(void);
 private:
     SPI interface;
     uint16_t numberOfDevices;
