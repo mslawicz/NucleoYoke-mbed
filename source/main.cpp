@@ -13,6 +13,10 @@
 const uint32_t FlightControlFrequency = 100;    // [Hz]
 constexpr uint32_t FlightControlPeriod = 1000 / FlightControlFrequency;     // flight control period [ms]
 
+// Create a queue of events
+EventQueue eventQueue;
+// Create a thread that'll run the event queue's dispatch function
+Thread eventQueueDispatchThread;
 // create main flight control object
 FlightControl flightControl;
 // WS2812 RGB LED daisy chain object
