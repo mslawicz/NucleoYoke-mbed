@@ -9,6 +9,7 @@
 #include "mbed.h"
 #include "platform/mbed_thread.h"
 #include "platform/mbed_debug.h"
+#include "EventQueue.h"
 
 const uint32_t FlightControlFrequency = 100;    // [Hz]
 constexpr uint32_t FlightControlPeriod = 1000 / FlightControlFrequency;     // flight control period [ms]
@@ -32,6 +33,9 @@ int main()
 
     // connect to simulator
     flightControl.connect();
+
+    // Start the event queue's dispatch thread
+    eventQueueDispatchThread.start(callback(&eventQueue, &EventQueue::dispatch_forever));
 
     uint32_t loopCounter = 0;
     while (true)
