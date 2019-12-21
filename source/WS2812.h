@@ -9,6 +9,7 @@
 #define SOURCE_WS2812_H_
 
 #include "mbed.h"
+#include <vector>
 
 class WS2812
 {
@@ -17,6 +18,7 @@ public:
 private:
     SPI interface;
     uint16_t numberOfDevices;
+    uint32_t* pRGBData;
 };
 
 #endif /* SOURCE_WS2812_H_ */
