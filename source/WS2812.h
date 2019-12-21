@@ -21,6 +21,8 @@ private:
     uint16_t numberOfDevices;       // number of devices in the chain
     uint32_t* pRGBData;                     // pointer to array of device RGB values
     std::vector<uint8_t> oneWireBuffer;     // vector of pulses being sent to devices
+    const uint8_t bitOnePattern = 0b1110;   // pattern of the 1-wire bit '1'
+    const uint8_t bitZeroPattern = 0b1000;   // pattern of the 1-wire bit '0'
 };
 
 #endif /* SOURCE_WS2812_H_ */
