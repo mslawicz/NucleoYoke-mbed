@@ -9,12 +9,6 @@
 #include "FlightControl.h"
 #include "platform/mbed_debug.h"
 
-void testEvent(void)    //XXX
-{
-    static DigitalOut testSignal(PC_9); //XXX
-    testSignal = !testSignal;
-}
-
 FlightControl::FlightControl(void) :
     simulatorDataIndicator(LED2)      // blue LED
 {
@@ -31,6 +25,9 @@ void FlightControl::handler(void)
 {
     static DigitalOut testSignal(PC_8); //XXX
     testSignal = 1; //XXX
+    // test of an event
+    eventQueue.call(callback(&RGBLeds, &WS2812::update));
+
     bool newDataReceived = false;
 
     // check data received from simulator
@@ -51,9 +48,7 @@ void FlightControl::handler(void)
         sendDataToSimulator();
     }
 
-    // test of an event
-    //eventQueue.event(callback(&RGBLeds, &WS2812::update));
-    eventQueue.call(testEvent);
+
     testSignal = 0; //XXX
 }
 
