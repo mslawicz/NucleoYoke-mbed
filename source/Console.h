@@ -12,6 +12,7 @@ class Console
 {
 public:
     Console();
+    void handler(void);
 };
 
 #endif /* CONSOLE_H_ */

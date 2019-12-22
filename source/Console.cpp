@@ -6,6 +6,7 @@
  */
 
 #include "Console.h"
+#include "mbed.h"
 
 Console::Console()
 {
@@ -13,3 +14,15 @@ Console::Console()
 
 }
 
+/*
+ * Console handler to be run in a separate thread
+ */
+void Console::handler(void)
+{
+    while(true)
+    {
+        ThisThread::sleep_for(1500);
+        putchar('_');
+        fflush(stdout);
+    }
+}

@@ -19,8 +19,9 @@ EventQueue eventQueue;
 // Create a thread that'll run the event queue's dispatch function
 Thread eventQueueDispatchThread;
 
-// Create Console object
+// Create Console object and its thread
 Console console;
+Thread consoleThread(osPriority_t::osPriorityBelowNormal);
 
 // create main flight control object
 FlightControl flightControl;
@@ -42,13 +43,16 @@ int main()
     // Start the event queue's dispatch thread
     eventQueueDispatchThread.start(callback(&eventQueue, &EventQueue::dispatch_forever));
 
+    // start Console thread
+    consoleThread.start(callback(&console, &Console::handler));
+
     printf("main loop start\r\n"); //XXX
     uint32_t loopCounter = 0;
     while (true)
     {
         systemLed = (++loopCounter % FlightControlFrequency) < (FlightControlFrequency >> 3);
         flightControl.handler();
-        thread_sleep_for(FlightControlPeriod);
+        ThisThread::sleep_for(FlightControlPeriod);
 
         //XXX test on putc / getc
         if((loopCounter % FlightControlFrequency) == 0)
