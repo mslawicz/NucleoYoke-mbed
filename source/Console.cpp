@@ -7,6 +7,7 @@
 
 #include "Console.h"
 #include "mbed.h"
+#include <vector>
 
 Console::Console()
 {
@@ -34,6 +35,7 @@ void Console::handler(void)
             ch = getchar();
             switch(ch)
             {
+            case 8:
             case 127:
                 if(!inputLine.empty())
                 {
@@ -55,6 +57,20 @@ void Console::handler(void)
             }
         } while(ch != (int)KeyCode::LF);
 
-        printf("\r\ninput:%s\r\n", inputLine.c_str());
+        std::vector<std::string> words;
+        size_t currentPosition = 0;
+        size_t nextSpacePosition;
+        do
+        {
+            nextSpacePosition = inputLine.find(' ', currentPosition);
+            auto word = inputLine.substr(currentPosition, nextSpacePosition - currentPosition);
+            currentPosition = nextSpacePosition + 1;
+            if(!word.empty())
+            {
+                words.push_back(word);
+            }
+        } while(nextSpacePosition != std::string::npos);
+
+        // interpret command here
     }
 }
