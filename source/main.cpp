@@ -46,7 +46,6 @@ int main()
     // start Console thread
     consoleThread.start(callback(&console, &Console::handler));
 
-    printf("main loop start\r\n"); //XXX
     uint32_t loopCounter = 0;
     while (true)
     {

@@ -25,14 +25,26 @@ void Console::handler(void)
     int ch;
     while(true)
     {
+        inputLine.clear();
         printf("\r>");
         fflush(stdout);
 
         do
         {
             ch = getchar();
-            putchar(ch);
-            fflush(stdout);
+            switch(ch)
+            {
+            default:
+                if((ch >= 32) && (ch < 127))
+                {
+                    inputLine.push_back(static_cast<char>(ch));
+                    putchar(ch);
+                    fflush(stdout);
+                }
+                break;
+            }
         } while(ch != (int)KeyCode::LF);
+
+        printf("\r\ninput:%s\r\n", inputLine.c_str());
     }
 }

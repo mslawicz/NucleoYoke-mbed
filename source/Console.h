@@ -8,6 +8,8 @@
 #ifndef CONSOLE_H_
 #define CONSOLE_H_
 
+#include <string>
+
 enum class KeyCode : int
 {
     LF = 10,
@@ -22,6 +24,8 @@ class Console
 public:
     Console();
     void handler(void);
+private:
+    std::string inputLine;
 };
 
 #endif /* CONSOLE_H_ */
