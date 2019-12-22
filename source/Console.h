@@ -32,6 +32,7 @@ public:
     Console();
     void handler(void);
     void registerCommand(std::string command, std::string helpText, Callback<void(CommandVector)> commandCallback);
+    void displayHelp(CommandVector cv);
 private:
     void executeCommand(void);
     CommandVector commandElements;

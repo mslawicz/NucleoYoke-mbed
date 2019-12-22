@@ -13,12 +13,6 @@
 const uint32_t FlightControlFrequency = 100;    // [Hz]
 constexpr uint32_t FlightControlPeriod = 1000 / FlightControlFrequency;     // flight control period [ms]
 
-//XXX global function for test
-void exampleFunction(CommandVector cv)      //XXX example
-{
-    printf("exampleFunction called\r\n");
-}
-
 // Create a queue of events
 EventQueue eventQueue;
 
@@ -39,6 +33,7 @@ int main()
 {
     debug("\r\nmain program start\r\n");
     printf("Nucleo Yoke v2\r\n");
+    printf("type command 'h' for help\r\n");
 
     // Initialise the digital pin LED1 as an output
     DigitalOut systemLed(LED1);
@@ -50,7 +45,7 @@ int main()
     eventQueueDispatchThread.start(callback(&eventQueue, &EventQueue::dispatch_forever));
 
     // register console commands
-    console.registerCommand("h", "display command list", callback(exampleFunction));    //XXX example!
+    console.registerCommand("h", "help (display command list)", callback(&console, &Console::displayHelp));
 
     // start Console thread
     consoleThread.start(callback(&console, &Console::handler));

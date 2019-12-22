@@ -85,6 +85,17 @@ void Console::registerCommand(std::string command, std::string helpText,
 }
 
 /*
+ * list all registered commands
+ */
+void Console::displayHelp(CommandVector cv)
+{
+    for(auto& command : commands)
+    {
+        printf("%s - %s\r\n", command.first.c_str(), command.second.first.c_str());
+    }
+}
+
+/*
  * executes console command
  */
 void Console::executeCommand(void)
