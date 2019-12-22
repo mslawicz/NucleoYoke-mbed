@@ -7,7 +7,6 @@
 
 #include "Console.h"
 #include "mbed.h"
-#include <vector>
 
 Console::Console()
 {
@@ -26,7 +25,7 @@ void Console::handler(void)
     int ch;
     while(true)
     {
-        inputLine.clear();
+        std::string inputLine;
         printf("\r>");
         fflush(stdout);
 
@@ -57,7 +56,7 @@ void Console::handler(void)
             }
         } while(ch != (int)KeyCode::LF);
 
-        std::vector<std::string> words;
+        commandElements.clear();
         size_t currentPosition = 0;
         size_t nextSpacePosition;
         do
@@ -67,10 +66,11 @@ void Console::handler(void)
             currentPosition = nextSpacePosition + 1;
             if(!word.empty())
             {
-                words.push_back(word);
+                commandElements.push_back(word);
             }
         } while(nextSpacePosition != std::string::npos);
 
+        printf("\r\n");
         // interpret command here
     }
 }

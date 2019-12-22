@@ -9,6 +9,7 @@
 #define CONSOLE_H_
 
 #include <string>
+#include <vector>
 
 enum class KeyCode : int
 {
@@ -25,7 +26,7 @@ public:
     Console();
     void handler(void);
 private:
-    std::string inputLine;
+    std::vector<std::string> commandElements;
 };
 
 #endif /* CONSOLE_H_ */
