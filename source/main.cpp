@@ -5,6 +5,7 @@
  */
 
 #include "main.h"
+#include "Console.h"
 #include "FlightControl.h"
 #include "platform/mbed_thread.h"
 #include "platform/mbed_debug.h"
@@ -14,10 +15,16 @@ constexpr uint32_t FlightControlPeriod = 1000 / FlightControlFrequency;     // f
 
 // Create a queue of events
 EventQueue eventQueue;
+
 // Create a thread that'll run the event queue's dispatch function
 Thread eventQueueDispatchThread;
+
+// Create Console object
+Console console;
+
 // create main flight control object
 FlightControl flightControl;
+
 // WS2812 RGB LED daisy chain object
 WS2812 RGBLeds(PB_15, PB_13, 11);
 
