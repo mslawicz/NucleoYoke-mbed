@@ -8,8 +8,11 @@
 #ifndef CONSOLE_H_
 #define CONSOLE_H_
 
+#include "mbed.h"
 #include <string>
 #include <vector>
+#include <unordered_map>
+#include <utility>
 
 enum class KeyCode : int
 {
@@ -20,13 +23,19 @@ enum class KeyCode : int
     Backspace = 8
 };
 
+using CommandVector = std::vector<std::string>;
+using CommandContainer = std::pair<std::string, Callback<void(CommandVector)>>;
+
 class Console
 {
 public:
     Console();
     void handler(void);
+    void registerCommand(std::string command, std::string helpText, Callback<void(CommandVector)> commandCallback);
 private:
-    std::vector<std::string> commandElements;
+    void executeCommand(void);
+    CommandVector commandElements;
+    std::unordered_map<std::string, CommandContainer> commands;
 };
 
 #endif /* CONSOLE_H_ */

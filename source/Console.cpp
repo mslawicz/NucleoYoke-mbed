@@ -71,6 +71,38 @@ void Console::handler(void)
         } while(nextSpacePosition != std::string::npos);
 
         printf("\r\n");
-        // interpret command here
+        executeCommand();
+    }
+}
+
+/*
+ * register new command in the Console command map
+ */
+void Console::registerCommand(std::string command, std::string helpText,
+        Callback<void(CommandVector)> commandCallback)
+{
+    commands.emplace(command, CommandContainer{helpText, commandCallback});
+}
+
+/*
+ * executes console command
+ */
+void Console::executeCommand(void)
+{
+    if((!commandElements.empty()) &&
+       (!commandElements[0].empty()))
+    {
+        // command string is given
+        auto commandIterator = commands.find(commandElements[0]);
+        if(commandIterator != commands.end())
+        {
+            // this command has been registered - execute it
+            commandIterator->second.second(commandElements);
+        }
+        else
+        {
+            // unknown command
+            printf("unknown command: %s\r\n", commandElements[0].c_str());
+        }
     }
 }

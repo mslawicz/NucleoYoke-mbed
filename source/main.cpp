@@ -13,6 +13,12 @@
 const uint32_t FlightControlFrequency = 100;    // [Hz]
 constexpr uint32_t FlightControlPeriod = 1000 / FlightControlFrequency;     // flight control period [ms]
 
+//XXX global function for test
+void exampleFunction(CommandVector cv)      //XXX example
+{
+    printf("exampleFunction called\r\n");
+}
+
 // Create a queue of events
 EventQueue eventQueue;
 
@@ -42,6 +48,9 @@ int main()
 
     // Start the event queue's dispatch thread
     eventQueueDispatchThread.start(callback(&eventQueue, &EventQueue::dispatch_forever));
+
+    // register console commands
+    console.registerCommand("h", "display command list", callback(exampleFunction));    //XXX example!
 
     // start Console thread
     consoleThread.start(callback(&console, &Console::handler));
