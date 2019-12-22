@@ -35,12 +35,20 @@ int main()
     // Start the event queue's dispatch thread
     eventQueueDispatchThread.start(callback(&eventQueue, &EventQueue::dispatch_forever));
 
+    printf("main loop start\r\n"); //XXX
     uint32_t loopCounter = 0;
     while (true)
     {
         systemLed = (++loopCounter % FlightControlFrequency) < (FlightControlFrequency >> 3);
         flightControl.handler();
         thread_sleep_for(FlightControlPeriod);
+
+        //XXX test on putc / getc
+        if((loopCounter % FlightControlFrequency) == 0)
+        {
+            putchar('.');
+            fflush(stdout);
+        }
     }
 }
 
