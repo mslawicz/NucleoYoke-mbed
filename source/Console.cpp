@@ -34,6 +34,16 @@ void Console::handler(void)
             ch = getchar();
             switch(ch)
             {
+            case 127:
+                if(!inputLine.empty())
+                {
+                    putchar(static_cast<int>(KeyCode::Backspace));
+                    putchar(' ');
+                    putchar(static_cast<int>(KeyCode::Backspace));
+                    fflush(stdout);
+                    inputLine.pop_back();
+                }
+                break;
             default:
                 if((ch >= 32) && (ch < 127))
                 {

@@ -16,7 +16,7 @@ enum class KeyCode : int
     CR = 13,
     Escape = 27,
     Tilde = 126,
-    Backspace = 127
+    Backspace = 8
 };
 
 class Console
