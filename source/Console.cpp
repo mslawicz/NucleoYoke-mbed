@@ -19,10 +19,14 @@ Console::Console()
  */
 void Console::handler(void)
 {
+    // start console execution with a delay
+    ThisThread::sleep_for(500);
+
+    int ch;
     while(true)
     {
-        ThisThread::sleep_for(1500);
-        putchar('_');
+        ch = getchar();
+        printf("%u,", ch);
         fflush(stdout);
     }
 }
