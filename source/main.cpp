@@ -7,6 +7,7 @@
 #include "main.h"
 #include "Console.h"
 #include "FlightControl.h"
+#include "Statistics.h"
 #include "platform/mbed_thread.h"
 #include "platform/mbed_debug.h"
 
@@ -46,6 +47,7 @@ int main()
 
     // register console commands
     console.registerCommand("h", "help (display command list)", callback(&console, &Console::displayHelp));
+    console.registerCommand("ts", "display thread statistics", callback(displayThreadStatistics));
 
     // start Console thread
     consoleThread.start(callback(&console, &Console::handler));
