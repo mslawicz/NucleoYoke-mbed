@@ -8,6 +8,15 @@
 #ifndef CONSOLE_H_
 #define CONSOLE_H_
 
+enum class KeyCode : int
+{
+    LF = 10,
+    CR = 13,
+    Escape = 27,
+    Tilde = 126,
+    Backspace = 127
+};
+
 class Console
 {
 public:

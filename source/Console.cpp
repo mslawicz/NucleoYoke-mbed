@@ -25,8 +25,14 @@ void Console::handler(void)
     int ch;
     while(true)
     {
-        ch = getchar();
-        printf("%u,", ch);
+        printf("\r>");
         fflush(stdout);
+
+        do
+        {
+            ch = getchar();
+            putchar(ch);
+            fflush(stdout);
+        } while(ch != (int)KeyCode::LF);
     }
 }

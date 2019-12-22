@@ -53,13 +53,6 @@ int main()
         systemLed = (++loopCounter % FlightControlFrequency) < (FlightControlFrequency >> 3);
         flightControl.handler();
         ThisThread::sleep_for(FlightControlPeriod);
-
-        //XXX test on putc / getc
-        if((loopCounter % FlightControlFrequency) == 0)
-        {
-            putchar('.');
-            fflush(stdout);
-        }
     }
 }
 
