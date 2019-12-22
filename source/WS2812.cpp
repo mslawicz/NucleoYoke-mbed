@@ -11,7 +11,7 @@ WS2812::WS2812(PinName dataPin, PinName clkPin, uint16_t numberOfDevices) :
     interface(dataPin, NC, clkPin),
     numberOfDevices(numberOfDevices)
 {
-    RGBData.assign(numberOfDevices, 0);
+    RGBData.assign(numberOfDevices, 0x00020202);
     interface.frequency(4000000);
     interface.format(8, 1);         // 8 bits, MOSI in 0 at idle
 }

@@ -18,11 +18,11 @@ constexpr uint32_t FlightControlPeriod = 1000 / FlightControlFrequency;     // f
 EventQueue eventQueue;
 
 // Create a thread that'll run the event queue's dispatch function
-Thread eventQueueDispatchThread;
+Thread eventQueueDispatchThread(osPriority_t::osPriorityBelowNormal4, OS_STACK_SIZE, nullptr, "events");
 
 // Create Console object and its thread
 Console console;
-Thread consoleThread(osPriority_t::osPriorityBelowNormal);
+Thread consoleThread(osPriority_t::osPriorityBelowNormal, OS_STACK_SIZE, nullptr, "console");
 
 // create main flight control object
 FlightControl flightControl;
