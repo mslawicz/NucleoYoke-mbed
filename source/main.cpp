@@ -25,7 +25,7 @@ Thread eventQueueDispatchThread(osPriority_t::osPriorityBelowNormal4, OS_STACK_S
 WS2812 RGBLeds(PB_15, PB_13, 11);
 
 // create HX711 tensometer DAC objects
-HX711 throttleTensometer(PD_12, PD_13);
+HX711 throttleTensometer(PD_12, PD_13, &eventQueue);
 
 // Create Console object and its thread
 Console console;
@@ -62,12 +62,6 @@ int main()
         systemLed = (++loopCounter % FlightControlFrequency) < (FlightControlFrequency >> 3);
         flightControl.handler();
         ThisThread::sleep_for(FlightControlPeriod);
-
-        // XXX HX711 transmission test
-        if(loopCounter & 1)
-        {
-            throttleTensometer.readData();
-        }
     }
 }
 

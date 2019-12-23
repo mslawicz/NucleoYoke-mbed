@@ -25,7 +25,7 @@ void FlightControl::handler(void)
 {
     static DigitalOut testSignal(PC_8); //XXX
     testSignal = 1; //XXX
-    // test of an event - eventually it should be called when simulator data has changed
+    // test of an event - eventually it should be called when simulator data has been changed
     eventQueue.call(callback(&RGBLeds, &WS2812::update));
 
     bool newDataReceived = false;

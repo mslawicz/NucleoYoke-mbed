@@ -8,15 +8,19 @@
 #include "HX711.h"
 #include "platform/mbed_critical.h"
 
-HX711::HX711(PinName dataPin, PinName clkPin, uint8_t noOfPulses) :
+void testFunction(void) {}
+
+HX711::HX711(PinName dataPin, PinName clkPin, EventQueue* pEventQueue, uint8_t noOfPulses) :
     dataInput(dataPin),
     clockOutput(clkPin),
-    noOfPulses(noOfPulses)
+    noOfPulses(noOfPulses),
+    pEventQueue(pEventQueue)
 {
     MBED_ASSERT((noOfPulses >= 25) && (noOfPulses <= 27));
     clockOutput = 0;
     dataBuffer = 0;
     dataRegister = 0;
+    dataInput.fall(callback(this, &HX711::interruptHandler));
 }
 
 /*
@@ -24,6 +28,7 @@ HX711::HX711(PinName dataPin, PinName clkPin, uint8_t noOfPulses) :
  */
 void HX711::readData(void)
 {
+    dataInput.disable_irq();
     dataBuffer = 0;
     for(uint8_t pulseNo = 0; pulseNo < noOfPulses; pulseNo++)
     {
@@ -37,4 +42,17 @@ void HX711::readData(void)
         clockOutput = 0;
     }
     dataRegister = dataBuffer;
+    dataInput.enable_irq();
+}
+
+/*
+ * this interrupt routine is called on falling edge of HX711 data signal
+ * this routine only commissions the data readout in the event dispatch thread
+ */
+void HX711::interruptHandler(void)
+{
+    if(pEventQueue != nullptr)
+    {
+        pEventQueue->call(callback(this, &HX711::readData));
+    }
 }
