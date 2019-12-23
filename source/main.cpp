@@ -5,6 +5,7 @@
  */
 
 #include "main.h"
+#include "HX711.h"
 #include "Console.h"
 #include "FlightControl.h"
 #include "Statistics.h"
@@ -20,15 +21,18 @@ EventQueue eventQueue;
 // Create a thread that'll run the event queue's dispatch function
 Thread eventQueueDispatchThread(osPriority_t::osPriorityBelowNormal4, OS_STACK_SIZE, nullptr, "events");
 
+// WS2812 RGB LED daisy chain object
+WS2812 RGBLeds(PB_15, PB_13, 11);
+
+// create HX711 tensometer DAC objects
+HX711 throttleTensometer(PG_5, PG_8);
+
 // Create Console object and its thread
 Console console;
 Thread consoleThread(osPriority_t::osPriorityBelowNormal, OS_STACK_SIZE, nullptr, "console");
 
 // create main flight control object
 FlightControl flightControl;
-
-// WS2812 RGB LED daisy chain object
-WS2812 RGBLeds(PB_15, PB_13, 11);
 
 int main()
 {
