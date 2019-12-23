@@ -14,7 +14,7 @@ class HX711
 {
 public:
     HX711(PinName dataPin, PinName clkPin, uint8_t noOfPulses = 25);
-    void receiveData(void);
+    void readData(void);
 private:
     DigitalIn dataInput;        //XXX this should be changed to interrupt input
     DigitalOut clockOutput;     // clock signal

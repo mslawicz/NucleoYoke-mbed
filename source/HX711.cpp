@@ -22,7 +22,7 @@ HX711::HX711(PinName dataPin, PinName clkPin, uint8_t noOfPulses) :
 /*
  * read data from HX711 device
  */
-void HX711::receiveData(void)
+void HX711::readData(void)
 {
     dataBuffer = 0;
     for(uint8_t pulseNo = 0; pulseNo < noOfPulses; pulseNo++)
