@@ -27,6 +27,9 @@ WS2812 RGBLeds(PB_15, PB_13, 11);
 // create HX711 tensometer DAC objects
 HX711 throttleTensometer(PD_12, PD_13, &eventQueue);
 
+//XXX test
+AnalogIn bluePotentiometer(PC_1);
+
 // Create Console object and its thread
 Console console;
 Thread consoleThread(osPriority_t::osPriorityBelowNormal, OS_STACK_SIZE, nullptr, "console");
@@ -62,6 +65,12 @@ int main()
         systemLed = (++loopCounter % FlightControlFrequency) < (FlightControlFrequency >> 3);
         flightControl.handler();
         ThisThread::sleep_for(FlightControlPeriod);
+
+        //XXX test of analog in
+        if(loopCounter % 100 == 0)
+        {
+            printf("pot=%f, tens=%f\r\n", bluePotentiometer.read(), throttleTensometer.getValue());
+        }
     }
 }
 

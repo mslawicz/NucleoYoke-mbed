@@ -9,12 +9,14 @@
 #define SOURCE_HX711_H_
 
 #include "mbed.h"
+#include "main.h"
 
 class HX711
 {
 public:
     HX711(PinName dataPin, PinName clkPin, EventQueue* pEventQueue, uint8_t noOfPulses = 25);
     void readData(void);
+    float getValue(void) { return convert<int, float>(-0x800000, 0x7Fffff, static_cast<int>(dataRegister << 8) / 256, -1.0f, +1.0f); }
 private:
     void interruptHandler(void);
     InterruptIn dataInput;      // data input triggers interrupt and is used for reading data from device
