@@ -14,6 +14,7 @@ class Servo
 {
 public:
     Servo(PinName pwmPin);
+    void test(float pulseWidth) { pwmOut.pulsewidth(pulseWidth); }
 private:
     PwmOut pwmOut;
 };

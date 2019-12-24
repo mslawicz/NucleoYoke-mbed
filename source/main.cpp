@@ -69,9 +69,12 @@ int main()
         ThisThread::sleep_for(FlightControlPeriod);
 
         //XXX test of analog in and servo
+        float potValue = bluePotentiometer.read();
+        float pulseWidth = convert<float, float>(0.0f, 1.0f, potValue, 0.4e-3, 2.6e-3);
+        throttleServo.test(pulseWidth);
         if(loopCounter % 100 == 0)
         {
-            printf("pot=%f, tens=%f\r\n", bluePotentiometer.read(), throttleTensometer.getValue());
+            printf("pot=%f, width=%f [ms]\r\n",potValue , pulseWidth * 1000.0f);
         }
     }
 }
