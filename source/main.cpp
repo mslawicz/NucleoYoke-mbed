@@ -6,6 +6,7 @@
 
 #include "main.h"
 #include "HX711.h"
+#include "Servo.h"  //XXX servo objects should be defined rather in Flight Control
 #include "Console.h"
 #include "FlightControl.h"
 #include "Statistics.h"
@@ -29,6 +30,7 @@ HX711 throttleTensometer(PD_12, PD_13, &eventQueue);
 
 //XXX test
 AnalogIn bluePotentiometer(PC_1);
+Servo throttleServo(PA_5);
 
 // Create Console object and its thread
 Console console;
@@ -66,7 +68,7 @@ int main()
         flightControl.handler();
         ThisThread::sleep_for(FlightControlPeriod);
 
-        //XXX test of analog in
+        //XXX test of analog in and servo
         if(loopCounter % 100 == 0)
         {
             printf("pot=%f, tens=%f\r\n", bluePotentiometer.read(), throttleTensometer.getValue());
