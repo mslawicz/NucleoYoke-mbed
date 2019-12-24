@@ -25,6 +25,7 @@ HX711::HX711(PinName dataPin, PinName clkPin, EventQueue* pEventQueue, uint8_t n
 
 /*
  * read data from HX711 device
+ * this method must be called in low priority event dispatch thread
  */
 void HX711::readData(void)
 {
@@ -42,6 +43,8 @@ void HX711::readData(void)
         clockOutput = 0;
     }
     dataRegister = dataBuffer;
+    // convert 24-bit int data register to float value in the range <-1..1>
+    value = convert<int, float>(-0x800000, 0x7Fffff, static_cast<int>(dataRegister << 8) / 256, -1.0f, +1.0f);
     dataInput.enable_irq();
 }
 

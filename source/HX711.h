@@ -16,7 +16,7 @@ class HX711
 public:
     HX711(PinName dataPin, PinName clkPin, EventQueue* pEventQueue, uint8_t noOfPulses = 25);
     void readData(void);
-    float getValue(void) { return convert<int, float>(-0x800000, 0x7Fffff, static_cast<int>(dataRegister << 8) / 256, -1.0f, +1.0f); }
+    float getValue(void) const { return value; }
 private:
     void interruptHandler(void);
     InterruptIn dataInput;      // data input triggers interrupt and is used for reading data from device
@@ -25,6 +25,7 @@ private:
     uint32_t dataBuffer;        // buffer for data readout
     uint32_t dataRegister;      // last received data register
     EventQueue* pEventQueue;    // pointer to event queue which is to handle data readout in main context
+    float value;                // tensometer readout value in the range <-1.0f,1.0f>
 };
 
 #endif /* SOURCE_HX711_H_ */
