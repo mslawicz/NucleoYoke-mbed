@@ -10,6 +10,9 @@
 
 #include "mbed.h"
 
+//min, -90, 0, 90, max
+//DS3218: 0.45, 0.55, 1.5, 2.51, 2.55
+
 class Servo
 {
 public:
