@@ -27,7 +27,7 @@ Thread eventQueueDispatchThread(osPriority_t::osPriorityBelowNormal4, OS_STACK_S
 WS2812 RGBLeds(PB_15, PB_13, 11);
 
 // create HX711 tensometer DAC objects
-HX711 throttleTensometer(PD_12, PD_13, &eventQueue);
+HX711 throttleTensometer(PD_12, PD_13, &eventQueue);        //XXX it should be moved to FlightControl
 
 // Create Console object and its thread
 Console console;
@@ -35,6 +35,10 @@ Thread consoleThread(osPriority_t::osPriorityBelowNormal, OS_STACK_SIZE, nullptr
 
 // Create display object
 Display display;
+// Create queue of display events
+EventQueue displayQueue;
+// Create a thread that'll run the display event queue's dispatch function with low priority
+Thread displayQueueDispatchThread(osPriority_t::osPriorityLow4, OS_STACK_SIZE, nullptr, "display");
 
 // create main flight control object
 FlightControl flightControl;
@@ -60,6 +64,9 @@ int main()
 
     // start Console thread
     consoleThread.start(callback(&console, &Console::handler));
+
+    // Start the display queue's dispatch thread
+    displayQueueDispatchThread.start(callback(&displayQueue, &EventQueue::dispatch_forever));
 
     uint32_t loopCounter = 0;
     while (true)
