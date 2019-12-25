@@ -8,6 +8,7 @@
 #include "HX711.h"
 #include "Servo.h"  //XXX servo objects should be defined rather in Flight Control
 #include "Console.h"
+#include "Display.h"
 #include "FlightControl.h"
 #include "Statistics.h"
 #include "platform/mbed_thread.h"
@@ -28,15 +29,12 @@ WS2812 RGBLeds(PB_15, PB_13, 11);
 // create HX711 tensometer DAC objects
 HX711 throttleTensometer(PD_12, PD_13, &eventQueue);
 
-//XXX test
-AnalogIn bluePotentiometer(PC_1);
-//Servo throttleServo(PA_5);
-//Servo pitchServo(PC_6);
-Servo rollServo(PB_5);
-
 // Create Console object and its thread
 Console console;
 Thread consoleThread(osPriority_t::osPriorityBelowNormal, OS_STACK_SIZE, nullptr, "console");
+
+// Create display object
+Display display;
 
 // create main flight control object
 FlightControl flightControl;
@@ -69,15 +67,6 @@ int main()
         systemLed = (++loopCounter % FlightControlFrequency) < (FlightControlFrequency >> 3);
         flightControl.handler();
         ThisThread::sleep_for(FlightControlPeriod);
-
-        //XXX test of analog in and servo
-        float potValue = bluePotentiometer.read();
-        float pulseWidth = convert<float, float>(0.0f, 1.0f, potValue, 0.4e-3, 2.6e-3);
-        rollServo.test(pulseWidth);
-        if(loopCounter % 100 == 0)
-        {
-            printf("pot=%f, width=%f [ms]\r\n",potValue , pulseWidth * 1000.0f);
-        }
     }
 }
 
