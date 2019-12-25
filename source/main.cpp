@@ -33,12 +33,12 @@ HX711 throttleTensometer(PD_12, PD_13, &eventQueue);        //XXX it should be m
 Console console;
 Thread consoleThread(osPriority_t::osPriorityBelowNormal, OS_STACK_SIZE, nullptr, "console");
 
-// Create display object
-Display display;
 // Create queue of display events
 EventQueue displayQueue;
 // Create a thread that'll run the display event queue's dispatch function with low priority
 Thread displayQueueDispatchThread(osPriority_t::osPriorityLow4, OS_STACK_SIZE, nullptr, "display");
+// Create display object
+Display display(displayQueue);
 
 // create main flight control object
 FlightControl flightControl;
@@ -67,6 +67,9 @@ int main()
 
     // Start the display queue's dispatch thread
     displayQueueDispatchThread.start(callback(&displayQueue, &EventQueue::dispatch_forever));
+
+    // initialize display
+    display.init();
 
     uint32_t loopCounter = 0;
     while (true)

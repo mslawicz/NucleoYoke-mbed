@@ -8,14 +8,17 @@
 #ifndef SOURCE_DISPLAY_H_
 #define SOURCE_DISPLAY_H_
 
+#include "mbed.h"
 #include "SH1106.h"
 
 class Display
 {
 public:
-    Display();
+    Display(EventQueue& eventQueue);
+    void init(void);
 private:
     SH1106 controller;
+    EventQueue& eventQueue;
 };
 
 #endif /* SOURCE_DISPLAY_H_ */

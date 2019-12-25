@@ -7,9 +7,16 @@
 
 #include "Display.h"
 
-Display::Display()
+Display::Display(EventQueue& eventQueue) :
+    eventQueue(eventQueue)
 {
-    // TODO Auto-generated constructor stub
 
 }
 
+/*
+ * initialize display
+ */
+void Display::init(void)
+{
+
+}
