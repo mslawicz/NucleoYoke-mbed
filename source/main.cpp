@@ -30,7 +30,9 @@ HX711 throttleTensometer(PD_12, PD_13, &eventQueue);
 
 //XXX test
 AnalogIn bluePotentiometer(PC_1);
-Servo throttleServo(PA_5);
+//Servo throttleServo(PA_5);
+//Servo pitchServo(PC_6);
+Servo rollServo(PB_5);
 
 // Create Console object and its thread
 Console console;
@@ -71,7 +73,7 @@ int main()
         //XXX test of analog in and servo
         float potValue = bluePotentiometer.read();
         float pulseWidth = convert<float, float>(0.0f, 1.0f, potValue, 0.4e-3, 2.6e-3);
-        throttleServo.test(pulseWidth);
+        rollServo.test(pulseWidth);
         if(loopCounter % 100 == 0)
         {
             printf("pot=%f, width=%f [ms]\r\n",potValue , pulseWidth * 1000.0f);
