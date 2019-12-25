@@ -18,5 +18,5 @@ Display::Display(EventQueue& eventQueue) :
  */
 void Display::init(void)
 {
-
+    eventQueue.call(callback(&controller, &SH1106::init));
 }

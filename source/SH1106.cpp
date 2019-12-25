@@ -13,3 +13,10 @@ SH1106::SH1106()
 
 }
 
+/*
+ * initialization of SH1106 controller
+ */
+void SH1106::init(void)
+{
+    printf("SH1106 is being initialized here :-)\r\n");
+}
