@@ -5,7 +5,6 @@
  */
 
 #include "main.h"
-#include "HX711.h"
 #include "Console.h"
 #include "Display.h"
 #include "FlightControl.h"
@@ -24,9 +23,6 @@ Thread flightControlQueueDispatchThread(osPriority_t::osPriorityBelowNormal4, OS
 
 // WS2812 RGB LED daisy chain object
 WS2812 RGBLeds(PB_15, PB_13, 11);
-
-// create HX711 tensometer DAC objects
-HX711 throttleTensometer(PD_12, PD_13, flightControlQueue);        //XXX it should be moved to FlightControl
 
 // Create Console object and its thread
 Console console;

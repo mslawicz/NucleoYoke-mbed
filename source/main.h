@@ -8,7 +8,6 @@
 #ifndef SOURCE_MAIN_H_
 #define SOURCE_MAIN_H_
 
-#include "WS2812.h"
 #include "mbed.h"
 #include "EventQueue.h"
 

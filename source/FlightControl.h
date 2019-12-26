@@ -10,6 +10,7 @@
 
 #include "Servo.h"
 #include "WS2812.h"
+#include "HX711.h"
 #include "mbed.h"
 #include "drivers/USBHID.h"
 
@@ -59,6 +60,7 @@ private:
     Servo pitchServo;
     Servo rollServo;
     Servo throttleServo;
+    HX711 throttleTensometer;           // HX711 tensometer ADC for throttle input
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */
