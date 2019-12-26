@@ -8,6 +8,7 @@
 #ifndef SOURCE_FLIGHTCONTROL_H_
 #define SOURCE_FLIGHTCONTROL_H_
 
+#include "Servo.h"
 #include "mbed.h"
 #include "drivers/USBHID.h"
 
@@ -52,6 +53,9 @@ private:
     DigitalOut simulatorDataIndicator;    // indicator of received simulator data
     SimulatorData simulatorData;        // structure of received simulator data
     bool simulatorDataActive;           // true if simulator data is periodically being rceived and is active
+    Servo pitchServo;
+    Servo rollServo;
+    Servo throttleServo;
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */

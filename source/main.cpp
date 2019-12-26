@@ -6,7 +6,6 @@
 
 #include "main.h"
 #include "HX711.h"
-#include "Servo.h"  //XXX servo objects should be defined rather in Flight Control
 #include "Console.h"
 #include "Display.h"
 #include "FlightControl.h"
