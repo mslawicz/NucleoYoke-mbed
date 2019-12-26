@@ -40,7 +40,7 @@ Thread displayQueueDispatchThread(osPriority_t::osPriorityLow4, OS_STACK_SIZE, n
 Display display(displayQueue);
 
 // create main flight control object
-FlightControl flightControl(flightControlQueue);
+FlightControl flightControl(flightControlQueue, RGBLeds);
 
 int main()
 {
