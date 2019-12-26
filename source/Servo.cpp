@@ -8,11 +8,12 @@
 #include "main.h"
 #include "Servo.h"
 
-Servo::Servo(PinName pwmPin, float minPulseWidth, float maxPulseWidth, float startValue) :
+Servo::Servo(PinName pwmPin, float minPulseWidth, float maxPulseWidth, float startValue, bool reverse) :
     pwmOut(pwmPin),
     minPulseWidth(minPulseWidth),
     maxPulseWidth(maxPulseWidth),
-    startValue(startValue)
+    startValue(startValue),
+    reverse(reverse)
 {
     setValue(startValue);
 }
@@ -22,5 +23,5 @@ Servo::Servo(PinName pwmPin, float minPulseWidth, float maxPulseWidth, float sta
  */
 void Servo::setValue(float value)
 {
-    pwmOut.pulsewidth(convert<float, float>(0.0f, 1.0f, value, minPulseWidth, maxPulseWidth));
+    pwmOut.pulsewidth(convert<float, float>(0.0f, 1.0f, reverse ? (1.0f-value) : value, minPulseWidth, maxPulseWidth));
 }

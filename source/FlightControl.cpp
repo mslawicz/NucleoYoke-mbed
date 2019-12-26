@@ -12,8 +12,8 @@
 FlightControl::FlightControl(void) :
     simulatorDataIndicator(LED2),      // blue LED
     pitchServo(PC_6, 1e-3, 2e-3, 0.5f),
-    rollServo(PB_5, 0.87e-3, 2.17e-3, 0.5f),
-    throttleServo(PA_5, 1e-3, 2e-3, 0.0f)
+    rollServo(PB_5, 0.87e-3, 2.17e-3, 0.5f, true),
+    throttleServo(PA_5, 1e-3, 2e-3, 0.0f, true)
 {
     pConnection = nullptr;
     simulatorDataIndicator = 0;

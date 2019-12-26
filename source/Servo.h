@@ -18,7 +18,7 @@
 class Servo
 {
 public:
-    Servo(PinName pwmPin, float minPulseWidth, float maxPulseWidth, float startValue);
+    Servo(PinName pwmPin, float minPulseWidth, float maxPulseWidth, float startValue, bool reverse = false);
     void test(float pulseWidth) { pwmOut.pulsewidth(pulseWidth); }
     void setValue(float value);
 private:
@@ -26,6 +26,7 @@ private:
     float minPulseWidth;    // minimum pulse width [s]
     float maxPulseWidth;    // maximum pulse width [s]
     float startValue;       // start value in the range <0..1>
+    bool reverse;           // reverse direction of moving
 };
 
 #endif /* SOURCE_SERVO_H_ */
