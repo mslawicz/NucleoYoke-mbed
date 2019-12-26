@@ -48,6 +48,13 @@ void FlightControl::handler(void)
         parseReceivedData();
     }
 
+    //XXX tensometer test
+    static uint32_t cnt = 0;
+    if(++cnt % 100 == 0)
+    {
+        printf("tens: 0x%X  %f\r\n", throttleTensometer.getDataRegister(), throttleTensometer.getValue());
+    }
+
     // send output report to simulator
     if(newDataReceived)
     {
