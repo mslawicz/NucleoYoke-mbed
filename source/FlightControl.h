@@ -35,13 +35,14 @@ struct SimulatorData
 class FlightControl
 {
 public:
-    FlightControl(void);
+    FlightControl(EventQueue& eventQueue);
     void handler(void);
     void connect(void);
 private:
     void markSimulatorDataInactive(void);
     void parseReceivedData(void);
     void sendDataToSimulator(void);
+    EventQueue& eventQueue;             // event queue for flight control events
     USBHID* pConnection;    // pointer to USB HID object
     static const uint8_t HIDBufferLength = 64;
     static const uint16_t USB_VID = 0x0483;

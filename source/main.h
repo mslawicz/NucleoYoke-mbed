@@ -12,7 +12,6 @@
 #include "mbed.h"
 #include "EventQueue.h"
 
-extern EventQueue eventQueue;
 extern WS2812 RGBLeds;
 
 template<typename iType, typename oType> oType convert(iType iMin, iType iMax, iType input, oType oMin, oType oMax, bool limit = true)

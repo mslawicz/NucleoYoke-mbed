@@ -6,15 +6,16 @@
  */
 
 #include "HX711.h"
+#include "main.h"
 #include "platform/mbed_critical.h"
 
 void testFunction(void) {}
 
-HX711::HX711(PinName dataPin, PinName clkPin, EventQueue* pEventQueue, uint8_t noOfPulses) :
+HX711::HX711(PinName dataPin, PinName clkPin, EventQueue& eventQueue, uint8_t noOfPulses) :
     dataInput(dataPin),
     clockOutput(clkPin),
     noOfPulses(noOfPulses),
-    pEventQueue(pEventQueue)
+    eventQueue(eventQueue)
 {
     MBED_ASSERT((noOfPulses >= 25) && (noOfPulses <= 27));
     clockOutput = 0;
@@ -54,8 +55,5 @@ void HX711::readData(void)
  */
 void HX711::interruptHandler(void)
 {
-    if(pEventQueue != nullptr)
-    {
-        pEventQueue->call(callback(this, &HX711::readData));
-    }
+    eventQueue.call(callback(this, &HX711::readData));
 }

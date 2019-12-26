@@ -9,7 +9,8 @@
 #include "FlightControl.h"
 #include "platform/mbed_debug.h"
 
-FlightControl::FlightControl(void) :
+FlightControl::FlightControl(EventQueue& eventQueue) :
+    eventQueue(eventQueue),
     simulatorDataIndicator(LED2),      // blue LED
     pitchServo(PC_6, 1e-3, 2e-3, 0.5f),
     rollServo(PB_5, 0.87e-3, 2.17e-3, 0.5f, true),

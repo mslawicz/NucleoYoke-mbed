@@ -16,17 +16,17 @@
 const uint32_t FlightControlFrequency = 100;    // [Hz]
 constexpr uint32_t FlightControlPeriod = 1000 / FlightControlFrequency;     // flight control period [ms]
 
-// Create a queue of events
-EventQueue eventQueue;
+// Create a queue of flight control events
+EventQueue flightControlQueue;
 
 // Create a thread that'll run the event queue's dispatch function
-Thread eventQueueDispatchThread(osPriority_t::osPriorityBelowNormal4, OS_STACK_SIZE, nullptr, "events");
+Thread flightControlQueueDispatchThread(osPriority_t::osPriorityBelowNormal4, OS_STACK_SIZE, nullptr, "events");
 
 // WS2812 RGB LED daisy chain object
 WS2812 RGBLeds(PB_15, PB_13, 11);
 
 // create HX711 tensometer DAC objects
-HX711 throttleTensometer(PD_12, PD_13, &eventQueue);        //XXX it should be moved to FlightControl
+HX711 throttleTensometer(PD_12, PD_13, flightControlQueue);        //XXX it should be moved to FlightControl
 
 // Create Console object and its thread
 Console console;
@@ -40,7 +40,7 @@ Thread displayQueueDispatchThread(osPriority_t::osPriorityLow4, OS_STACK_SIZE, n
 Display display(displayQueue);
 
 // create main flight control object
-FlightControl flightControl;
+FlightControl flightControl(flightControlQueue);
 
 int main()
 {
@@ -55,7 +55,7 @@ int main()
     flightControl.connect();
 
     // Start the event queue's dispatch thread
-    eventQueueDispatchThread.start(callback(&eventQueue, &EventQueue::dispatch_forever));
+    flightControlQueueDispatchThread.start(callback(&flightControlQueue, &EventQueue::dispatch_forever));
 
     // register console commands
     console.registerCommand("h", "help (display command list)", callback(&console, &Console::displayHelp));

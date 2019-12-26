@@ -9,12 +9,11 @@
 #define SOURCE_HX711_H_
 
 #include "mbed.h"
-#include "main.h"
 
 class HX711
 {
 public:
-    HX711(PinName dataPin, PinName clkPin, EventQueue* pEventQueue, uint8_t noOfPulses = 25);
+    HX711(PinName dataPin, PinName clkPin, EventQueue& eventQueue, uint8_t noOfPulses = 25);
     void readData(void);
     float getValue(void) const { return value; }
 private:
@@ -24,7 +23,7 @@ private:
     uint8_t noOfPulses;         // this number must be in the range 25..27
     uint32_t dataBuffer;        // buffer for data readout
     uint32_t dataRegister;      // last received data register
-    EventQueue* pEventQueue;    // pointer to event queue which is to handle data readout in main context
+    EventQueue& eventQueue;     // event queue which is to handle data readout in main context
     float value;                // tensometer readout value in the range <-1.0f,1.0f>
 };
 
