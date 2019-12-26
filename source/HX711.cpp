@@ -15,7 +15,8 @@ HX711::HX711(PinName dataPin, PinName clkPin, EventQueue& eventQueue, uint8_t no
     dataInput(dataPin),
     clockOutput(clkPin),
     noOfPulses(noOfPulses),
-    eventQueue(eventQueue)
+    eventQueue(eventQueue),
+    reference(0.0f, 0.01, 0.001, 100)
 {
     MBED_ASSERT((noOfPulses >= 25) && (noOfPulses <= 27));
     clockOutput = 0;
