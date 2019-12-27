@@ -15,11 +15,12 @@ float g_tensRef;        // XXX reference value of the tensometer
 
 void testFunction(void) {}
 
-HX711::HX711(PinName dataPin, PinName clkPin, EventQueue& eventQueue, uint8_t noOfPulses) :
+HX711::HX711(PinName dataPin, PinName clkPin, EventQueue& eventQueue, bool reverse, uint8_t noOfPulses) :
     dataInput(dataPin),
     clockOutput(clkPin),
     noOfPulses(noOfPulses),
     eventQueue(eventQueue),
+    reverse(reverse),
     reference(0.0f, 0.01, 0.001, 100)
 {
     MBED_ASSERT((noOfPulses >= 25) && (noOfPulses <= 27));

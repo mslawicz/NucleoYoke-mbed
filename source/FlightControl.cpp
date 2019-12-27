@@ -16,7 +16,7 @@ FlightControl::FlightControl(EventQueue& eventQueue, WS2812& RGBLeds) :
     pitchServo(PC_6, 1e-3, 2e-3, 0.5f),
     rollServo(PB_5, 0.87e-3, 2.17e-3, 0.5f, true),
     throttleServo(PA_5, 1e-3, 2e-3, 0.5f, true),
-    throttleTensometer(PD_12, PD_13, eventQueue)
+    throttleTensometer(PD_12, PD_13, eventQueue, true)
 {
     pConnection = nullptr;
     simulatorDataIndicator = 0;
@@ -154,4 +154,5 @@ void FlightControl::sendDataToSimulator(void)
  */
 void FlightControl::setControls(void)
 {
+
 }
