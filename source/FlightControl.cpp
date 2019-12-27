@@ -52,7 +52,7 @@ void FlightControl::handler(void)
     static uint32_t cnt = 0;
     if(++cnt % 100 == 0)
     {
-        printf("tens: 0x%X  %f\r\n", throttleTensometer.getDataRegister(), throttleTensometer.getValue());
+        printf("tens: 0x%X  %f  %f\r\n", throttleTensometer.getDataRegister(), throttleTensometer.getUncalibratedValue(), throttleTensometer.getValue());
     }
 
     // send output report to simulator

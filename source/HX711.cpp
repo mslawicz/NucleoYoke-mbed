@@ -9,6 +9,9 @@
 #include "main.h"
 #include "platform/mbed_critical.h"
 
+float g_tensUncalibr;   //XXX global variable for testing
+float g_tensCalibr;   //XXX global variable for testing
+
 void testFunction(void) {}
 
 HX711::HX711(PinName dataPin, PinName clkPin, EventQueue& eventQueue, uint8_t noOfPulses) :
@@ -46,7 +49,11 @@ void HX711::readData(void)
     }
     dataRegister = dataBuffer;
     // convert 24-bit int data register to float value in the range <-1..1>
-    value = convert<int, float>(-0x800000, 0x7Fffff, static_cast<int>(dataRegister << 8) / 256, -1.0f, +1.0f);
+    uncalibratedValue = convert<int, float>(-0x800000, 0x7Fffff, static_cast<int>(dataRegister << 8) / 256, -1.0f, +1.0f);
+    reference.calculateReference(uncalibratedValue);
+    calibratedValue = uncalibratedValue - reference.getReference();
+    g_tensUncalibr = uncalibratedValue; //XXX
+    g_tensCalibr = calibratedValue; //XXX
     dataInput.enable_irq();
 }
 

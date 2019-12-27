@@ -40,9 +40,14 @@ void Reference::calculateReference(float inputValue)
             noOfAveragedSamples = 0;
         }
 
-        if (noOfAveragedSamples > stableSamples)   // enough stable samples within limit
+        if (noOfAveragedSamples > stableSamples)   // sufficient number of stable samples within limit
         {
             referenceValue = averageValue;
+            if(noOfAveragedSamples > stableSamples * 10)
+            {
+                // recalculate reference value after some time
+                noOfAveragedSamples = 0;
+            }
         }
     }
     else
