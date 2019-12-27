@@ -22,6 +22,7 @@ FlightControl::FlightControl(EventQueue& eventQueue, WS2812& RGBLeds) :
     simulatorDataIndicator = 0;
     simulatorDataActive = false;
     controlMode = ControlMode::spring;
+    controlTimer.start();
 }
 
 /*
@@ -154,5 +155,13 @@ void FlightControl::sendDataToSimulator(void)
  */
 void FlightControl::setControls(void)
 {
+    float timeElapsed = controlTimer.read();
+    controlTimer.reset();
 
+    //XXX test
+    static uint32_t cnt=0;
+    if(++cnt % 100 == 0)
+    {
+        printf("time=%f\r\n", timeElapsed);
+    }
 }

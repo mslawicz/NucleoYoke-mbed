@@ -71,7 +71,7 @@ private:
     Servo throttleServo;
     HX711 throttleTensometer;           // HX711 tensometer ADC for throttle input
     ControlMode controlMode;
-    Timer controlTimer;
+    Timer controlTimer;                 // measures time between control loops
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */
