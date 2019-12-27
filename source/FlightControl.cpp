@@ -21,6 +21,7 @@ FlightControl::FlightControl(EventQueue& eventQueue, WS2812& RGBLeds) :
     pConnection = nullptr;
     simulatorDataIndicator = 0;
     simulatorDataActive = false;
+    controlMode = ControlMode::spring;
 }
 
 /*

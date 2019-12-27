@@ -14,6 +14,14 @@
 #include "mbed.h"
 #include "drivers/USBHID.h"
 
+enum class ControlMode : uint8_t
+{
+    force_feedback,
+    spring,
+    demo,
+    end
+};
+
 // data received from simulator in incoming USB report
 struct SimulatorData
 {
@@ -62,6 +70,7 @@ private:
     Servo rollServo;
     Servo throttleServo;
     HX711 throttleTensometer;           // HX711 tensometer ADC for throttle input
+    ControlMode controlMode;
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */
