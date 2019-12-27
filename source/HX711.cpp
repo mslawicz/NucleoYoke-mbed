@@ -11,6 +11,7 @@
 
 float g_tensUncalibr;   //XXX global variable for testing
 float g_tensCalibr;   //XXX global variable for testing
+float g_tensRef;        // XXX reference value of the tensometer
 
 void testFunction(void) {}
 
@@ -54,6 +55,7 @@ void HX711::readData(void)
     calibratedValue = uncalibratedValue - reference.getReference();
     g_tensUncalibr = uncalibratedValue; //XXX
     g_tensCalibr = calibratedValue; //XXX
+    g_tensRef = reference.getReference(); //XXX
     dataInput.enable_irq();
 }
 
