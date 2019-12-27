@@ -48,12 +48,8 @@ void FlightControl::handler(void)
         parseReceivedData();
     }
 
-    //XXX tensometer test
-    static uint32_t cnt = 0;
-    if(++cnt % 100 == 0)
-    {
-        printf("tens: 0x%X  %f  %f\r\n", throttleTensometer.getDataRegister(), throttleTensometer.getUncalibratedValue(), throttleTensometer.getValue());
-    }
+    // set all mechanical controls
+    setControls();
 
     // send output report to simulator
     if(newDataReceived)
@@ -150,4 +146,11 @@ void FlightControl::sendDataToSimulator(void)
     memcpy(outputReport.data+36, &fParameter, sizeof(fParameter));
 
     pConnection->send_nb(&outputReport);
+}
+
+/*
+ * set all servo according to current mode and user input
+ */
+void FlightControl::setControls(void)
+{
 }
