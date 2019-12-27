@@ -5,7 +5,7 @@
  *      Author: Marcin
  */
 
-//#include "main.h"
+#include "main.h"
 #include "FlightControl.h"
 #include "platform/mbed_debug.h"
 
@@ -15,14 +15,16 @@ FlightControl::FlightControl(EventQueue& eventQueue, WS2812& RGBLeds) :
     simulatorDataIndicator(LED2),      // blue LED
     pitchServo(PC_6, 1e-3, 2e-3, 0.5f),
     rollServo(PB_5, 0.87e-3, 2.17e-3, 0.5f, true),
-    throttleServo(PA_5, 1e-3, 2e-3, 0.5f, true),
-    throttleTensometer(PD_12, PD_13, eventQueue, true)
+    throttleServo(PA_5, 1e-3, 2e-3, 0.0f, true),
+    throttleTensometer(PD_12, PD_13, eventQueue, true),
+    propellerPotentiometer(PC_1)
 {
     pConnection = nullptr;
     simulatorDataIndicator = 0;
     simulatorDataActive = false;
     controlMode = ControlMode::spring;
     controlTimer.start();
+    throttleLever = 0.0f;
 }
 
 /*
@@ -158,10 +160,27 @@ void FlightControl::setControls(void)
     float timeElapsed = controlTimer.read();
     controlTimer.reset();
 
-    //XXX test
-    static uint32_t cnt=0;
+    float throttleLeverForce = throttleTensometer.getValue() > 0 ?
+            convert<float, float>(0.0005f, 0.1f, throttleTensometer.getValue(), 0.0f, 1.0f) :
+            convert<float, float>(-0.1f, -0.0005f, throttleTensometer.getValue(), -1.0f, 0.0f);
+    const float ThrustFilterAlpha = 0.04f;
+    static float filteredThrottleLeverForce = 0.0f;
+    filteredThrottleLeverForce = ThrustFilterAlpha * throttleLeverForce + (1.0f - ThrustFilterAlpha) * filteredThrottleLeverForce;
+    throttleLever += filteredThrottleLeverForce * timeElapsed;
+    if(throttleLever > 1.0f)
+    {
+        throttleLever = 1.0f;
+    }
+    else if(throttleLever < 0.0f)
+    {
+        throttleLever = 0.0f;
+    }
+    throttleServo.setValue(throttleLever);
+
+    //XXX tensometer test
+    static uint32_t cnt = 0;
     if(++cnt % 100 == 0)
     {
-        printf("time=%f\r\n", timeElapsed);
+        printf("tens: 0x%X  %f  %f  %f\r\n", throttleTensometer.getDataRegister(), throttleTensometer.getUncalibratedValue(), throttleTensometer.getValue(), throttleLeverForce);
     }
 }

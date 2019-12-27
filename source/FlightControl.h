@@ -72,6 +72,8 @@ private:
     HX711 throttleTensometer;           // HX711 tensometer ADC for throttle input
     ControlMode controlMode;
     Timer controlTimer;                 // measures time between control loops
+    float throttleLever;                // throttle lever calculated position <0..1>
+    AnalogIn propellerPotentiometer;      // propeller pitch potentiometer (blue)
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */
