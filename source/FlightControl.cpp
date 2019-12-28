@@ -175,7 +175,15 @@ void FlightControl::setControls(void)
     g_totalForce = totalForce; //XXX
     throttleLeverSpeed += ThrottleLeverSpeedCoefficient * totalForce * timeElapsed;
     g_leverSpeed = throttleLeverSpeed;  //XXX
-    throttleLeverPosition += throttleLeverSpeed * timeElapsed;
+    if((controlMode == ControlMode::force_feedback) && simulatorDataActive)
+    {
+        throttleLeverPosition = simulatorData.throttle + throttleLeverSpeed * timeElapsed;
+    }
+    else
+    {
+        // spring mode or simulator data not active
+        throttleLeverPosition += throttleLeverSpeed * timeElapsed;
+    }
     g_leverPosition = throttleLeverPosition; //XXX
     if(throttleLeverPosition > 1.0f)
     {

@@ -70,7 +70,7 @@ private:
     Servo rollServo;
     Servo throttleServo;
     HX711 throttleTensometer;           // HX711 tensometer ADC for throttle input
-    ControlMode controlMode{ControlMode::spring};
+    ControlMode controlMode{ControlMode::force_feedback};
     Timer controlTimer;                 // measures time between control loops
     float throttleLeverPosition{0.0f};  // throttle lever calculated position <0..1>
     AnalogIn propellerPotentiometer;    // propeller pitch potentiometer (blue)
