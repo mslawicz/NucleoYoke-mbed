@@ -54,7 +54,7 @@ private:
     void sendDataToSimulator(void);
     void setControls(void);
     EventQueue& eventQueue;             // event queue for flight control events
-    USBHID* pConnection;    // pointer to USB HID object
+    USBHID* pConnection{nullptr};       // pointer to USB HID object
     WS2812& RGBLeds;        // RGB LEDs object to indicate gear and flaps state
     static const uint8_t HIDBufferLength = 64;
     static const uint16_t USB_VID = 0x0483;
@@ -64,16 +64,20 @@ private:
     HID_REPORT outputReport = {.length = HIDBufferLength, .data = {0}};     // report to simulator
     Timeout simulatorDataTimeout;         // timeout object for receiving simulator data
     DigitalOut simulatorDataIndicator;    // indicator of received simulator data
-    SimulatorData simulatorData;        // structure of received simulator data
-    bool simulatorDataActive;           // true if simulator data is periodically being rceived and is active
+    SimulatorData simulatorData;          // structure of received simulator data
+    bool simulatorDataActive{false};      // true if simulator data is periodically being rceived and is active
     Servo pitchServo;
     Servo rollServo;
     Servo throttleServo;
     HX711 throttleTensometer;           // HX711 tensometer ADC for throttle input
-    ControlMode controlMode;
+    ControlMode controlMode{ControlMode::spring};
     Timer controlTimer;                 // measures time between control loops
-    float throttleLever;                // throttle lever calculated position <0..1>
-    AnalogIn propellerPotentiometer;      // propeller pitch potentiometer (blue)
+    float throttleLeverPosition{0.0f};  // throttle lever calculated position <0..1>
+    AnalogIn propellerPotentiometer;    // propeller pitch potentiometer (blue)
+    AnalogIn mixturePotentiometer;      // mixture potentiometer (red)
+    float throttleLeverSpeed{0.0f};  // speed of the throttle lever
+    const float ThrottleLeverFrictionCoefficient = 0.8f;
+    const float ThrottleLeverSpeedCoefficient = 7.5f;
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */

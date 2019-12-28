@@ -9,6 +9,13 @@
 #include "FlightControl.h"
 #include "platform/mbed_debug.h"
 
+//XXX global variables for testing
+float g_leverForce;
+float g_frictionForce;
+float g_totalForce;
+float g_leverSpeed;
+float g_leverPosition;
+
 FlightControl::FlightControl(EventQueue& eventQueue, WS2812& RGBLeds) :
     eventQueue(eventQueue),
     RGBLeds(RGBLeds),
@@ -17,14 +24,11 @@ FlightControl::FlightControl(EventQueue& eventQueue, WS2812& RGBLeds) :
     rollServo(PB_5, 0.87e-3, 2.17e-3, 0.5f, true),
     throttleServo(PA_5, 1e-3, 2e-3, 0.0f, true),
     throttleTensometer(PD_12, PD_13, eventQueue, true),
-    propellerPotentiometer(PC_1)
+    propellerPotentiometer(PC_1),
+    mixturePotentiometer(PC_0)
 {
-    pConnection = nullptr;
     simulatorDataIndicator = 0;
-    simulatorDataActive = false;
-    controlMode = ControlMode::spring;
     controlTimer.start();
-    throttleLever = 0.0f;
 }
 
 /*
@@ -134,7 +138,7 @@ void FlightControl::sendDataToSimulator(void)
     fParameter = 0.2f;
     memcpy(outputReport.data+16, &fParameter, sizeof(fParameter));
     // bytes 20-23 for throttle control
-    fParameter = 0.15f;
+    fParameter = throttleLeverPosition;
     memcpy(outputReport.data+20, &fParameter, sizeof(fParameter));
     // bytes 24-27 for mixture control
     fParameter = 1.0f;
@@ -160,27 +164,28 @@ void FlightControl::setControls(void)
     float timeElapsed = controlTimer.read();
     controlTimer.reset();
 
-    float throttleLeverForce = throttleTensometer.getValue() > 0 ?
-            convert<float, float>(0.0005f, 0.1f, throttleTensometer.getValue(), 0.0f, 1.0f) :
-            convert<float, float>(-0.1f, -0.0005f, throttleTensometer.getValue(), -1.0f, 0.0f);
-    const float ThrustFilterAlpha = 0.04f;
-    static float filteredThrottleLeverForce = 0.0f;
-    filteredThrottleLeverForce = ThrustFilterAlpha * throttleLeverForce + (1.0f - ThrustFilterAlpha) * filteredThrottleLeverForce;
-    throttleLever += filteredThrottleLeverForce * timeElapsed;
-    if(throttleLever > 1.0f)
+    // throttle lever calculations
+    float throttleLeverUserForce = throttleTensometer.getValue() > 0 ?
+            convert<float, float>(0.0005f, 0.2f, throttleTensometer.getValue(), 0.0f, 1.0f) :
+            convert<float, float>(-0.2f, -0.0005f, throttleTensometer.getValue(), -1.0f, 0.0f);
+    g_leverForce = throttleLeverUserForce;  //XXX
+    float throttleLeverFrictionForce = ThrottleLeverFrictionCoefficient * throttleLeverSpeed;
+    g_frictionForce = throttleLeverFrictionForce; //XXX
+    float totalForce = throttleLeverUserForce - throttleLeverFrictionForce;
+    g_totalForce = totalForce; //XXX
+    throttleLeverSpeed += ThrottleLeverSpeedCoefficient * totalForce * timeElapsed;
+    g_leverSpeed = throttleLeverSpeed;  //XXX
+    throttleLeverPosition += throttleLeverSpeed * timeElapsed;
+    g_leverPosition = throttleLeverPosition; //XXX
+    if(throttleLeverPosition > 1.0f)
     {
-        throttleLever = 1.0f;
+        throttleLeverPosition = 1.0f;
+        throttleLeverSpeed = 0.0f;
     }
-    else if(throttleLever < 0.0f)
+    else if(throttleLeverPosition < 0.0f)
     {
-        throttleLever = 0.0f;
+        throttleLeverPosition = 0.0f;
+        throttleLeverSpeed = 0.0f;
     }
-    throttleServo.setValue(throttleLever);
-
-    //XXX tensometer test
-    static uint32_t cnt = 0;
-    if(++cnt % 100 == 0)
-    {
-        printf("tens: 0x%X  %f  %f  %f\r\n", throttleTensometer.getDataRegister(), throttleTensometer.getUncalibratedValue(), throttleTensometer.getValue(), throttleLeverForce);
-    }
+    throttleServo.setValue(throttleLeverPosition);
 }
