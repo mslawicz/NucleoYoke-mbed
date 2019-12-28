@@ -166,10 +166,10 @@ void FlightControl::setControls(void)
 
     // throttle lever calculations
     float throttleLeverUserForce = throttleTensometer.getValue() > 0 ?
-            convert<float, float>(0.0005f, 0.2f, throttleTensometer.getValue(), 0.0f, 1.0f) :
-            convert<float, float>(-0.2f, -0.0005f, throttleTensometer.getValue(), -1.0f, 0.0f);
+            convert<float, float>(0.0005f, 0.3f, throttleTensometer.getValue(), 0.0f, 1.0f) :
+            convert<float, float>(-0.3f, -0.0005f, throttleTensometer.getValue(), -1.0f, 0.0f);
     g_leverForce = throttleLeverUserForce;  //XXX
-    float throttleLeverFrictionForce = ThrottleLeverFrictionCoefficient * throttleLeverSpeed;
+    float throttleLeverFrictionForce = (throttleLeverSpeed > 0.0f ? ThrottleLeverFrictionCoefficient : -ThrottleLeverFrictionCoefficient) * sqrt(fabs(throttleLeverSpeed));
     g_frictionForce = throttleLeverFrictionForce; //XXX
     float totalForce = throttleLeverUserForce - throttleLeverFrictionForce;
     g_totalForce = totalForce; //XXX
