@@ -169,14 +169,11 @@ void FlightControl::setControls(void)
             scale<float, float>(0.0005f, 0.3f, throttleTensometer.getValue(), 0.0f, 1.0f) :
             scale<float, float>(-0.3f, -0.0005f, throttleTensometer.getValue(), -1.0f, 0.0f);
     g_leverForce = throttleLeverUserForce;  //XXX
-    float vThrottleLeverFrictionCoefficient = mixturePotentiometer.read();  //XXX
-    //float throttleLeverFrictionForce = (throttleLeverSpeed > 0.0f ? vThrottleLeverFrictionCoefficient : -vThrottleLeverFrictionCoefficient) * sqrt(fabs(throttleLeverSpeed));
-    float throttleLeverFrictionForce = vThrottleLeverFrictionCoefficient * (throttleLeverSpeed >= 0.0f ? sqrt(throttleLeverSpeed) : -sqrt(-throttleLeverSpeed));
+    float throttleLeverFrictionForce = ThrottleLeverFrictionCoefficient * (throttleLeverSpeed >= 0.0f ? sqrt(throttleLeverSpeed) : -sqrt(-throttleLeverSpeed));
     g_frictionForce = throttleLeverFrictionForce; //XXX
     float totalForce = throttleLeverUserForce - throttleLeverFrictionForce;
     g_totalForce = totalForce; //XXX
-    float vThrottleLeverSpeedCoefficient = 20.0f * propellerPotentiometer.read();   //XXX
-    throttleLeverSpeed += vThrottleLeverSpeedCoefficient * totalForce * timeElapsed;
+    throttleLeverSpeed += ThrottleLeverSpeedCoefficient * totalForce * timeElapsed;
     g_leverSpeed = throttleLeverSpeed;  //XXX
     throttleLeverPosition += throttleLeverSpeed * timeElapsed;
     g_leverPosition = throttleLeverPosition; //XXX
@@ -193,9 +190,9 @@ void FlightControl::setControls(void)
     throttleServo.setValue(throttleLeverPosition);
 
     //XXX tensometer test
-    static uint32_t cnt = 0;
-    if(++cnt % 100 == 0)
-    {
-        printf("tens: %f  %f\r\n", vThrottleLeverSpeedCoefficient, vThrottleLeverFrictionCoefficient);
-    }
+//    static uint32_t cnt = 0;
+//    if(++cnt % 100 == 0)
+//    {
+//        printf("tens: %f  %f\r\n", vThrottleLeverSpeedCoefficient, vThrottleLeverFrictionCoefficient);
+//    }
 }
