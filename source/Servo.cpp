@@ -23,5 +23,5 @@ Servo::Servo(PinName pwmPin, float minPulseWidth, float maxPulseWidth, float sta
  */
 void Servo::setValue(float value)
 {
-    pwmOut.pulsewidth(convert<float, float>(0.0f, 1.0f, reverse ? (1.0f-value) : value, minPulseWidth, maxPulseWidth));
+    pwmOut.pulsewidth(scale<float, float>(0.0f, 1.0f, reverse ? (1.0f-value) : value, minPulseWidth, maxPulseWidth));
 }

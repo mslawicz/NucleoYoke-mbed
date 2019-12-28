@@ -20,8 +20,8 @@ HX711::HX711(PinName dataPin, PinName clkPin, EventQueue& eventQueue, bool rever
     clockOutput(clkPin),
     noOfPulses(noOfPulses),
     eventQueue(eventQueue),
-    reverse(reverse),
-    reference(0.0f, 0.01, 0.001, 100)
+    reference(0.0f, 0.01, 0.001, 100),
+    reverse(reverse)
 {
     MBED_ASSERT((noOfPulses >= 25) && (noOfPulses <= 27));
     clockOutput = 0;
@@ -50,8 +50,8 @@ void HX711::readData(void)
         clockOutput = 0;
     }
     dataRegister = dataBuffer;
-    // convert 24-bit int data register to float value in the range <-1..1>
-    uncalibratedValue = convert<int, float>(-0x800000, 0x7Fffff, static_cast<int>(dataRegister << 8) / 256, -1.0f, +1.0f);
+    // scale 24-bit int data register to float value in the range <-1..1>
+    uncalibratedValue = scale<int, float>(-0x800000, 0x7Fffff, static_cast<int>(dataRegister << 8) / 256, -1.0f, +1.0f);
     reference.calculateReference(uncalibratedValue);
     calibratedValue = uncalibratedValue - reference.getReference();
     g_tensUncalibr = uncalibratedValue; //XXX

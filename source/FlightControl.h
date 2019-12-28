@@ -76,7 +76,7 @@ private:
     AnalogIn propellerPotentiometer;    // propeller pitch potentiometer (blue)
     AnalogIn mixturePotentiometer;      // mixture potentiometer (red)
     float throttleLeverSpeed{0.0f};  // speed of the throttle lever
-    const float ThrottleLeverFrictionCoefficient = 0.35f;
+    const float ThrottleLeverFrictionCoefficient = 0.3f;
     const float ThrottleLeverSpeedCoefficient = 10.0f;
 };
 
