@@ -32,10 +32,10 @@ void SH1106::init(void)
 /*
  * send command/data to display controller
  */
-void SH1106::write(const char* data, int length, bool command)
+void SH1106::write(uint8_t* data, int length, bool command)
 {
     cdSignal = command ? 0 : 1;
     csSignal = 0;
-    interface.write(data, length, nullptr, 0);
+    interface.write((const char*)data, length, nullptr, 0);
     csSignal = 1;
 }

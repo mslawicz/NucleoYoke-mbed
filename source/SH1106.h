@@ -17,13 +17,13 @@ public:
     SH1106(PinName dataPin, PinName clkPin, PinName resetPin, PinName cdPin, PinName csPin);
     void init(void);
 private:
-    void write(const char* data, int length, bool command = false);
-    void write(std::vector<char>data, bool command = false) { write(&data[0], data.size(), command); }
+    void write(uint8_t* data, int length, bool command = false);
+    void write(std::vector<uint8_t>data, bool command = false) { write(&data[0], data.size(), command); }
     SPI interface;
     DigitalOut resetSignal;
     DigitalOut cdSignal;
     DigitalOut csSignal;
-    const std::vector<char> SH1106InitData
+    const std::vector<uint8_t> SH1106InitData
     {
         0x32,   //DC voltage output value
         0x40,   //display line for COM0 = 0
