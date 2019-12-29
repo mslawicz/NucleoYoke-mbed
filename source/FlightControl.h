@@ -53,6 +53,7 @@ private:
     void parseReceivedData(void);
     void sendDataToSimulator(void);
     void setControls(void);
+    void updateIndicators(void);
     EventQueue& eventQueue;             // event queue for flight control events
     USBHID* pConnection{nullptr};       // pointer to USB HID object
     WS2812& RGBLeds;        // RGB LEDs object to indicate gear and flaps state

@@ -44,3 +44,12 @@ void WS2812::update(void)
 
     interface.transfer<uint8_t>(&oneWireBuffer[0], oneWireBuffer.size(), nullptr, 0, nullptr);
 }
+
+/*
+ * set value of RGB device in a chain
+ */
+void WS2812::setValue(uint8_t deviceIndex, uint32_t value)
+{
+    MBED_ASSERT(deviceIndex < numberOfDevices);
+    RGBData[deviceIndex] = value;
+}

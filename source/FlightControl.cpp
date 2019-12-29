@@ -39,8 +39,6 @@ void FlightControl::handler(void)
 {
     static DigitalOut testSignal(PC_8); //XXX
     testSignal = 1; //XXX
-    // test of an event - eventually it should be called when simulator data has been changed
-    eventQueue.call(callback(&RGBLeds, &WS2812::update));
 
     // check data received from simulator
     if((pConnection != nullptr) &&
@@ -52,6 +50,10 @@ void FlightControl::handler(void)
         simulatorDataActive = true;
         simulatorDataTimeout.attach(callback(this, &FlightControl::markSimulatorDataInactive), 0.2f);
         parseReceivedData();
+        if(controlMode != ControlMode::demo)
+        {
+            updateIndicators();
+        }
     }
 
     // set all mechanical controls
@@ -196,4 +198,63 @@ void FlightControl::setControls(void)
 //    {
 //        printf("alpha=%f\r\n", alpha);
 //    }
+}
+
+/*
+ * updates RGB indicators according to simulator data
+ */
+void FlightControl::updateIndicators(void)
+{
+    // set flaps indicators
+    RGBLeds.setValue(0, static_cast<uint32_t>(simulatorData.flapsDeflection > 0.0f ? WS2812Color::green : WS2812Color::off));
+    RGBLeds.setValue(1, static_cast<uint32_t>(simulatorData.flapsDeflection > 0.125f ? WS2812Color::yellow : WS2812Color::off));
+    RGBLeds.setValue(2, static_cast<uint32_t>(simulatorData.flapsDeflection > 0.25f ? WS2812Color::orange : WS2812Color::off));
+    RGBLeds.setValue(3, static_cast<uint32_t>(simulatorData.flapsDeflection > 0.375f ? WS2812Color::red : WS2812Color::off));
+    RGBLeds.setValue(4, static_cast<uint32_t>(simulatorData.flapsDeflection > 0.5f ? WS2812Color::magenta : WS2812Color::off));
+    RGBLeds.setValue(5, static_cast<uint32_t>(simulatorData.flapsDeflection > 0.625f ? WS2812Color::blue : WS2812Color::off));
+    RGBLeds.setValue(6, static_cast<uint32_t>(simulatorData.flapsDeflection > 0.75f ? WS2812Color::cyan : WS2812Color::off));
+    RGBLeds.setValue(7, static_cast<uint32_t>(simulatorData.flapsDeflection == 1.0f ? WS2812Color::white : WS2812Color::off));
+
+    // set gear indicators
+    if(simulatorData.booleanFlags & (1 << 2))
+    {
+        //reverser is on
+        RGBLeds.setValue(9, static_cast<uint32_t>(WS2812Color::blue));     // nose gear indication
+        RGBLeds.setValue(10, static_cast<uint32_t>(WS2812Color::blue));    // left gear indication
+        RGBLeds.setValue(8, static_cast<uint32_t>(WS2812Color::blue));     // right gear indication
+    }
+    else if(simulatorData.booleanFlags & (1 << 0))
+    {
+        // this aircraft has retractable gear
+        auto getGearColor = [](uint8_t deflection)
+        {
+            WS2812Color color;
+            if(deflection == 0)
+            {
+                color = WS2812Color::off;
+            }
+            else if(deflection == 2)
+            {
+                color = WS2812Color::green;
+            }
+            else
+            {
+                color = WS2812Color::red;
+            }
+            return color;
+        };
+
+        RGBLeds.setValue(9, static_cast<uint32_t>(getGearColor(simulatorData.gearDeflection[0])));     // nose gear indication
+        RGBLeds.setValue(10, static_cast<uint32_t>(getGearColor(simulatorData.gearDeflection[1])));    // left gear indication
+        RGBLeds.setValue(8, static_cast<uint32_t>(getGearColor(simulatorData.gearDeflection[2])));     // right gear indication
+    }
+    else
+    {
+        // this aircraft has fixed gear
+        RGBLeds.setValue(9, static_cast<uint32_t>(WS2812Color::gray));     // nose gear indication
+        RGBLeds.setValue(10, static_cast<uint32_t>(WS2812Color::gray));    // left gear indication
+        RGBLeds.setValue(8, static_cast<uint32_t>(WS2812Color::gray));     // right gear indication
+    }
+
+    eventQueue.call(callback(&RGBLeds, &WS2812::update));
 }
