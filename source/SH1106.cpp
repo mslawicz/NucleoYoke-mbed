@@ -7,10 +7,13 @@
 
 #include "SH1106.h"
 
-SH1106::SH1106()
+SH1106::SH1106(PinName dataPin, PinName clkPin, PinName resetPin, PinName cdPin, PinName csPin) :
+    interface(dataPin, NC, clkPin),
+    resetSignal(PE_15),
+    cdSignal(cdPin),
+    csSignal(csPin)
 {
-    // TODO Auto-generated constructor stub
-
+    csSignal = 1;
 }
 
 /*
@@ -18,5 +21,21 @@ SH1106::SH1106()
  */
 void SH1106::init(void)
 {
-    printf("SH1106 is being initialized here :-)\r\n");
+    resetSignal = 0;
+    resetSignal = 1;
+    // wait after reset
+    ThisThread::sleep_for(1);
+    // send initialization data
+    write(SH1106InitData, true);
+}
+
+/*
+ * send command/data to display controller
+ */
+void SH1106::write(const char* data, int length, bool command)
+{
+    cdSignal = command ? 0 : 1;
+    csSignal = 0;
+    interface.write(data, length, nullptr, 0);
+    csSignal = 1;
 }
