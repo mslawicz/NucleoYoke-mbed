@@ -55,7 +55,7 @@ int main()
 
     // register console commands
     console.registerCommand("h", "help (display command list)", callback(&console, &Console::displayHelp));
-    console.registerCommand("ts", "display thread statistics", callback(displayThreadStatistics));
+    console.registerCommand("ls", "list threads", callback(listThreads));
 
     // start Console thread
     consoleThread.start(callback(&console, &Console::handler));

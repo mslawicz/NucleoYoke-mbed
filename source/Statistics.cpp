@@ -13,7 +13,7 @@
 #error "Stats not enabled"
 #endif
 
-void displayThreadStatistics(CommandVector cv)
+void listThreads(CommandVector cv)
 {
     mbed_stats_thread_t* stats = new mbed_stats_thread_t[MAX_THREAD_STATS];
     int numberOfThreads = mbed_stats_thread_get_each(stats, MAX_THREAD_STATS);
