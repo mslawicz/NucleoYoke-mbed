@@ -258,3 +258,23 @@ void FlightControl::updateIndicators(void)
 
     eventQueue.call(callback(&RGBLeds, &WS2812::update));
 }
+
+/*
+ * display latest received simulator data
+ */
+void FlightControl::displaySimulatorData(CommandVector cv)
+{
+    auto boolToYN = [](bool val)->const char*{ return (val ? "yes" : "no"); };
+    printf("simulator data active = %s\r\n", boolToYN(simulatorDataActive));
+    printf("total pitch = %f\r\n", simulatorData.totalPitch);
+    printf("total roll = %f\r\n", simulatorData.totalRoll);
+    printf("total yaw = %f\r\n", simulatorData.totalYaw);
+    printf("flaps deflection = %f\r\n", simulatorData.flapsDeflection);
+    printf("is retractable? = %s\r\n", boolToYN(simulatorData.booleanFlags & 0x01));
+    printf("gear deflection = %u, %u, %u\r\n", simulatorData.gearDeflection[0], simulatorData.gearDeflection[1], simulatorData.gearDeflection[2]);
+    printf("relative airspeed = %f\r\n", simulatorData.airSpeed);
+    printf("throttle = %f\r\n", simulatorData.throttle);
+    printf("stick shaker on? = %s\r\n", boolToYN(simulatorData.booleanFlags & (1 << 1)));
+    printf("reverser on? = %s\r\n", boolToYN(simulatorData.booleanFlags & (1 << 2)));
+    printf("propeller speed = %f [rpm]\r\n", simulatorData.propellerSpeed);
+}

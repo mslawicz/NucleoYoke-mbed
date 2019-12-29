@@ -11,6 +11,7 @@
 #include "Servo.h"
 #include "WS2812.h"
 #include "HX711.h"
+#include "Console.h"
 #include "mbed.h"
 #include "drivers/USBHID.h"
 
@@ -48,6 +49,7 @@ public:
     FlightControl(EventQueue& eventQueue, WS2812& RGBLeds);
     void handler(void);
     void connect(void);
+    void displaySimulatorData(CommandVector cv);
 private:
     void markSimulatorDataInactive(void);
     void parseReceivedData(void);
