@@ -51,7 +51,6 @@ public:
 private:
     void markSimulatorDataInactive(void);
     void parseReceivedData(void);
-    void updateSimulationParameters(void);
     void sendDataToSimulator(void);
     void setControls(void);
     EventQueue& eventQueue;             // event queue for flight control events
@@ -66,6 +65,7 @@ private:
     Timeout simulatorDataTimeout;         // timeout object for receiving simulator data
     DigitalOut simulatorDataIndicator;    // indicator of received simulator data
     SimulatorData simulatorData;          // structure of received simulator data
+    bool newDataReceived{false};          // true if new data has been received in handler
     bool simulatorDataActive{false};      // true if simulator data is periodically being rceived and is active
     Servo pitchServo;
     Servo rollServo;
@@ -79,6 +79,7 @@ private:
     float throttleLeverSpeed{0.0f};  // speed of the throttle lever
     const float ThrottleLeverFrictionCoefficient = 0.3f;
     const float ThrottleLeverSpeedCoefficient = 10.0f;
+    const float ThrottleFilterAlpha = 0.25f;
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */

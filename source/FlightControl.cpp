@@ -42,8 +42,6 @@ void FlightControl::handler(void)
     // test of an event - eventually it should be called when simulator data has been changed
     eventQueue.call(callback(&RGBLeds, &WS2812::update));
 
-    bool newDataReceived = false;
-
     // check data received from simulator
     if((pConnection != nullptr) &&
        (pConnection->read_nb(&inputReport)))
@@ -54,7 +52,6 @@ void FlightControl::handler(void)
         simulatorDataActive = true;
         simulatorDataTimeout.attach(callback(this, &FlightControl::markSimulatorDataInactive), 0.2f);
         parseReceivedData();
-        updateSimulationParameters();
     }
 
     // set all mechanical controls
@@ -66,7 +63,7 @@ void FlightControl::handler(void)
         sendDataToSimulator();
     }
 
-
+    newDataReceived = false;
     testSignal = 0; //XXX
 }
 
@@ -158,19 +155,6 @@ void FlightControl::sendDataToSimulator(void)
 }
 
 /*
- * updates simulation parameters
- * it should be called when new data has been received from simulator
- */
-void FlightControl::updateSimulationParameters(void)
-{
-    // update throttle lever position
-    if(controlMode == ControlMode::force_feedback)
-    {
-        throttleLeverPosition = simulatorData.throttle;
-    }
-}
-
-/*
  * set all servo according to current mode and user input
  */
 void FlightControl::setControls(void)
@@ -188,9 +172,10 @@ void FlightControl::setControls(void)
     float totalForce = throttleLeverUserForce - throttleLeverFrictionForce;
     g_totalForce = totalForce; //XXX
     throttleLeverSpeed += ThrottleLeverSpeedCoefficient * totalForce * timeElapsed;
-    g_leverSpeed = throttleLeverSpeed;  //XXX
-    throttleLeverPosition += throttleLeverSpeed * timeElapsed;
-    g_leverPosition = throttleLeverPosition; //XXX
+    g_leverSpeed = simulatorData.throttle;  //XXX
+    float alpha = ((controlMode == ControlMode::force_feedback) && newDataReceived) ? ThrottleFilterAlpha : 0.0f;
+    // complementary filter for throttle lever position
+    throttleLeverPosition = (1.0f - alpha) * (throttleLeverPosition + throttleLeverSpeed * timeElapsed) + alpha * simulatorData.throttle;
     if(throttleLeverPosition > 1.0f)
     {
         throttleLeverPosition = 1.0f;
@@ -201,12 +186,14 @@ void FlightControl::setControls(void)
         throttleLeverPosition = 0.0f;
         throttleLeverSpeed = 0.0f;
     }
+    g_leverPosition = throttleLeverPosition; //XXX
+
     throttleServo.setValue(throttleLeverPosition);
 
     //XXX tensometer test
 //    static uint32_t cnt = 0;
 //    if(++cnt % 100 == 0)
 //    {
-//        printf("tens: %f  %f\r\n", vThrottleLeverSpeedCoefficient, vThrottleLeverFrictionCoefficient);
+//        printf("alpha=%f\r\n", alpha);
 //    }
 }
