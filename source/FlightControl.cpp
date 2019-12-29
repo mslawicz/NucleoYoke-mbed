@@ -54,6 +54,7 @@ void FlightControl::handler(void)
         simulatorDataActive = true;
         simulatorDataTimeout.attach(callback(this, &FlightControl::markSimulatorDataInactive), 0.2f);
         parseReceivedData();
+        updateSimulationParameters();
     }
 
     // set all mechanical controls
@@ -157,6 +158,19 @@ void FlightControl::sendDataToSimulator(void)
 }
 
 /*
+ * updates simulation parameters
+ * it should be called when new data has been received from simulator
+ */
+void FlightControl::updateSimulationParameters(void)
+{
+    // update throttle lever position
+    if(controlMode == ControlMode::force_feedback)
+    {
+        throttleLeverPosition = simulatorData.throttle;
+    }
+}
+
+/*
  * set all servo according to current mode and user input
  */
 void FlightControl::setControls(void)
@@ -175,15 +189,7 @@ void FlightControl::setControls(void)
     g_totalForce = totalForce; //XXX
     throttleLeverSpeed += ThrottleLeverSpeedCoefficient * totalForce * timeElapsed;
     g_leverSpeed = throttleLeverSpeed;  //XXX
-    if((controlMode == ControlMode::force_feedback) && simulatorDataActive)
-    {
-        throttleLeverPosition = simulatorData.throttle + throttleLeverSpeed * timeElapsed;
-    }
-    else
-    {
-        // spring mode or simulator data not active
-        throttleLeverPosition += throttleLeverSpeed * timeElapsed;
-    }
+    throttleLeverPosition += throttleLeverSpeed * timeElapsed;
     g_leverPosition = throttleLeverPosition; //XXX
     if(throttleLeverPosition > 1.0f)
     {
