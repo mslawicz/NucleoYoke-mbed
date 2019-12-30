@@ -116,7 +116,6 @@ void SH1106::setPoint(uint8_t X, uint8_t Y, bool clear)
  */
 void SH1106::test(uint32_t argument)
 {
-    printf("display test with argument %u\r\n", argument);
     setPoint(0, 0);
     setPoint(0, sizeY-1);
     setPoint(sizeX-1, 0);
@@ -131,4 +130,62 @@ void SH1106::test(uint32_t argument)
         setPoint(64-x, 32 + y);
     }
     update();
+}
+
+/*
+ * displays character on the screen
+ * ch - ascii code
+ * X,Y - upper left corner of character placement
+ * font - font array from fonts.h
+ * inverted - clears pixels if true
+ * upToX - if >0, stops at X==upToX
+ */
+uint8_t SH1106::putChar(uint8_t X, uint8_t Y,uint8_t ch, const uint8_t* font, bool inverted, uint8_t upToX)
+{
+    bool isSpace = false;
+
+    if((ch < font[4]) || (ch >= font[4]+font[5]))
+    {
+        // ascii code out of this font range
+        return X;
+    }
+
+    // width of this char
+    uint8_t charWidth = font[6 + ch - font[4]];
+    if(charWidth == 0)
+    {
+        isSpace = true;
+        charWidth = font[2];
+    }
+
+    // height of this char
+    uint8_t charHeight = font[3];
+
+    // calculate index of this char definition in array
+    uint16_t charDefinitionIndex = 6 + font[5];
+    for(uint8_t i = 0; i < ch - font[4]; i++)
+    {
+        charDefinitionIndex += font[6 + i] * (1 + (charHeight - 1) / 8);
+    }
+
+    // for every column
+    uint8_t ix;
+    for(ix = 0; ix < charWidth; ix++)
+    {
+        // if upToX!=0 then print up to this X limit
+        if((upToX != 0) && (X+ix > upToX))
+        {
+            break;
+        }
+        // for every horizontal row
+        for(uint8_t iy = 0; iy < charHeight; iy++)
+        {
+            uint8_t bitPattern = isSpace ? 0 : font[charDefinitionIndex + ix + (iy / 8) * charWidth];
+            bool lastByte = iy / 8 == charHeight / 8;
+            uint8_t extraShift = lastByte ? 8 - charHeight % 8 : 0;
+            setPoint(X + ix, Y + iy, ((bitPattern >> (extraShift + iy % 8)) & 0x01) == inverted);
+        }
+    }
+
+    return X + ix;
 }

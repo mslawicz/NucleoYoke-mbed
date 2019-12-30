@@ -291,6 +291,7 @@
 									<listOptionValue builtIn="false" value="&quot;../mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F413xH/TARGET_NUCLEO_F413ZH&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F413xH/device&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../mbed-os/targets/TARGET_STM/TARGET_STM32F4/device&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../fonts&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.865469781" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__MBED__=1"/>
@@ -641,6 +642,7 @@
 									<listOptionValue builtIn="false" value="&quot;../mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F413xH/TARGET_NUCLEO_F413ZH&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F413xH/device&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../mbed-os/targets/TARGET_STM/TARGET_STM32F4/device&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../fonts&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.933724942" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__MBED__=1"/>
@@ -1305,6 +1307,8 @@
 									<listOptionValue builtIn="false" value="&quot;../mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F413xH/TARGET_NUCLEO_F413ZH&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F413xH/device&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../mbed-os/targets/TARGET_STM/TARGET_STM32F4/device&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/NucleoYoke-mbed/fonts}&quot;"/>
+									<listOptionValue builtIn="false" value="../fonts"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.402649372" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__MBED__=1"/>
@@ -1655,6 +1659,7 @@
 									<listOptionValue builtIn="false" value="&quot;../mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F413xH/TARGET_NUCLEO_F413ZH&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F413xH/device&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../mbed-os/targets/TARGET_STM/TARGET_STM32F4/device&quot;"/>
+									<listOptionValue builtIn="false" value="../fonts"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.132470778" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__MBED__=1"/>
@@ -2065,4 +2070,5 @@
 		</configuration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>

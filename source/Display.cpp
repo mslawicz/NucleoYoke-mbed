@@ -6,6 +6,7 @@
  */
 
 #include "Display.h"
+#include "fonts.h"
 
 Display::Display(EventQueue& eventQueue) :
     controller(PE_14, PE_12, PE_15, PE_13, PF_13),
