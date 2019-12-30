@@ -22,6 +22,8 @@ SH1106::SH1106(PinName dataPin, PinName clkPin, PinName resetPin, PinName cdPin,
 void SH1106::init(void)
 {
     resetSignal = 0;
+    // send a dummy byte to set proper signal levels
+    interface.write(0);
     resetSignal = 1;
     // wait after reset
     ThisThread::sleep_for(1);
@@ -103,7 +105,7 @@ void SH1106::setPoint(uint8_t X, uint8_t Y, bool clear)
         updateArray[page][0] = X;
     }
     // set upper limit of refreshing range
-    if(updateArray[page][1] < X)
+    if((updateArray[page][1] < X) || (updateArray[page][1] >= sizeX))
     {
         updateArray[page][1] = X;
     }
@@ -126,7 +128,7 @@ void SH1106::test(uint32_t argument)
         setPoint(64+x, 32 - y);
         setPoint(64-x, 32 - y);
         setPoint(64+x, 32 + y);
-        setPoint(64-x, 32 - y);
+        setPoint(64-x, 32 + y);
     }
     update();
 }
