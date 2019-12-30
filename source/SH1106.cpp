@@ -108,3 +108,25 @@ void SH1106::setPoint(uint8_t X, uint8_t Y, bool clear)
         updateArray[page][1] = X;
     }
 }
+
+/*
+ * test of the display functions
+ */
+void SH1106::test(uint32_t argument)
+{
+    printf("display test with argument %u\r\n", argument);
+    setPoint(0, 0);
+    setPoint(0, sizeY-1);
+    setPoint(sizeX-1, 0);
+    setPoint(sizeX-1, sizeY-1);
+    for(uint8_t x=0; x<argument; x++)
+    {
+        //x^2 + y^2 = r^2
+        uint8_t y = (uint8_t)sqrt(argument * argument - x * x);
+        setPoint(64+x, 32 - y);
+        setPoint(64-x, 32 - y);
+        setPoint(64+x, 32 + y);
+        setPoint(64-x, 32 - y);
+    }
+    update();
+}

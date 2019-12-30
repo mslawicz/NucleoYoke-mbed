@@ -17,6 +17,7 @@ public:
     SH1106(PinName dataPin, PinName clkPin, PinName resetPin, PinName cdPin, PinName csPin);
     void init(void);
     void update(void);
+    void test(uint32_t argument);
 private:
     void write(uint8_t* data, int length, bool command = false);
     void write(std::vector<uint8_t>data, bool command = false) { write(&data[0], data.size(), command); }

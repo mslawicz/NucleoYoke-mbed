@@ -21,3 +21,12 @@ void Display::init(void)
 {
     eventQueue.call(callback(&controller, &SH1106::init));
 }
+
+/*
+ * call display test function
+ */
+void Display::test(void)
+{
+    uint8_t argument = 30;
+    eventQueue.call(callback(&controller, &SH1106::test), argument);
+}

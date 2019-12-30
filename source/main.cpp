@@ -67,6 +67,9 @@ int main()
     // initialize display
     display.init();
 
+    //XXX test of display
+    display.test();
+
     uint32_t loopCounter = 0;
     while (true)
     {

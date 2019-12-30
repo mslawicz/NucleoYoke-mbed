@@ -16,6 +16,7 @@ class Display
 public:
     Display(EventQueue& eventQueue);
     void init(void);
+    void test(void);
 private:
     SH1106 controller;
     EventQueue& eventQueue;
