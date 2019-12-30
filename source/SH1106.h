@@ -20,6 +20,7 @@ public:
 private:
     void write(uint8_t* data, int length, bool command = false);
     void write(std::vector<uint8_t>data, bool command = false) { write(&data[0], data.size(), command); }
+    void setPoint(uint8_t X, uint8_t Y, bool clear = false);
     SPI interface;
     DigitalOut resetSignal;
     DigitalOut cdSignal;
@@ -38,6 +39,7 @@ private:
         0xC8    //scan from N-1 to 0
     };
     static const uint8_t sizeX = 128;
+    static const uint8_t sizeY = 64;
     static const uint8_t noOfPages = 8;
     uint8_t dataBuffer[noOfPages][sizeX] = {0};
     uint8_t updateArray[noOfPages][2] = {{0,sizeX-1}, {0,sizeX-1}, {0,sizeX-1}, {0,sizeX-1}, {0,sizeX-1}, {0,sizeX-1}, {0,sizeX-1}, {0,sizeX-1}};

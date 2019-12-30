@@ -74,3 +74,37 @@ void SH1106::write(uint8_t* data, int length, bool command)
     csSignal = 1;
 }
 
+/*
+ * set or clear a single pixel in X,Y coordinates
+ */
+void SH1106::setPoint(uint8_t X, uint8_t Y, bool clear)
+{
+    if((X>sizeX) || (Y>sizeY))
+    {
+        // out of range
+        return;
+    }
+    uint8_t page = Y / 8;
+    uint8_t mask = 1 << (Y % 8);
+
+    // set or clear point in display buffer
+    if(clear)
+    {
+        dataBuffer[page][X] &= ~mask;
+    }
+    else
+    {
+        dataBuffer[page][X] |= mask;
+    }
+
+    // set lower limit of refreshing range
+    if(updateArray[page][0] > X)
+    {
+        updateArray[page][0] = X;
+    }
+    // set upper limit of refreshing range
+    if(updateArray[page][1] < X)
+    {
+        updateArray[page][1] = X;
+    }
+}
