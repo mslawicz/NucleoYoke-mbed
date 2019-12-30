@@ -69,6 +69,7 @@ int main()
 
     //XXX test of display
     display.test();
+    display.putChar(60, 26, 'X', FontTahoma16b);
 
     uint32_t loopCounter = 0;
     while (true)

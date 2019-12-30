@@ -10,6 +10,7 @@
 
 #include "mbed.h"
 #include "EventQueue.h"
+#include "fonts.h"
 
 template<typename iType, typename oType> oType scale(iType iMin, iType iMax, iType input, oType oMin, oType oMax, bool limit = true)
 {

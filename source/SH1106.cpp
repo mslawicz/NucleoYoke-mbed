@@ -6,6 +6,7 @@
  */
 
 #include "SH1106.h"
+#include "fonts.h"  //XXX
 
 SH1106::SH1106(PinName dataPin, PinName clkPin, PinName resetPin, PinName cdPin, PinName csPin) :
     interface(dataPin, NC, clkPin),
@@ -140,14 +141,19 @@ void SH1106::test(uint32_t argument)
  * inverted - clears pixels if true
  * upToX - if >0, stops at X==upToX
  */
-uint8_t SH1106::putChar(uint8_t X, uint8_t Y,uint8_t ch, const uint8_t* font, bool inverted, uint8_t upToX)
+void SH1106::putChar(uint8_t X, uint8_t Y,uint8_t ch/*, const uint8_t* font, bool inverted, uint8_t upToX*/)
 {
+    //XXX temporary solution
+    const uint8_t* font = FontTahoma16b;
+    bool inverted = false;
+    uint8_t upToX = 0;
+
     bool isSpace = false;
 
     if((ch < font[4]) || (ch >= font[4]+font[5]))
     {
         // ascii code out of this font range
-        return X;
+        return;
     }
 
     // width of this char
@@ -187,5 +193,5 @@ uint8_t SH1106::putChar(uint8_t X, uint8_t Y,uint8_t ch, const uint8_t* font, bo
         }
     }
 
-    return X + ix;
+    //return X + ix;
 }
