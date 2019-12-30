@@ -43,9 +43,18 @@ void SH1106::update(void)
     // check update of every page
     for(uint8_t page = 0; page < noOfPages; page++)
     {
-        // check wether this page must be updated
-        if((updateArray[page][0] < sizeX) && (updateArray[page][1] < sizeX))
+        // check whether this page must be updated
+        if((updateArray[page][0] < sizeX) && (updateArray[page][1] < sizeX) && (updateArray[page][0] <= updateArray[page][1]))
         {
+            // set display page and column
+            uint8_t displayColumn = updateArray[page][0] + 2;   // physical display starts from column number 2
+            std::vector<uint8_t> coordinateData =
+            {
+                    static_cast<uint8_t>(displayColumn & 0x0F),     // lower part of column value
+                    static_cast<uint8_t>(0x10 | ((displayColumn >> 4) & 0x0F)),     // higher part of column value
+                    static_cast<uint8_t>(0xB0 | page)       // page value
+            };
+            write(coordinateData, true);
             // send data from buffer to display
             write(&dataBuffer[page][updateArray[page][0]], updateArray[page][1]-updateArray[page][0]+1);
             // clear the range to update
