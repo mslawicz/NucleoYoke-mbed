@@ -141,11 +141,9 @@ void SH1106::test(uint32_t argument)
  * inverted - clears pixels if true
  * upToX - if >0, stops at X==upToX
  */
-void SH1106::putChar(uint8_t X, uint8_t Y,uint8_t ch/*, const uint8_t* font, bool inverted, uint8_t upToX*/)
+void SH1106::putChar(uint8_t X, uint8_t Y,uint8_t ch, const uint8_t* font, bool inverted/*, uint8_t upToX*/)
 {
     //XXX temporary solution
-    const uint8_t* font = FontTahoma16b;
-    bool inverted = false;
     uint8_t upToX = 0;
 
     bool isSpace = false;

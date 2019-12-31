@@ -18,7 +18,7 @@ public:
     void init(void);
     void update(void);
     void test(uint32_t argument);
-    void putChar(uint8_t X, uint8_t Y, uint8_t ch/*, const uint8_t* font, bool inverted = false, uint8_t upToX = 0*/);
+    void putChar(uint8_t X, uint8_t Y, uint8_t ch, const uint8_t* font, bool inverted = false/*, uint8_t upToX = 0*/);
 private:
     void write(uint8_t* data, int length, bool command = false);
     void write(std::vector<uint8_t>data, bool command = false) { write(&data[0], data.size(), command); }

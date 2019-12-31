@@ -42,5 +42,5 @@ void Display::test(void)
 void Display::putChar(uint8_t X, uint8_t Y, uint8_t ch, const uint8_t* font,
         bool inverted, uint8_t upToX)
 {
-    eventQueue.call(callback(&controller, &SH1106::putChar), X, Y, ch);
+    eventQueue.call(callback(&controller, &SH1106::putChar), X, Y, ch, font, inverted);
 }
