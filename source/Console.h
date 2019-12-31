@@ -11,7 +11,7 @@
 #include "mbed.h"
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include <map>
 #include <utility>
 
 enum class KeyCode : int
@@ -36,7 +36,7 @@ public:
 private:
     void executeCommand(void);
     CommandVector commandElements;
-    std::unordered_map<std::string, CommandContainer> commands;
+    std::map<std::string, CommandContainer> commands;
 };
 
 #endif /* CONSOLE_H_ */
