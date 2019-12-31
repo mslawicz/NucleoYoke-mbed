@@ -6,7 +6,6 @@
  */
 
 #include "SH1106.h"
-#include "fonts.h"  //XXX
 
 SH1106::SH1106(PinName dataPin, PinName clkPin, PinName resetPin, PinName cdPin, PinName csPin) :
     interface(dataPin, NC, clkPin),

@@ -67,12 +67,8 @@ int main()
     // initialize display
     display.init();
 
-    //XXX test of display
-    display.test();
     display.setFont(FontTahoma16b);
-    display.putChar(60, 26, 'X');
-    display.setFont(FontTahoma11);
-    display.print(3, 0, "hello");
+    display.print(2, 0, "Nucleo Yoke");
     display.update();
 
     uint32_t loopCounter = 0;
