@@ -57,6 +57,7 @@ int main()
     console.registerCommand("h", "help (display command list)", callback(&console, &Console::displayHelp));
     console.registerCommand("lt", "list threads", callback(listThreads));
     console.registerCommand("sd", "display simulator data", callback(&flightControl, &FlightControl::displaySimulatorData));
+    console.registerCommand("tv", "display tensometer values", callback(&flightControl, &FlightControl::displayTensometerValues));
 
     // start Console thread
     consoleThread.start(callback(&console, &Console::handler));

@@ -278,3 +278,12 @@ void FlightControl::displaySimulatorData(CommandVector cv)
     printf("reverser on? = %s\r\n", boolToYN(simulatorData.booleanFlags & (1 << 2)));
     printf("propeller speed = %f [rpm]\r\n", simulatorData.propellerSpeed);
 }
+
+/*
+ * display values read from tensometers
+ */
+void FlightControl::displayTensometerValues(CommandVector cv)
+{
+    printf("object, data register, uncalibrated value, calibrated value\r\n");
+    printf("throttle, 0x%06X, %f, %f\r\n", (unsigned int)throttleTensometer.getDataRegister(), throttleTensometer.getUncalibratedValue(), throttleTensometer.getValue());
+}
