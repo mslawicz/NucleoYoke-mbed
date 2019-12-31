@@ -8,6 +8,7 @@
 #ifndef SOURCE_SH1106_H_
 #define SOURCE_SH1106_H_
 
+#include "fonts.h"
 #include "mbed.h"
 #include <vector>
 
@@ -18,7 +19,8 @@ public:
     void init(void);
     void update(void);
     void test(uint32_t argument);
-    void putChar(uint8_t X, uint8_t Y, uint8_t ch, const uint8_t* font, bool inverted = false/*, uint8_t upToX = 0*/);
+    void setFont(const uint8_t* newFont, bool newInvertion = false, uint8_t newXLimit = 0);
+    void putChar(uint8_t X, uint8_t Y, uint8_t ch);
 private:
     void write(uint8_t* data, int length, bool command = false);
     void write(std::vector<uint8_t>data, bool command = false) { write(&data[0], data.size(), command); }
@@ -45,6 +47,9 @@ private:
     static const uint8_t noOfPages = 8;
     uint8_t dataBuffer[noOfPages][sizeX] = {0};
     uint8_t updateArray[noOfPages][2] = {{0,sizeX-1}, {0,sizeX-1}, {0,sizeX-1}, {0,sizeX-1}, {0,sizeX-1}, {0,sizeX-1}, {0,sizeX-1}, {0,sizeX-1}};
+    const uint8_t* font{nullptr};      // pointer to font definition array
+    bool inverted{false};   // display inverted characters
+    uint8_t upToX{0};   // X limit of displayed pixels
 };
 
 #endif /* SOURCE_SH1106_H_ */

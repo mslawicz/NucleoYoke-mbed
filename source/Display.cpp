@@ -35,12 +35,19 @@ void Display::test(void)
  * displays character on the screen
  * ch - ascii code
  * X,Y - upper left corner of character placement
+ */
+void Display::putChar(uint8_t X, uint8_t Y, uint8_t ch)
+{
+    eventQueue.call(callback(&controller, &SH1106::putChar), X, Y, ch);
+}
+
+/*
+ * set new font parameters
  * font - font array from fonts.h
  * inverted - clears pixels if true
  * upToX - if >0, stops at X==upToX
  */
-void Display::putChar(uint8_t X, uint8_t Y, uint8_t ch, const uint8_t* font,
-        bool inverted, uint8_t upToX)
+void Display::setFont(const uint8_t* newFont, bool newInvertion, uint8_t newXLimit)
 {
-    eventQueue.call(callback(&controller, &SH1106::putChar), X, Y, ch, font, inverted);
+    eventQueue.call(callback(&controller, &SH1106::setFont), newFont, newInvertion, newXLimit);
 }

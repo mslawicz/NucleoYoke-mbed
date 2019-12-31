@@ -8,6 +8,7 @@
 #ifndef FONTS_FONTS_H_
 #define FONTS_FONTS_H_
 
+#include "mbed.h"
 #include "Arial9.h"
 #include "Tahoma11.h"
 #include "Tahoma16b.h"

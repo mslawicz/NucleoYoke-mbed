@@ -78,6 +78,16 @@ void SH1106::write(uint8_t* data, int length, bool command)
 }
 
 /*
+ * set new font parameters
+ */
+void SH1106::setFont(const uint8_t* newFont, bool newInvertion, uint8_t newXLimit)
+{
+    font = newFont;
+    inverted = newInvertion;
+    upToX = newXLimit;
+}
+
+/*
  * set or clear a single pixel in X,Y coordinates
  */
 void SH1106::setPoint(uint8_t X, uint8_t Y, bool clear)
@@ -141,16 +151,13 @@ void SH1106::test(uint32_t argument)
  * inverted - clears pixels if true
  * upToX - if >0, stops at X==upToX
  */
-void SH1106::putChar(uint8_t X, uint8_t Y,uint8_t ch, const uint8_t* font, bool inverted/*, uint8_t upToX*/)
+void SH1106::putChar(uint8_t X, uint8_t Y,uint8_t ch)
 {
-    //XXX temporary solution
-    uint8_t upToX = 0;
-
     bool isSpace = false;
 
-    if((ch < font[4]) || (ch >= font[4]+font[5]))
+    if(!font || (ch < font[4]) || (ch >= font[4]+font[5]))
     {
-        // ascii code out of this font range
+        // no defined font or ascii code out of this font range
         return;
     }
 
