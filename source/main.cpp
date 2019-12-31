@@ -9,6 +9,7 @@
 #include "Display.h"
 #include "FlightControl.h"
 #include "Statistics.h"
+#include "RotaryEncoder.h"  //XXX
 #include "platform/mbed_thread.h"
 #include "platform/mbed_debug.h"
 
@@ -71,6 +72,10 @@ int main()
     display.setFont(FontTahoma16b);
     display.print(2, 0, "Nucleo Yoke");
     display.update();
+
+    //XXX test of rotary encoder
+    RotaryEncoder rotaryEncoder;
+
 
     uint32_t loopCounter = 0;
     while (true)
