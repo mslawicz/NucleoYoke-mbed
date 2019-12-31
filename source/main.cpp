@@ -74,7 +74,7 @@ int main()
     display.update();
 
     //XXX test of rotary encoder
-    RotaryEncoder rotaryEncoder;
+    RotaryEncoder rotaryEncoder(PG_3, PG_2);
 
 
     uint32_t loopCounter = 0;

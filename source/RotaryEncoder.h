@@ -8,10 +8,17 @@
 #ifndef SOURCE_ROTARYENCODER_H_
 #define SOURCE_ROTARYENCODER_H_
 
+#include "mbed.h"
+
 class RotaryEncoder
 {
 public:
-    RotaryEncoder();
+    RotaryEncoder(PinName clockPin, PinName directionPin);
+private:
+    void fallingEdgeHandler(void);
+    InterruptIn clockSignal;
+    DigitalIn directionSignal;
+    Timer edgeTime;
 };
 
 #endif /* SOURCE_ROTARYENCODER_H_ */
