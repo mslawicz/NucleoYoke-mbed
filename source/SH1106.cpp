@@ -146,13 +146,15 @@ void SH1106::test(uint32_t argument)
 /*
  * displays character on the screen
  * ch - ascii code
- * X,Y - upper left corner of character placement
+ * cX,cY - upper left corner of character placement (to be assigned to X,Y)
  * font - font array from fonts.h
  * inverted - clears pixels if true
  * upToX - if >0, stops at X==upToX
  */
-void SH1106::putChar(uint8_t X, uint8_t Y,uint8_t ch)
+void SH1106::putChar(uint8_t cX, uint8_t cY,uint8_t ch)
 {
+    X = cX;
+    Y = cY;
     bool isSpace = false;
 
     if(!font || (ch < font[4]) || (ch >= font[4]+font[5]))
@@ -198,5 +200,5 @@ void SH1106::putChar(uint8_t X, uint8_t Y,uint8_t ch)
         }
     }
 
-    //return X + ix;
+    X += ix;
 }

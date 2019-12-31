@@ -20,7 +20,7 @@ public:
     void update(void);
     void test(uint32_t argument);
     void setFont(const uint8_t* newFont, bool newInvertion = false, uint8_t newXLimit = 0);
-    void putChar(uint8_t X, uint8_t Y, uint8_t ch);
+    void putChar(uint8_t cX, uint8_t cY, uint8_t ch);
 private:
     void write(uint8_t* data, int length, bool command = false);
     void write(std::vector<uint8_t>data, bool command = false) { write(&data[0], data.size(), command); }
@@ -50,6 +50,8 @@ private:
     const uint8_t* font{nullptr};      // pointer to font definition array
     bool inverted{false};   // display inverted characters
     uint8_t upToX{0};   // X limit of displayed pixels
+    uint8_t X{0};       // current X coordinate
+    uint8_t Y{0};       // current Y coordinate
 };
 
 #endif /* SOURCE_SH1106_H_ */
