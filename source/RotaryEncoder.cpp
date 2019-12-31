@@ -7,9 +7,10 @@
 
 #include "RotaryEncoder.h"
 
-RotaryEncoder::RotaryEncoder(PinName clockPin, PinName directionPin) :
+RotaryEncoder::RotaryEncoder(PinName clockPin, PinName directionPin, Callback<void(bool)> onPulse) :
     clockSignal(clockPin),
-    directionSignal(directionPin)
+    directionSignal(directionPin),
+    onPulse(onPulse)
 {
     edgeTime.start();
     clockSignal.fall(callback(this, &RotaryEncoder::fallingEdgeHandler));
@@ -21,5 +22,9 @@ RotaryEncoder::RotaryEncoder(PinName clockPin, PinName directionPin) :
 void RotaryEncoder::fallingEdgeHandler(void)
 {
     int direction = directionSignal;
+    if(onPulse && (edgeTime.read_ms() > MinimalGap))
+    {
+        onPulse(direction != 0);
+    }
     edgeTime.reset();
 }

@@ -16,6 +16,12 @@
 const uint32_t FlightControlFrequency = 100;    // [Hz]
 constexpr uint32_t FlightControlPeriod = 1000 / FlightControlFrequency;     // flight control period [ms]
 
+//XXX rotary encoder callback test
+void rotaryEncoderCallback(bool up)
+{
+    printf("re=%d\r\n", up);
+}
+
 // Create a queue of flight control events
 EventQueue flightControlQueue;
 
@@ -74,7 +80,7 @@ int main()
     display.update();
 
     //XXX test of rotary encoder
-    RotaryEncoder rotaryEncoder(PG_3, PG_2);
+    RotaryEncoder rotaryEncoder(PG_3, PG_2, rotaryEncoderCallback);
 
 
     uint32_t loopCounter = 0;
