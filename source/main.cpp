@@ -55,7 +55,7 @@ int main()
 
     // register console commands
     console.registerCommand("h", "help (display command list)", callback(&console, &Console::displayHelp));
-    console.registerCommand("ls", "list threads", callback(listThreads));
+    console.registerCommand("lt", "list threads", callback(listThreads));
     console.registerCommand("sd", "display simulator data", callback(&flightControl, &FlightControl::displaySimulatorData));
 
     // start Console thread
@@ -70,6 +70,7 @@ int main()
     //XXX test of display
     display.test();
     display.putChar(60, 26, 'X', FontTahoma16b);
+    display.update();
 
     uint32_t loopCounter = 0;
     while (true)

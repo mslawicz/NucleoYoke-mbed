@@ -17,6 +17,7 @@ public:
     Display(EventQueue& eventQueue);
     void init(void);
     void test(void);
+    void update(void) { eventQueue.call(callback(&controller, &SH1106::update)); }
     void putChar(uint8_t X, uint8_t Y, uint8_t ch, const uint8_t* font, bool inverted = false, uint8_t upToX = 0);
 private:
     SH1106 controller;
