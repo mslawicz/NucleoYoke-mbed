@@ -11,6 +11,7 @@
 #include "fonts.h"
 #include "mbed.h"
 #include <vector>
+#include <string>
 
 class SH1106
 {
@@ -21,10 +22,12 @@ public:
     void test(uint32_t argument);
     void setFont(const uint8_t* newFont, bool newInvertion = false, uint8_t newXLimit = 0);
     void putChar(uint8_t cX, uint8_t cY, uint8_t ch);
+    void print(uint8_t sX, uint8_t sY, std::string text);
 private:
     void write(uint8_t* data, int length, bool command = false);
     void write(std::vector<uint8_t>data, bool command = false) { write(&data[0], data.size(), command); }
     void setPoint(uint8_t X, uint8_t Y, bool clear = false);
+    void putChar2CharSpace(void);
     SPI interface;
     DigitalOut resetSignal;
     DigitalOut cdSignal;

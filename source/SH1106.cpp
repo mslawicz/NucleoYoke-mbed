@@ -153,13 +153,14 @@ void SH1106::test(uint32_t argument)
  */
 void SH1106::putChar(uint8_t cX, uint8_t cY,uint8_t ch)
 {
+    assert_param(font != nullptr);
     X = cX;
     Y = cY;
     bool isSpace = false;
 
-    if(!font || (ch < font[4]) || (ch >= font[4]+font[5]))
+    if((ch < font[4]) || (ch >= font[4]+font[5]))
     {
-        // no defined font or ascii code out of this font range
+        // ascii code out of this font range
         return;
     }
 
@@ -201,4 +202,57 @@ void SH1106::putChar(uint8_t cX, uint8_t cY,uint8_t ch)
     }
 
     X += ix;
+}
+
+
+/*
+ * puts a tiny space between printed characters
+ */
+void SH1106::putChar2CharSpace(void)
+{
+    assert_param(font != nullptr);
+
+    // height of this space
+    uint8_t charHeight = font[3];
+
+    // width of this space
+    uint8_t charWidth = 1 + (charHeight - 2) / 8;
+
+    // for every column
+    uint8_t ix;
+    for(ix = 0; ix < charWidth; ix++)
+    {
+        // if upToX!=0 then print up to this X limit
+        if((upToX != 0) && (X+ix > upToX))
+        {
+            break;
+        }
+        // for every horizontal row
+        for(uint8_t iy = 0; iy < charHeight; iy++)
+        {
+            setPoint(X + ix, Y + iy, !inverted);
+        }
+    }
+
+    X += ix;
+}
+
+/*
+ * displays string on the screen
+ * text - string to be displayed
+ * sX,sY - upper left corner of string placement
+ */
+void SH1106::print(uint8_t sX, uint8_t sY, std::string text)
+{
+    X = sX;
+    Y = sY;
+
+    for(size_t index = 0; index < text.size(); index++)
+    {
+        putChar(X, Y, text[index]);
+        if(index < text.size() - 1)
+        {
+            putChar2CharSpace();
+        }
+    }
 }

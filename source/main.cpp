@@ -71,6 +71,8 @@ int main()
     display.test();
     display.setFont(FontTahoma16b);
     display.putChar(60, 26, 'X');
+    display.setFont(FontTahoma11);
+    display.print(3, 0, "hello");
     display.update();
 
     uint32_t loopCounter = 0;
