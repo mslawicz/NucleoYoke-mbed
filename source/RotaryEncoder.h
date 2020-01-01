@@ -13,14 +13,17 @@
 class RotaryEncoder
 {
 public:
-    RotaryEncoder(PinName clockPin, PinName directionPin, Callback<void(bool)> onPulse);
+    RotaryEncoder(PinName clockPin, PinName directionPin, EventQueue& eventQueue, Callback<void(bool)> onPulse);
 private:
     void fallingEdgeHandler(void);
+    void pulseHandler(void);
     InterruptIn clockSignal;
     DigitalIn directionSignal;
-    Timer edgeTime;
+    EventQueue& eventQueue;     // event queue for deferring onPulse callback
     Callback<void(bool)> onPulse;
-    static const int MinimalGap = 20;   // minimal time between falling edges for debouncing
+    DigitalOut testPin; //XXX
+    Timeout debouncer;
+    const float DebounceTime = 0.005f;   // required stable clock time [s]
 };
 
 #endif /* SOURCE_ROTARYENCODER_H_ */
