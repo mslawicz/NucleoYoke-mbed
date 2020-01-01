@@ -84,6 +84,7 @@ private:
     const float ThrottleLeverFrictionCoefficient = 0.3f;
     const float ThrottleLeverSpeedCoefficient = 10.0f;
     const float ThrottleFilterAlpha = 0.25f;
+    HX711 pitchTensometer;              // HX711 tensometer ADC for pitch input
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */

@@ -25,7 +25,8 @@ FlightControl::FlightControl(EventQueue& eventQueue, WS2812& RGBLeds) :
     throttleServo(PA_5, 1e-3, 2e-3, 0.0f, true),
     throttleTensometer(PD_12, PD_13, eventQueue, true),
     propellerPotentiometer(PC_1),
-    mixturePotentiometer(PC_0)
+    mixturePotentiometer(PC_0),
+    pitchTensometer(PD_0, PD_1, eventQueue, true)
 {
     simulatorDataIndicator = 0;
     controlTimer.start();
@@ -285,5 +286,6 @@ void FlightControl::displaySimulatorData(CommandVector cv)
 void FlightControl::displayTensometerValues(CommandVector cv)
 {
     printf("object, data register, uncalibrated value, calibrated value\r\n");
+    printf("pitch, 0x%06X, %f, %f\r\n", (unsigned int)pitchTensometer.getDataRegister(), pitchTensometer.getUncalibratedValue(), pitchTensometer.getValue());
     printf("throttle, 0x%06X, %f, %f\r\n", (unsigned int)throttleTensometer.getDataRegister(), throttleTensometer.getUncalibratedValue(), throttleTensometer.getValue());
 }
