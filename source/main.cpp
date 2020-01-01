@@ -10,18 +10,17 @@
 #include "FlightControl.h"
 #include "Statistics.h"
 #include "RotaryEncoder.h"  //XXX
+#include "Pushbutton.h" //XXX
 #include "platform/mbed_thread.h"
 #include "platform/mbed_debug.h"
 
 const uint32_t FlightControlFrequency = 100;    // [Hz]
 constexpr uint32_t FlightControlPeriod = 1000 / FlightControlFrequency;     // flight control period [ms]
 
-//XXX rotary encoder callback test
-void rotaryEncoderCallback(bool up)
+//XXX pushbutton callback test
+void pushbuttonCallback(int level)
 {
-    static int pulses = 0;
-    pulses += up? 1 : -1;
-    printf("re=%d\r\n", pulses);
+    printf("button=%d\r\n", level);
 }
 
 // Create a queue of flight control events (RGB LEDs)
@@ -90,9 +89,8 @@ int main()
     display.print(2, 0, "Nucleo Yoke");
     display.update();
 
-    //XXX test of rotary encoder
-    RotaryEncoder rotaryEncoder(PG_3, PG_2, userInputQueue, rotaryEncoderCallback);
-
+    //XXX test of pushbutton
+    Pushbutton encoderButton(PD_3, userInputQueue, pushbuttonCallback);
 
     uint32_t loopCounter = 0;
     while (true)

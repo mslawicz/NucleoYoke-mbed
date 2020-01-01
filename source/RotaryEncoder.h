@@ -22,7 +22,7 @@ private:
     EventQueue& eventQueue;     // event queue for deferring onPulse callback
     Callback<void(bool)> onPulse;
     Timeout debouncer;
-    const float DebounceTime = 0.005f;   // required stable clock time [s]
+    const float DebounceTime = 0.005f;   // required stable clock time [s] before onPulse call is placed in the queue
 };
 
 #endif /* SOURCE_ROTARYENCODER_H_ */
