@@ -24,11 +24,17 @@ void rotaryEncoderCallback(bool up)
     printf("re=%d\r\n", pulses);
 }
 
-// Create a queue of flight control events
+// Create a queue of flight control events (RGB LEDs)
 EventQueue flightControlQueue;
 
-// Create a thread that'll run the event queue's dispatch function
-Thread flightControlQueueDispatchThread(osPriority_t::osPriorityBelowNormal4, OS_STACK_SIZE, nullptr, "events");
+// Create a thread that'll run the flight control event queue's dispatch function
+Thread flightControlQueueDispatchThread(osPriority_t::osPriorityBelowNormal4, OS_STACK_SIZE, nullptr, "flight control");
+
+// Create a queue of pushbuttons and encoders events
+EventQueue userInputQueue;
+
+// Create a thread that'll run the user input queue's dispatch function
+Thread userInputQueueDispatchThread(osPriority_t::osPriorityBelowNormal6, OS_STACK_SIZE, nullptr, "user input");
 
 // WS2812 RGB LED daisy chain object
 WS2812 RGBLeds(PB_15, PB_13, 11);
@@ -59,8 +65,11 @@ int main()
     // connect to simulator
     flightControl.connect();
 
-    // Start the event queue's dispatch thread
+    // Start the flight control event queue's dispatch thread
     flightControlQueueDispatchThread.start(callback(&flightControlQueue, &EventQueue::dispatch_forever));
+
+    // Start the user input event queue's dispatch thread
+    userInputQueueDispatchThread.start(callback(&userInputQueue, &EventQueue::dispatch_forever));
 
     // register console commands
     console.registerCommand("h", "help (display command list)", callback(&console, &Console::displayHelp));
@@ -82,7 +91,7 @@ int main()
     display.update();
 
     //XXX test of rotary encoder
-    RotaryEncoder rotaryEncoder(PG_3, PG_2, flightControlQueue, rotaryEncoderCallback); // decide which event queue should be used
+    RotaryEncoder rotaryEncoder(PG_3, PG_2, userInputQueue, rotaryEncoderCallback);
 
 
     uint32_t loopCounter = 0;
