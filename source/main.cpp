@@ -50,7 +50,7 @@ Thread displayQueueDispatchThread(osPriority_t::osPriorityLow4, OS_STACK_SIZE, n
 Display display(displayQueue);
 
 // create main flight control object
-FlightControl flightControl(flightControlQueue, RGBLeds);
+FlightControl flightControl(flightControlQueue, RGBLeds, display);
 
 int main()
 {
@@ -88,6 +88,9 @@ int main()
     display.setFont(FontTahoma16b);
     display.print(2, 0, "Nucleo Yoke");
     display.update();
+
+    // display initialized control mode
+    flightControl.setControlMode();
 
     //XXX test of pushbutton
     Pushbutton encoderButton(PD_3, userInputQueue, pushbuttonCallback);

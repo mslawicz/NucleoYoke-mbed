@@ -12,6 +12,7 @@
 #include "WS2812.h"
 #include "HX711.h"
 #include "Console.h"
+#include "Display.h"
 #include "mbed.h"
 #include "drivers/USBHID.h"
 
@@ -46,11 +47,12 @@ struct SimulatorData
 class FlightControl
 {
 public:
-    FlightControl(EventQueue& eventQueue, WS2812& RGBLeds);
+    FlightControl(EventQueue& eventQueue, WS2812& RGBLeds, Display& display);
     void handler(void);
     void connect(void);
     void displaySimulatorData(CommandVector cv);
     void displayTensometerValues(CommandVector cv);
+    void setControlMode(int change = 0);
 private:
     void markSimulatorDataInactive(void);
     void parseReceivedData(void);
@@ -60,6 +62,7 @@ private:
     EventQueue& eventQueue;             // event queue for flight control events
     USBHID* pConnection{nullptr};       // pointer to USB HID object
     WS2812& RGBLeds;        // RGB LEDs object to indicate gear and flaps state
+    Display& display;
     static const uint8_t HIDBufferLength = 64;
     static const uint16_t USB_VID = 0x0483;
     static const uint16_t USB_PID = 0x5750;

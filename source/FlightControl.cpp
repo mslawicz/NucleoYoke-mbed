@@ -16,9 +16,10 @@ float g_totalForce;
 float g_leverSpeed;
 float g_leverPosition;
 
-FlightControl::FlightControl(EventQueue& eventQueue, WS2812& RGBLeds) :
+FlightControl::FlightControl(EventQueue& eventQueue, WS2812& RGBLeds, Display& display) :
     eventQueue(eventQueue),
     RGBLeds(RGBLeds),
+    display(display),
     simulatorDataIndicator(LED2),      // blue LED
     pitchServo(PC_6, 1e-3, 2e-3, 0.5f),
     rollServo(PB_5, 0.87e-3, 2.17e-3, 0.5f, true),
@@ -199,6 +200,37 @@ void FlightControl::setControls(void)
 //    {
 //        printf("alpha=%f\r\n", alpha);
 //    }
+}
+
+/*
+ * sets and displays yoke control mode
+ * display only if argument change==0
+ */
+void FlightControl::setControlMode(int change)
+{
+    int newMode = (static_cast<int>(controlMode) + change) % static_cast<int>(ControlMode::spring);
+    controlMode = static_cast<ControlMode>(newMode);
+
+    display.setFont(FontTahoma11);
+    display.print(0, 30, "mode: ");
+    std::string modeText;
+    switch(newMode)
+    {
+    case static_cast<int>(ControlMode::force_feedback):
+        modeText = "FF";
+        break;
+    case static_cast<int>(ControlMode::spring):
+        modeText = "spring";
+        break;
+    case static_cast<int>(ControlMode::demo):
+        modeText = "demo";
+        break;
+    default:
+        break;
+    }
+    display.setFont(FontTahoma11, true, 100);
+    display.print(32, 30, modeText);
+    display.update();
 }
 
 /*
