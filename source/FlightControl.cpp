@@ -203,33 +203,35 @@ void FlightControl::setControls(void)
 }
 
 /*
- * sets and displays yoke control mode
+ * changes and displays yoke control mode
  * display only if argument change==0
  */
-void FlightControl::setControlMode(int change)
+void FlightControl::changeControlMode(int change)
 {
-    int newMode = (static_cast<int>(controlMode) + change) % static_cast<int>(ControlMode::spring);
+    int newMode = (static_cast<int>(controlMode) + change) % static_cast<int>(ControlMode::end);
     controlMode = static_cast<ControlMode>(newMode);
+    printf("change mode to %d\r\n", controlMode);
 
     display.setFont(FontTahoma11);
     display.print(0, 30, "mode: ");
     std::string modeText;
-    switch(newMode)
+    switch(controlMode)
     {
-    case static_cast<int>(ControlMode::force_feedback):
+    case ControlMode::force_feedback:
         modeText = "FF";
         break;
-    case static_cast<int>(ControlMode::spring):
+    case ControlMode::spring:
         modeText = "spring";
         break;
-    case static_cast<int>(ControlMode::demo):
+    case ControlMode::demo:
         modeText = "demo";
         break;
     default:
         break;
     }
+    printf("new text '%s'\r\n", modeText.c_str());
     display.setFont(FontTahoma11, true, 100);
-    display.print(32, 30, modeText);
+    display.print(35, 30, modeText);
     display.update();
 }
 

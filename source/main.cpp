@@ -18,10 +18,7 @@ const uint32_t FlightControlFrequency = 100;    // [Hz]
 constexpr uint32_t FlightControlPeriod = 1000 / FlightControlFrequency;     // flight control period [ms]
 
 //XXX pushbutton callback test
-void pushbuttonCallback(int level)
-{
-    printf("button=%d\r\n", level);
-}
+void pushbuttonCallback(int level);
 
 // Create a queue of flight control events (RGB LEDs)
 EventQueue flightControlQueue;
@@ -89,8 +86,8 @@ int main()
     display.print(2, 0, "Nucleo Yoke");
     display.update();
 
-    // display initialized control mode
-    flightControl.setControlMode();
+    // display control mode
+    flightControl.changeControlMode();
 
     //XXX test of pushbutton
     Pushbutton encoderButton(PD_3, userInputQueue, pushbuttonCallback);
@@ -109,4 +106,14 @@ extern "C"
 {
   int _getpid(){ return -1;}
   int _kill(int pid, int sig){ return -1; }
+}
+
+//XXX pushbutton callback test
+void pushbuttonCallback(int level)
+{
+    if(level == 0)
+    {
+        // pushbutton pressed
+        flightControl.changeControlMode(1);
+    }
 }
