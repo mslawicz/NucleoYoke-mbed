@@ -6,7 +6,6 @@
 
 #include "main.h"
 #include "Console.h"
-#include "Display.h"
 #include "FlightControl.h"
 #include "Statistics.h"
 #include "RotaryEncoder.h"  //XXX
@@ -37,17 +36,17 @@ WS2812 RGBLeds(PB_15, PB_13, 11);
 
 // Create Console object and its thread
 Console console;
-Thread consoleThread(osPriority_t::osPriorityBelowNormal, OS_STACK_SIZE, nullptr, "console");
+Thread consoleThread(osPriority_t::osPriorityLow4, OS_STACK_SIZE, nullptr, "console");
 
 // Create queue of display events
 EventQueue displayQueue;
 // Create a thread that'll run the display event queue's dispatch function with low priority
-Thread displayQueueDispatchThread(osPriority_t::osPriorityLow4, OS_STACK_SIZE, nullptr, "display");
+Thread displayQueueDispatchThread(osPriority_t::osPriorityBelowNormal, OS_STACK_SIZE, nullptr, "display");
 // Create display object
 Display display(displayQueue);
 
 // create main flight control object
-FlightControl flightControl(flightControlQueue, RGBLeds, display);
+FlightControl flightControl(flightControlQueue, RGBLeds);
 
 int main()
 {
@@ -86,11 +85,23 @@ int main()
     display.print(2, 0, "Nucleo Yoke");
     display.update();
 
+    //XXX aditional test
+    display.print(0, 45, "test1");
+    display.update();
+
     // display control mode
     flightControl.changeControlMode();
 
+    //XXX aditional test
+    display.print(30, 50, "test2");
+    display.update();
+
     //XXX test of pushbutton
     Pushbutton encoderButton(PD_3, userInputQueue, pushbuttonCallback);
+
+    //XXX aditional test
+    display.print(60, 50, "test3");
+    display.update();
 
     uint32_t loopCounter = 0;
     while (true)
@@ -98,6 +109,14 @@ int main()
         systemLed = (++loopCounter % FlightControlFrequency) < (FlightControlFrequency >> 3);
         flightControl.handler();
         ThisThread::sleep_for(FlightControlPeriod);
+
+        if(loopCounter % 1000 == 0)
+        {
+            //XXX aditional test
+            display.setFont(FontTahoma11, false, 127);
+            display.print(90, 50, "loop");
+            display.update();
+        }
     }
 }
 
@@ -113,6 +132,7 @@ void pushbuttonCallback(int level)
 {
     if(level == 0)
     {
+        printf("PB pressed\r\n");
         // pushbutton pressed
         flightControl.changeControlMode(1);
     }

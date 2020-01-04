@@ -16,10 +16,9 @@ float g_totalForce;
 float g_leverSpeed;
 float g_leverPosition;
 
-FlightControl::FlightControl(EventQueue& eventQueue, WS2812& RGBLeds, Display& display) :
+FlightControl::FlightControl(EventQueue& eventQueue, WS2812& RGBLeds) :
     eventQueue(eventQueue),
     RGBLeds(RGBLeds),
-    display(display),
     simulatorDataIndicator(LED2),      // blue LED
     pitchServo(PC_6, 1e-3, 2e-3, 0.5f),
     rollServo(PB_5, 0.87e-3, 2.17e-3, 0.5f, true),
@@ -210,7 +209,6 @@ void FlightControl::changeControlMode(int change)
 {
     int newMode = (static_cast<int>(controlMode) + change) % static_cast<int>(ControlMode::end);
     controlMode = static_cast<ControlMode>(newMode);
-    printf("change mode to %d\r\n", controlMode);
 
     display.setFont(FontTahoma11);
     display.print(0, 30, "mode: ");
@@ -229,9 +227,9 @@ void FlightControl::changeControlMode(int change)
     default:
         break;
     }
-    printf("new text '%s'\r\n", modeText.c_str());
     display.setFont(FontTahoma11, true, 100);
     display.print(35, 30, modeText);
+    printf("calling 'display.update', %p\r\n", &display); //XXX
     display.update();
 }
 

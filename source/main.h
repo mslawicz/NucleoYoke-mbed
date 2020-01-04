@@ -8,6 +8,7 @@
 #ifndef SOURCE_MAIN_H_
 #define SOURCE_MAIN_H_
 
+#include "Display.h"
 #include "mbed.h"
 #include "EventQueue.h"
 #include "fonts.h"
