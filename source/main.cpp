@@ -85,6 +85,9 @@ int main()
     display.print(2, 0, "Nucleo Yoke");
     display.update();
 
+    // update RGB indicators
+    flightControlQueue.call(callback(&RGBLeds, &WS2812::update));
+
     //XXX aditional test
     display.print(0, 45, "test1");
     display.update();
