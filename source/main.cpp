@@ -88,23 +88,11 @@ int main()
     // update RGB indicators
     flightControlQueue.call(callback(&RGBLeds, &WS2812::update));
 
-    //XXX aditional test
-    display.print(0, 45, "test1");
-    display.update();
-
     // display control mode
     flightControl.changeControlMode();
 
-    //XXX aditional test
-    display.print(30, 50, "test2");
-    display.update();
-
     //XXX test of pushbutton
     Pushbutton encoderButton(PD_3, userInputQueue, pushbuttonCallback);
-
-    //XXX aditional test
-    display.print(60, 50, "test3");
-    display.update();
 
     uint32_t loopCounter = 0;
     while (true)
@@ -113,11 +101,11 @@ int main()
         flightControl.handler();
         ThisThread::sleep_for(FlightControlPeriod);
 
-        if(loopCounter % 1000 == 0)
+        if(loopCounter % FlightControlFrequency == 0)
         {
-            //XXX aditional test
-            display.setFont(FontTahoma11, false, 127);
-            display.print(90, 50, "loop");
+            //XXX display test
+            display.setFont(FontTahoma11);
+            display.print(80, 50, std::to_string(loopCounter / FlightControlFrequency) + "  ");
             display.update();
         }
     }

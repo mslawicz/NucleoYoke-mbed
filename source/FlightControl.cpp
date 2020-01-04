@@ -216,20 +216,19 @@ void FlightControl::changeControlMode(int change)
     switch(controlMode)
     {
     case ControlMode::force_feedback:
-        modeText = "FF";
+        modeText = "FF     ";
         break;
     case ControlMode::spring:
         modeText = "spring";
         break;
     case ControlMode::demo:
-        modeText = "demo";
+        modeText = "demo  ";
         break;
     default:
         break;
     }
-    display.setFont(FontTahoma11, true, 100);
+    display.setFont(FontTahoma11);
     display.print(35, 30, modeText);
-    printf("calling 'display.update', %p\r\n", &display); //XXX
     display.update();
 }
 

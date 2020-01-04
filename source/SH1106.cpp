@@ -42,14 +42,12 @@ void SH1106::init(void)
  */
 void SH1106::update(void)
 {
-    printf("SH1106 update execution\r\n");  //XXX
     // check update of every page
     for(uint8_t page = 0; page < noOfPages; page++)
     {
         // check whether this page must be updated
         if((updateArray[page][0] < sizeX) && (updateArray[page][1] < sizeX) && (updateArray[page][0] <= updateArray[page][1]))
         {
-            printf("update=%u %u %u\r\n", page, updateArray[page][0], updateArray[page][1]);    //XXX
             // set display page and column
             uint8_t displayColumn = updateArray[page][0] + 2;   // physical display starts from column number 2
             std::vector<uint8_t> coordinateData =
