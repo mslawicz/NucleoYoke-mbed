@@ -31,9 +31,6 @@ EventQueue userInputQueue;
 // Create a thread that'll run the user input queue's dispatch function
 Thread userInputQueueDispatchThread(osPriority_t::osPriorityBelowNormal6, OS_STACK_SIZE, nullptr, "user input");
 
-// WS2812 RGB LED daisy chain object
-WS2812 RGBLeds(PB_15, PB_13, 11);
-
 // Create Console object and its thread
 Console console;
 Thread consoleThread(osPriority_t::osPriorityLow4, OS_STACK_SIZE, nullptr, "console");
@@ -46,7 +43,7 @@ Thread displayQueueDispatchThread(osPriority_t::osPriorityBelowNormal, OS_STACK_
 Display display(displayQueue);
 
 // create main flight control object
-FlightControl flightControl(flightControlQueue, RGBLeds);
+FlightControl flightControl(flightControlQueue);
 
 int main()
 {
@@ -85,9 +82,6 @@ int main()
     display.print(2, 0, "Nucleo Yoke");
     display.update();
 
-    // update RGB indicators
-    flightControlQueue.call(callback(&RGBLeds, &WS2812::update));
-
     // display control mode
     flightControl.changeControlMode();
 
@@ -100,14 +94,6 @@ int main()
         systemLed = (++loopCounter % FlightControlFrequency) < (FlightControlFrequency >> 3);
         flightControl.handler();
         ThisThread::sleep_for(FlightControlPeriod);
-
-        if(loopCounter % FlightControlFrequency == 0)
-        {
-            //XXX display test
-            display.setFont(FontTahoma11);
-            display.print(80, 50, std::to_string(loopCounter / FlightControlFrequency) + "  ");
-            display.update();
-        }
     }
 }
 
@@ -123,7 +109,6 @@ void pushbuttonCallback(int level)
 {
     if(level == 0)
     {
-        printf("PB pressed\r\n");
         // pushbutton pressed
         flightControl.changeControlMode(1);
     }

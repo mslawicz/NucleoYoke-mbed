@@ -16,9 +16,9 @@ float g_totalForce;
 float g_leverSpeed;
 float g_leverPosition;
 
-FlightControl::FlightControl(EventQueue& eventQueue, WS2812& RGBLeds) :
+FlightControl::FlightControl(EventQueue& eventQueue) :
     eventQueue(eventQueue),
-    RGBLeds(RGBLeds),
+    RGBLeds(PB_15, PB_13, 11),
     simulatorDataIndicator(LED2),      // blue LED
     pitchServo(PC_6, 1e-3, 2e-3, 0.5f),
     rollServo(PB_5, 0.87e-3, 2.17e-3, 0.5f, true),
@@ -30,6 +30,8 @@ FlightControl::FlightControl(EventQueue& eventQueue, WS2812& RGBLeds) :
 {
     simulatorDataIndicator = 0;
     controlTimer.start();
+    // send initial RGB values to indicators
+    eventQueue.call(callback(&RGBLeds, &WS2812::update));
 }
 
 /*
@@ -192,18 +194,11 @@ void FlightControl::setControls(void)
     g_leverPosition = throttleLeverPosition; //XXX
 
     throttleServo.setValue(throttleLeverPosition);
-
-    //XXX tensometer test
-//    static uint32_t cnt = 0;
-//    if(++cnt % 100 == 0)
-//    {
-//        printf("alpha=%f\r\n", alpha);
-//    }
 }
 
 /*
  * changes and displays yoke control mode
- * display only if argument change==0
+ * use argument change==0 to display current mode without changing
  */
 void FlightControl::changeControlMode(int change)
 {
