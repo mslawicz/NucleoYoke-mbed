@@ -50,7 +50,6 @@ public:
     void handler(void);
     void connect(void);
     void displaySimulatorData(CommandVector cv);
-    void displayTensometerValues(CommandVector cv);
     void changeControlMode(int change = 0);
 private:
     void markSimulatorDataInactive(void);

@@ -23,10 +23,8 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
     pitchServo(PC_6, 1e-3, 2e-3, 0.5f),
     rollServo(PB_5, 0.87e-3, 2.17e-3, 0.5f, true),
     throttleServo(PA_5, 1e-3, 2e-3, 0.0f, true),
-    throttleTensometer(PD_12, PD_13, eventQueue, true),
     propellerPotentiometer(PC_1),
-    mixturePotentiometer(PC_0),
-    pitchTensometer(PD_0, PD_1, eventQueue, true)
+    mixturePotentiometer(PC_0)
 {
     simulatorDataIndicator = 0;
     controlTimer.start();
@@ -168,9 +166,7 @@ void FlightControl::setControls(void)
     controlTimer.reset();
 
     // throttle lever calculations
-    float throttleLeverUserForce = throttleTensometer.getValue() > 0 ?
-            scale<float, float>(0.0005f, 0.3f, throttleTensometer.getValue(), 0.0f, 1.0f) :
-            scale<float, float>(-0.3f, -0.0005f, throttleTensometer.getValue(), -1.0f, 0.0f);
+    float throttleLeverUserForce = 0.0f;
     g_leverForce = throttleLeverUserForce;  //XXX
     float throttleLeverFrictionForce = ThrottleLeverFrictionCoefficient * (throttleLeverSpeed >= 0.0f ? sqrt(throttleLeverSpeed) : -sqrt(-throttleLeverSpeed));
     g_frictionForce = throttleLeverFrictionForce; //XXX
@@ -306,12 +302,3 @@ void FlightControl::displaySimulatorData(CommandVector cv)
     printf("propeller speed = %f [rpm]\r\n", simulatorData.propellerSpeed);
 }
 
-/*
- * display values read from tensometers
- */
-void FlightControl::displayTensometerValues(CommandVector cv)
-{
-    printf("object, data register, uncalibrated value, calibrated value\r\n");
-    printf("pitch, 0x%06X, %f, %f\r\n", (unsigned int)pitchTensometer.getDataRegister(), pitchTensometer.getUncalibratedValue(), pitchTensometer.getValue());
-    printf("throttle, 0x%06X, %f, %f\r\n", (unsigned int)throttleTensometer.getDataRegister(), throttleTensometer.getUncalibratedValue(), throttleTensometer.getValue());
-}
