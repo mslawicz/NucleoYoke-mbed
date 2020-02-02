@@ -10,7 +10,6 @@
 
 #include "Servo.h"
 #include "WS2812.h"
-#include "HX711.h"
 #include "Console.h"
 #include "Display.h"
 #include "mbed.h"
@@ -76,7 +75,6 @@ private:
     Servo pitchServo;
     Servo rollServo;
     Servo throttleServo;
-    HX711 throttleTensometer;           // HX711 tensometer ADC for throttle input
     ControlMode controlMode{ControlMode::force_feedback};
     Timer controlTimer;                 // measures time between control loops
     float throttleLeverPosition{0.0f};  // throttle lever calculated position <0..1>
@@ -86,7 +84,6 @@ private:
     const float ThrottleLeverFrictionCoefficient = 0.3f;
     const float ThrottleLeverSpeedCoefficient = 10.0f;
     const float ThrottleFilterAlpha = 0.25f;
-    HX711 pitchTensometer;              // HX711 tensometer ADC for pitch input
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */
