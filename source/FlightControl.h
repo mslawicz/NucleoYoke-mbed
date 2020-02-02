@@ -40,9 +40,7 @@ public:
     FlightControl(EventQueue& eventQueue);
     void handler(void);
     void connect(void);
-    void displaySimulatorData(CommandVector cv);
 private:
-    void markSimulatorDataInactive(void);
     void parseReceivedData(void);
     void sendDataToSimulator(void);
     void setControls(void);
@@ -55,10 +53,8 @@ private:
     HID_REPORT inputReport = {.length = HIDBufferLength, .data = {0}};      // report from simulator
     HID_REPORT outputReport = {.length = HIDBufferLength, .data = {0}};     // report to simulator
     Timeout simulatorDataTimeout;         // timeout object for receiving simulator data
-    DigitalOut simulatorDataIndicator;    // indicator of received simulator data
     SimulatorData simulatorData;          // structure of received simulator data
     bool newDataReceived{false};          // true if new data has been received in handler
-    bool simulatorDataActive{false};      // true if simulator data is periodically being rceived and is active
     Timer controlTimer;                 // measures time between control loops
     float throttleLeverPosition{0.0f};  // throttle lever calculated position <0..1>
     AnalogIn propellerPotentiometer;    // propeller pitch potentiometer (blue)

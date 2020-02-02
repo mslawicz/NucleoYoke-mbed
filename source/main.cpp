@@ -63,7 +63,6 @@ int main()
     // register console commands
     console.registerCommand("h", "help (display command list)", callback(&console, &Console::displayHelp));
     console.registerCommand("lt", "list threads", callback(listThreads));
-    console.registerCommand("sd", "display simulator data", callback(&flightControl, &FlightControl::displaySimulatorData));
 
     // start Console thread
     consoleThread.start(callback(&console, &Console::handler));

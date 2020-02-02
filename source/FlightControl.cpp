@@ -18,11 +18,9 @@ float g_leverPosition;
 
 FlightControl::FlightControl(EventQueue& eventQueue) :
     eventQueue(eventQueue),
-    simulatorDataIndicator(LED2),      // blue LED
     propellerPotentiometer(PC_1),
     mixturePotentiometer(PC_0)
 {
-    simulatorDataIndicator = 0;
     controlTimer.start();
 }
 
@@ -41,9 +39,6 @@ void FlightControl::handler(void)
     {
         // new data from simulator has been received
         newDataReceived = true;
-        simulatorDataIndicator = 1;
-        simulatorDataActive = true;
-        simulatorDataTimeout.attach(callback(this, &FlightControl::markSimulatorDataInactive), 0.2f);
         parseReceivedData();
     }
 
@@ -70,16 +65,6 @@ void FlightControl::connect(void)
     // start connection process
     pConnection->connect();
     debug("Connecting to PC using USB HID (VID=%#06X PID=%#06X ver=%d)\r\n", USB_VID, USB_PID, USB_VER);
-}
-
-/*
- * mark simulator data is not up to date and is inactive now
- * it is called after timeout elapsed after the last data reception
- */
-void FlightControl::markSimulatorDataInactive(void)
-{
-    simulatorDataActive = false;
-    simulatorDataIndicator = 0;
 }
 
 /*
@@ -179,24 +164,3 @@ void FlightControl::setControls(void)
     }
     g_leverPosition = throttleLeverPosition; //XXX
 }
-
-/*
- * display latest received simulator data
- */
-void FlightControl::displaySimulatorData(CommandVector cv)
-{
-    auto boolToYN = [](bool val)->const char*{ return (val ? "yes" : "no"); };
-    printf("simulator data active = %s\r\n", boolToYN(simulatorDataActive));
-    printf("total pitch = %f\r\n", simulatorData.totalPitch);
-    printf("total roll = %f\r\n", simulatorData.totalRoll);
-    printf("total yaw = %f\r\n", simulatorData.totalYaw);
-    printf("flaps deflection = %f\r\n", simulatorData.flapsDeflection);
-    printf("is retractable? = %s\r\n", boolToYN(simulatorData.booleanFlags & 0x01));
-    printf("gear deflection = %u, %u, %u\r\n", simulatorData.gearDeflection[0], simulatorData.gearDeflection[1], simulatorData.gearDeflection[2]);
-    printf("relative airspeed = %f\r\n", simulatorData.airSpeed);
-    printf("throttle = %f\r\n", simulatorData.throttle);
-    printf("stick shaker on? = %s\r\n", boolToYN(simulatorData.booleanFlags & (1 << 1)));
-    printf("reverser on? = %s\r\n", boolToYN(simulatorData.booleanFlags & (1 << 2)));
-    printf("propeller speed = %f [rpm]\r\n", simulatorData.propellerSpeed);
-}
-
