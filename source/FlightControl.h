@@ -8,7 +8,6 @@
 #ifndef SOURCE_FLIGHTCONTROL_H_
 #define SOURCE_FLIGHTCONTROL_H_
 
-#include "WS2812.h"
 #include "Console.h"
 #include "Display.h"
 #include "mbed.h"
@@ -55,10 +54,8 @@ private:
     void parseReceivedData(void);
     void sendDataToSimulator(void);
     void setControls(void);
-    void updateIndicators(void);
     EventQueue& eventQueue;             // event queue for flight control events
     USBHID* pConnection{nullptr};       // pointer to USB HID object
-    WS2812 RGBLeds;                     // RGB LEDs object to indicate gear and flaps state
     static const uint8_t HIDBufferLength = 64;
     static const uint16_t USB_VID = 0x0483;
     static const uint16_t USB_PID = 0x5750;
