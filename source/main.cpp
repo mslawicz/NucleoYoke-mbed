@@ -13,13 +13,10 @@
 #include "platform/mbed_thread.h"
 #include "platform/mbed_debug.h"
 
-const uint32_t FlightControlFrequency = 100;    // [Hz]
-constexpr uint32_t FlightControlPeriod = 1000 / FlightControlFrequency;     // flight control period [ms]
-
 //XXX pushbutton callback test
 void pushbuttonCallback(int level);
 
-// Create a queue of flight control events (RGB LEDs)
+// Create a queue for flight control events calls
 EventQueue flightControlQueue;
 
 // Create a thread that'll run the flight control event queue's dispatch function
@@ -48,7 +45,7 @@ FlightControl flightControl(flightControlQueue);
 int main()
 {
     debug("\r\nmain program start\r\n");
-    printf("Nucleo Yoke v2\r\n");
+    printf("Nucleo Yoke v3\r\n");
     printf("type command 'h' for help\r\n");
 
     // Initialise the digital pin LED1 as an output
@@ -87,12 +84,11 @@ int main()
     //XXX test of pushbutton
     Pushbutton encoderButton(PD_3, userInputQueue, pushbuttonCallback);
 
-    uint32_t loopCounter = 0;
     while (true)
     {
-        systemLed = (++loopCounter % FlightControlFrequency) < (FlightControlFrequency >> 3);
-        flightControl.handler();
-        ThisThread::sleep_for(FlightControlPeriod);
+        // heartbeat in main loop only
+        systemLed = !systemLed;
+        ThisThread::sleep_for(500);
     }
 }
 
