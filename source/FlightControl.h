@@ -8,7 +8,6 @@
 #ifndef SOURCE_FLIGHTCONTROL_H_
 #define SOURCE_FLIGHTCONTROL_H_
 
-#include "Servo.h"
 #include "WS2812.h"
 #include "Console.h"
 #include "Display.h"
@@ -71,9 +70,6 @@ private:
     SimulatorData simulatorData;          // structure of received simulator data
     bool newDataReceived{false};          // true if new data has been received in handler
     bool simulatorDataActive{false};      // true if simulator data is periodically being rceived and is active
-    Servo pitchServo;
-    Servo rollServo;
-    Servo throttleServo;
     ControlMode controlMode{ControlMode::force_feedback};
     Timer controlTimer;                 // measures time between control loops
     float throttleLeverPosition{0.0f};  // throttle lever calculated position <0..1>

@@ -20,9 +20,6 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
     eventQueue(eventQueue),
     RGBLeds(PB_15, PB_13, 11),
     simulatorDataIndicator(LED2),      // blue LED
-    pitchServo(PC_6, 1e-3, 2e-3, 0.5f),
-    rollServo(PB_5, 0.87e-3, 2.17e-3, 0.5f, true),
-    throttleServo(PA_5, 1e-3, 2e-3, 0.0f, true),
     propellerPotentiometer(PC_1),
     mixturePotentiometer(PC_0)
 {
@@ -188,8 +185,6 @@ void FlightControl::setControls(void)
         throttleLeverSpeed = 0.0f;
     }
     g_leverPosition = throttleLeverPosition; //XXX
-
-    throttleServo.setValue(throttleLeverPosition);
 }
 
 /*
