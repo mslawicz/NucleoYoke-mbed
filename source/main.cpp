@@ -78,9 +78,6 @@ int main()
     display.print(2, 0, "Nucleo Yoke");
     display.update();
 
-    // display control mode
-    flightControl.changeControlMode();
-
     //XXX test of pushbutton
     Pushbutton encoderButton(PD_3, userInputQueue, pushbuttonCallback);
 
@@ -105,6 +102,5 @@ void pushbuttonCallback(int level)
     if(level == 0)
     {
         // pushbutton pressed
-        flightControl.changeControlMode(1);
     }
 }

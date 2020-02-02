@@ -164,7 +164,7 @@ void FlightControl::setControls(void)
     g_totalForce = totalForce; //XXX
     throttleLeverSpeed += ThrottleLeverSpeedCoefficient * totalForce * timeElapsed;
     g_leverSpeed = simulatorData.throttle;  //XXX
-    float alpha = ((controlMode == ControlMode::force_feedback) && newDataReceived) ? ThrottleFilterAlpha : 0.0f;
+    float alpha = 0.0f;
     // complementary filter for throttle lever position
     throttleLeverPosition = (1.0f - alpha) * (throttleLeverPosition + throttleLeverSpeed * timeElapsed) + alpha * simulatorData.throttle;
     if(throttleLeverPosition > 1.0f)
@@ -178,37 +178,6 @@ void FlightControl::setControls(void)
         throttleLeverSpeed = 0.0f;
     }
     g_leverPosition = throttleLeverPosition; //XXX
-}
-
-/*
- * changes and displays yoke control mode
- * use argument change==0 to display current mode without changing
- */
-void FlightControl::changeControlMode(int change)
-{
-    int newMode = (static_cast<int>(controlMode) + change) % static_cast<int>(ControlMode::end);
-    controlMode = static_cast<ControlMode>(newMode);
-
-    display.setFont(FontTahoma11);
-    display.print(0, 30, "mode: ");
-    std::string modeText;
-    switch(controlMode)
-    {
-    case ControlMode::force_feedback:
-        modeText = "FF     ";
-        break;
-    case ControlMode::spring:
-        modeText = "spring";
-        break;
-    case ControlMode::demo:
-        modeText = "demo  ";
-        break;
-    default:
-        break;
-    }
-    display.setFont(FontTahoma11);
-    display.print(35, 30, modeText);
-    display.update();
 }
 
 /*

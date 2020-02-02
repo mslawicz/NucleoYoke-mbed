@@ -13,13 +13,6 @@
 #include "mbed.h"
 #include "drivers/USBHID.h"
 
-enum class ControlMode : uint8_t
-{
-    force_feedback,
-    spring,
-    demo,
-    end
-};
 
 // data received from simulator in incoming USB report
 struct SimulatorData
@@ -48,7 +41,6 @@ public:
     void handler(void);
     void connect(void);
     void displaySimulatorData(CommandVector cv);
-    void changeControlMode(int change = 0);
 private:
     void markSimulatorDataInactive(void);
     void parseReceivedData(void);
@@ -67,7 +59,6 @@ private:
     SimulatorData simulatorData;          // structure of received simulator data
     bool newDataReceived{false};          // true if new data has been received in handler
     bool simulatorDataActive{false};      // true if simulator data is periodically being rceived and is active
-    ControlMode controlMode{ControlMode::force_feedback};
     Timer controlTimer;                 // measures time between control loops
     float throttleLeverPosition{0.0f};  // throttle lever calculated position <0..1>
     AnalogIn propellerPotentiometer;    // propeller pitch potentiometer (blue)
