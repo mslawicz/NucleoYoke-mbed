@@ -81,9 +81,6 @@ void FlightControl::sendDataToSimulator(void)
     // bytes 16-19 for rudder control
     fParameter = 0.2f;
     memcpy(outputReport.data+16, &fParameter, sizeof(fParameter));
-    // bytes 20-23 for throttle control
-    fParameter = throttleLeverPosition;
-    memcpy(outputReport.data+20, &fParameter, sizeof(fParameter));
     // bytes 24-27 for mixture control
     fParameter = 1.0f;
     memcpy(outputReport.data+24, &fParameter, sizeof(fParameter));

@@ -29,7 +29,6 @@ private:
     static const uint16_t USB_VER = 0x0002;
     HID_REPORT inputReport = {.length = HIDBufferLength, .data = {0}};      // report from simulator
     HID_REPORT outputReport = {.length = HIDBufferLength, .data = {0}};     // report to simulator
-    float throttleLeverPosition{0.0f};  // throttle lever calculated position <0..1>
     AnalogIn propellerPotentiometer;    // propeller pitch potentiometer (blue)
     AnalogIn mixturePotentiometer;      // mixture potentiometer (red)
 };
