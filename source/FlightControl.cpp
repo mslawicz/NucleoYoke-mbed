@@ -21,7 +21,6 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
     propellerPotentiometer(PC_1),
     mixturePotentiometer(PC_0)
 {
-    controlTimer.start();
 }
 
 /*
@@ -32,9 +31,6 @@ void FlightControl::handler(void)
 {
     static DigitalOut testSignal(PC_8); //XXX
     testSignal = 1; //XXX
-
-    // set all mechanical controls
-    setControls();
 
     // send output report to simulator
     if(0)
@@ -102,37 +98,4 @@ void FlightControl::sendDataToSimulator(void)
     memcpy(outputReport.data+36, &fParameter, sizeof(fParameter));
 
     pConnection->send_nb(&outputReport);
-}
-
-/*
- * set all servo according to current mode and user input
- */
-void FlightControl::setControls(void)
-{
-    float timeElapsed = controlTimer.read();
-    controlTimer.reset();
-
-    // throttle lever calculations
-    float throttleLeverUserForce = 0.0f;
-    g_leverForce = throttleLeverUserForce;  //XXX
-    float throttleLeverFrictionForce = ThrottleLeverFrictionCoefficient * (throttleLeverSpeed >= 0.0f ? sqrt(throttleLeverSpeed) : -sqrt(-throttleLeverSpeed));
-    g_frictionForce = throttleLeverFrictionForce; //XXX
-    float totalForce = throttleLeverUserForce - throttleLeverFrictionForce;
-    g_totalForce = totalForce; //XXX
-    throttleLeverSpeed += ThrottleLeverSpeedCoefficient * totalForce * timeElapsed;
-    g_leverSpeed = simulatorData.throttle;  //XXX
-    float alpha = 0.0f;
-    // complementary filter for throttle lever position
-    throttleLeverPosition = (1.0f - alpha) * (throttleLeverPosition + throttleLeverSpeed * timeElapsed) + alpha * simulatorData.throttle;
-    if(throttleLeverPosition > 1.0f)
-    {
-        throttleLeverPosition = 1.0f;
-        throttleLeverSpeed = 0.0f;
-    }
-    else if(throttleLeverPosition < 0.0f)
-    {
-        throttleLeverPosition = 0.0f;
-        throttleLeverSpeed = 0.0f;
-    }
-    g_leverPosition = throttleLeverPosition; //XXX
 }
