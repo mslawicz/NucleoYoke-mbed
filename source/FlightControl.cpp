@@ -33,25 +33,15 @@ void FlightControl::handler(void)
     static DigitalOut testSignal(PC_8); //XXX
     testSignal = 1; //XXX
 
-    // check data received from simulator
-    if((pConnection != nullptr) &&
-       (pConnection->read_nb(&inputReport)))
-    {
-        // new data from simulator has been received
-        newDataReceived = true;
-        parseReceivedData();
-    }
-
     // set all mechanical controls
     setControls();
 
     // send output report to simulator
-    if(newDataReceived)
+    if(0)
     {
         sendDataToSimulator();
     }
 
-    newDataReceived = false;
     testSignal = 0; //XXX
 }
 
@@ -65,24 +55,6 @@ void FlightControl::connect(void)
     // start connection process
     pConnection->connect();
     debug("Connecting to PC using USB HID (VID=%#06X PID=%#06X ver=%d)\r\n", USB_VID, USB_PID, USB_VER);
-}
-
-/*
- * parse received simulator data into simulator data structure
- */
-void FlightControl::parseReceivedData(void)
-{
-    simulatorData.booleanFlags = *(inputReport.data+1);
-    simulatorData.gearDeflection[0] = ((*(inputReport.data+3)) >> 0) & 0x03;
-    simulatorData.gearDeflection[1] = ((*(inputReport.data+3)) >> 2) & 0x03;
-    simulatorData.gearDeflection[2] = ((*(inputReport.data+3)) >> 4) & 0x03;
-    simulatorData.flapsDeflection = *reinterpret_cast<float*>(inputReport.data+4);
-    simulatorData.totalPitch = *reinterpret_cast<float*>(inputReport.data+8);
-    simulatorData.totalRoll = *reinterpret_cast<float*>(inputReport.data+12);
-    simulatorData.totalYaw = *reinterpret_cast<float*>(inputReport.data+16);
-    simulatorData.throttle = *reinterpret_cast<float*>(inputReport.data+20);
-    simulatorData.airSpeed = *reinterpret_cast<float*>(inputReport.data+24);
-    simulatorData.propellerSpeed = *reinterpret_cast<float*>(inputReport.data+28);
 }
 
 /*

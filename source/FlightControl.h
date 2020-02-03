@@ -41,7 +41,6 @@ public:
     void handler(void);
     void connect(void);
 private:
-    void parseReceivedData(void);
     void sendDataToSimulator(void);
     void setControls(void);
     EventQueue& eventQueue;             // event queue for flight control events
@@ -54,7 +53,6 @@ private:
     HID_REPORT outputReport = {.length = HIDBufferLength, .data = {0}};     // report to simulator
     Timeout simulatorDataTimeout;         // timeout object for receiving simulator data
     SimulatorData simulatorData;          // structure of received simulator data
-    bool newDataReceived{false};          // true if new data has been received in handler
     Timer controlTimer;                 // measures time between control loops
     float throttleLeverPosition{0.0f};  // throttle lever calculated position <0..1>
     AnalogIn propellerPotentiometer;    // propeller pitch potentiometer (blue)
