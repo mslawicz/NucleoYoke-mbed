@@ -10,6 +10,7 @@
 
 #include "Console.h"
 #include "Display.h"
+#include "USBJoystick.h"
 #include "mbed.h"
 #include "drivers/USBHID.h"
 
@@ -23,6 +24,7 @@ private:
     void sendDataToSimulator(void);
     EventQueue& eventQueue;             // event queue for flight control events
     USBHID* pConnection{nullptr};       // pointer to USB HID object
+    USBJoystick* pJoystick{nullptr};    // pointer to USB HID Joystick device
     static const uint8_t HIDBufferLength = 64;
     static const uint16_t USB_VID = 0x0483;
     static const uint16_t USB_PID = 0x5750;
