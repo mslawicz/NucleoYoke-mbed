@@ -27,7 +27,7 @@ private:
     USBJoystick* pJoystick{nullptr};    // pointer to USB HID Joystick device
     static const uint8_t HIDBufferLength = 64;
     static const uint16_t USB_VID = 0x0483; //STElectronics
-    static const uint16_t USB_PID = 0x5710; //joystick in FS mode
+    static const uint16_t USB_PID = 0x5711; //joystick in FS mode + 1
     static const uint16_t USB_VER = 0x0003; //Nucleo Yoke ver. 3
     HID_REPORT inputReport = {.length = HIDBufferLength, .data = {0}};      // report from simulator
     HID_REPORT outputReport = {.length = HIDBufferLength, .data = {0}};     // report to simulator

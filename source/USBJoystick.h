@@ -19,7 +19,7 @@ public:
 protected:
     virtual const uint8_t* configuration_desc(uint8_t index);   // Get configuration descriptor; returns pointer to the configuration descriptor
 private:
-    uint8_t _configuration_descriptor[41];
+    uint8_t configurationDescriptor[41];
 };
 
 #endif /* SOURCE_USBJOYSTICK_H_ */

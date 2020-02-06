@@ -51,7 +51,7 @@ int main()
     // Initialise the digital pin LED1 as an output
     DigitalOut systemLed(LED1);
 
-    // connect to simulator
+    // connect to PC
     flightControl.connect();
 
     // Start the flight control event queue's dispatch thread

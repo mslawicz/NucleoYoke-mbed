@@ -37,9 +37,9 @@ void FlightControl::connect(void)
     //pConnection = new USBHID(false, HIDBufferLength, HIDBufferLength, USB_VID, USB_PID, USB_VER);
     // create and start USB HID Joystick device object in a disconnected state
     pJoystick = new USBJoystick(USB_VID, USB_PID, USB_VER);
-    // start connection process
-    //pConnection->connect();
-    debug("Connecting to PC using USB HID (VID=%#06X PID=%#06X ver=%d)\r\n", USB_VID, USB_PID, USB_VER);
+    // start joystick connection process
+    pJoystick->connect();
+    debug("Connecting to PC using USB HID joystick (VID=%#06X PID=%#06X ver=%d)\r\n", USB_VID, USB_PID, USB_VER);
 }
 
 /*
