@@ -63,7 +63,7 @@ const uint8_t* USBJoystick::report_desc()
         0x81, 0x41,                    //   INPUT (Cnst,Ary,Abs,Null)
         0x05, 0x09,                    //   USAGE_PAGE (Button)
         0x19, 0x01,                    //   USAGE_MINIMUM (Button 1)
-        0x29, 0x20,                    //   USAGE_MAXIMUM (Button 32)
+        0x29, 0x10,                    //   USAGE_MAXIMUM (Button 16)
         0x15, 0x00,                    //   LOGICAL_MINIMUM (0)
         0x25, 0x01,                    //   LOGICAL_MAXIMUM (1)
         0x75, 0x01,                    //   REPORT_SIZE (1)
@@ -143,4 +143,31 @@ const uint8_t* USBJoystick::configuration_desc(uint8_t index)
     MBED_ASSERT(sizeof(configurationDescriptorTemp) == sizeof(configurationDescriptor));
     memcpy(configurationDescriptor, configurationDescriptorTemp, sizeof(configurationDescriptor));
     return configurationDescriptor;
+}
+
+/*
+ * sends HID joystick report to PC
+ */
+bool USBJoystick::sendReport(JoystickData joystickData)
+{
+    HID_REPORT report;
+    uint8_t index = 0;
+    report.data[index++] = LSB(joystickData.X);
+    report.data[index++] = MSB(joystickData.X);
+    report.data[index++] = LSB(joystickData.Y);
+    report.data[index++] = MSB(joystickData.Y);
+    report.data[index++] = LSB(joystickData.Z);
+    report.data[index++] = MSB(joystickData.Z);
+    report.data[index++] = LSB(joystickData.Rx);
+    report.data[index++] = MSB(joystickData.Rx);
+    report.data[index++] = LSB(joystickData.Ry);
+    report.data[index++] = MSB(joystickData.Ry);
+    report.data[index++] = LSB(joystickData.Rz);
+    report.data[index++] = MSB(joystickData.Rz);
+    report.data[index++] = MSB(joystickData.hat);
+    report.data[index++] = LSB(joystickData.buttons);
+    report.data[index++] = MSB(joystickData.buttons);
+
+    report.length = index;
+    return send(&report);
 }
