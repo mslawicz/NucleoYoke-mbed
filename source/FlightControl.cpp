@@ -12,9 +12,10 @@
 FlightControl::FlightControl(EventQueue& eventQueue) :
     eventQueue(eventQueue),
     propellerPotentiometer(PC_1),
-    mixturePotentiometer(PC_0)
+    mixturePotentiometer(PC_0),
+    imuInterruptSignal(USER_BUTTON)
 {
-    ticker.attach(callback(this, &FlightControl::imuInterruptHandler), 0.25f);
+    imuInterruptSignal.rise(callback(this, &FlightControl::imuInterruptHandler));
 }
 
 /*

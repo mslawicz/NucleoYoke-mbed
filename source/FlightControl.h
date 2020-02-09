@@ -34,7 +34,7 @@ private:
     HID_REPORT outputReport = {.length = HIDBufferLength, .data = {0}};     // report to simulator
     AnalogIn propellerPotentiometer;    // propeller pitch potentiometer (blue)
     AnalogIn mixturePotentiometer;      // mixture potentiometer (red)
-    Ticker ticker; //XXX test - this should be replaced by IMU interrupts
+    InterruptIn imuInterruptSignal;     //IMU sensor interrupt signal
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */
