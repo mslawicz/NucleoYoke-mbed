@@ -22,6 +22,7 @@ public:
     void connect(void);
 private:
     void sendDataToSimulator(void);
+    void imuInterruptHandler(void);
     EventQueue& eventQueue;             // event queue for flight control events
     //USBHID* pConnection{nullptr};       // pointer to USB HID object
     USBJoystick* pJoystick{nullptr};    // pointer to USB HID Joystick device
@@ -33,6 +34,7 @@ private:
     HID_REPORT outputReport = {.length = HIDBufferLength, .data = {0}};     // report to simulator
     AnalogIn propellerPotentiometer;    // propeller pitch potentiometer (blue)
     AnalogIn mixturePotentiometer;      // mixture potentiometer (red)
+    Ticker ticker; //XXX test - this should be replaced by IMU interrupts
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */

@@ -14,18 +14,17 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
     propellerPotentiometer(PC_1),
     mixturePotentiometer(PC_0)
 {
+    ticker.attach(callback(this, &FlightControl::imuInterruptHandler), 0.25f);
 }
 
 /*
- * handler to be called when new data is calculated and ready to send
+ * handler to be called from IMU sensor interrupt routine
+ * it calculates control data and send them to PC
  */
 void FlightControl::handler(void)
 {
-    // send output report to simulator
-    if(0)
-    {
-        sendDataToSimulator();
-    }
+    static DigitalOut redLed(LED3);
+    redLed = !redLed;
 }
 
 /*
@@ -84,4 +83,12 @@ void FlightControl::sendDataToSimulator(void)
 //    memcpy(outputReport.data+36, &fParameter, sizeof(fParameter));
 //
 //    pConnection->send_nb(&outputReport);
+}
+
+/*
+ * IMU sensor interrupt handler
+ */
+void FlightControl::imuInterruptHandler(void)
+{
+    eventQueue.call(callback(this, &FlightControl::handler));
 }
