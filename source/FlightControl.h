@@ -35,7 +35,7 @@ private:
     AnalogIn propellerPotentiometer;    // propeller pitch potentiometer (blue)
     AnalogIn mixturePotentiometer;      // mixture potentiometer (red)
     InterruptIn imuInterruptSignal;     //IMU sensor interrupt signal
-    DigitalOut test1;   //XXX test
+    JoystickData joystickData;
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */

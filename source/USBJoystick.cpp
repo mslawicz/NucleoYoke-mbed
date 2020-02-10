@@ -148,7 +148,7 @@ const uint8_t* USBJoystick::configuration_desc(uint8_t index)
 /*
  * sends HID joystick report to PC
  */
-bool USBJoystick::sendReport(JoystickData joystickData)
+bool USBJoystick::sendReport(JoystickData& joystickData)
 {
     HID_REPORT report;
     uint8_t index = 0;

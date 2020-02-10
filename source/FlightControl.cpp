@@ -13,23 +13,25 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
     eventQueue(eventQueue),
     propellerPotentiometer(PC_1),
     mixturePotentiometer(PC_0),
-    imuInterruptSignal(USER_BUTTON),
-    test1(PC_8)     //XXX test
+    imuInterruptSignal(USER_BUTTON)
 {
     imuInterruptSignal.rise(callback(this, &FlightControl::imuInterruptHandler));
 }
 
 /*
  * handler to be called from IMU sensor interrupt routine
- * it calculates control data and send them to PC
+ * it calculates control data and sends them to PC
  */
 void FlightControl::handler(void)
 {
-    static DigitalOut test2(PC_6);
-    test2 = 1;
     static DigitalOut redLed(LED3);
     redLed = !redLed;
-    test2 = 0;
+
+    joystickData.X = (rand() & 0xFFFF) - 0x8000;
+    joystickData.Y = (rand() & 0xFFFF) - 0x8000;
+    joystickData.Z = (rand() & 0xFFFF) - 0x8000;
+
+    pJoystick->sendReport(joystickData);
 }
 
 /*
@@ -95,7 +97,5 @@ void FlightControl::sendDataToSimulator(void)
  */
 void FlightControl::imuInterruptHandler(void)
 {
-    test1 = 1;
     eventQueue.call(callback(this, &FlightControl::handler));
-    test1 = 0;
 }
