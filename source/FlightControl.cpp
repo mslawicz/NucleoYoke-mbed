@@ -13,7 +13,8 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
     eventQueue(eventQueue),
     propellerPotentiometer(PC_1),
     mixturePotentiometer(PC_0),
-    imuInterruptSignal(USER_BUTTON)
+    imuInterruptSignal(USER_BUTTON),
+    test1(PC_8)     //XXX test
 {
     imuInterruptSignal.rise(callback(this, &FlightControl::imuInterruptHandler));
 }
@@ -24,8 +25,11 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
  */
 void FlightControl::handler(void)
 {
+    static DigitalOut test2(PC_6);
+    test2 = 1;
     static DigitalOut redLed(LED3);
     redLed = !redLed;
+    test2 = 0;
 }
 
 /*
@@ -91,5 +95,7 @@ void FlightControl::sendDataToSimulator(void)
  */
 void FlightControl::imuInterruptHandler(void)
 {
+    test1 = 1;
     eventQueue.call(callback(this, &FlightControl::handler));
+    test1 = 0;
 }
