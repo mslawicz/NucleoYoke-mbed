@@ -13,7 +13,8 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
     eventQueue(eventQueue),
     propellerPotentiometer(PC_1),
     mixturePotentiometer(PC_0),
-    imuInterruptSignal(USER_BUTTON)
+    imuInterruptSignal(USER_BUTTON),
+    i2cBus(I2C_SCL, I2C_SDA)    // dafault setup of I2C1: PB_8, PB_9
 {
     imuInterruptSignal.rise(callback(this, &FlightControl::imuInterruptHandler));
 }

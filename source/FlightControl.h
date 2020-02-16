@@ -36,6 +36,7 @@ private:
     AnalogIn mixturePotentiometer;      // mixture potentiometer (red)
     InterruptIn imuInterruptSignal;     //IMU sensor interrupt signal
     JoystickData joystickData;
+    I2C i2cBus;                         // I2C bus for IMU sensor
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */
