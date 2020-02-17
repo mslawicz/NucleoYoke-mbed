@@ -11,6 +11,7 @@
 #include "Console.h"
 #include "Display.h"
 #include "USBJoystick.h"
+#include "I2CDevice.h"
 #include "mbed.h"
 #include "drivers/USBHID.h"
 
@@ -40,6 +41,8 @@ private:
     InterruptIn imuInterruptSignal;     //IMU sensor interrupt signal
     JoystickData joystickData;
     I2C i2cBus;                         // I2C bus for IMU sensor
+    I2CDevice sensorGA;                 // IMU gyroscope and accelerometer sensor
+    I2CDevice sensorM;                  // IMU magnetometer sensor
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */

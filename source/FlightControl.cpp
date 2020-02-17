@@ -14,7 +14,9 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
     propellerPotentiometer(PC_1),
     mixturePotentiometer(PC_0),
     imuInterruptSignal(USER_BUTTON),
-    i2cBus(I2C1_SCL, I2C1_SDA)
+    i2cBus(I2C1_SDA, I2C1_SCL),
+    sensorGA(i2cBus, LSM9DS1_AG_ADD),
+    sensorM(i2cBus, LSM9DS1_M_ADD)
 {
     imuInterruptSignal.rise(callback(this, &FlightControl::imuInterruptHandler));
 }

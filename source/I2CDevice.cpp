@@ -11,6 +11,5 @@ I2CDevice::I2CDevice(I2C& bus, uint8_t deviceAddress) :
     bus(bus),
     address(deviceAddress)
 {
-
 }
 
