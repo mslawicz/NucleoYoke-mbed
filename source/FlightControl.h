@@ -14,6 +14,9 @@
 #include "mbed.h"
 #include "drivers/USBHID.h"
 
+#define I2C1_SCL    PB_8
+#define I2C1_SDA    PB_9
+
 class FlightControl
 {
 public:
