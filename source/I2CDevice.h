@@ -9,6 +9,7 @@
 #define SOURCE_I2CDEVICE_H_
 
 #include "mbed.h"
+#include <vector>
 
 #define LSM9DS1_AG_ADD  0xD6
 #define LSM9DS1_M_ADD   0x3C
@@ -17,6 +18,8 @@ class I2CDevice
 {
 public:
     I2CDevice(I2C& bus, uint8_t deviceAddress);
+    void write(uint8_t registerAddress, std::vector<uint8_t> data);
+    std::vector<uint8_t> read(uint8_t registerAddress, uint8_t length);
 private:
     I2C& bus;
     uint8_t address;
