@@ -24,6 +24,7 @@ public:
     FlightControl(EventQueue& eventQueue);
     void handler(void);
     void connect(void);
+    void config(void);
 private:
     void sendDataToSimulator(void);
     void imuInterruptHandler(void);

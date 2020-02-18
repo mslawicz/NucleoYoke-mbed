@@ -99,6 +99,13 @@ void FlightControl::sendDataToSimulator(void)
 }
 
 /*
+ * configures Flight Control object
+ */
+void FlightControl::config(void)
+{
+}
+
+/*
  * IMU sensor interrupt handler
  */
 void FlightControl::imuInterruptHandler(void)

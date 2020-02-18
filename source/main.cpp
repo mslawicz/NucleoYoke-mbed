@@ -56,6 +56,8 @@ int main()
     // Initialise the digital pin LED1 as an output
     DigitalOut systemLed(LED1);
 
+    // configure FlightControl object
+    flightControl.config();
     // connect to PC
     flightControl.connect();
 
