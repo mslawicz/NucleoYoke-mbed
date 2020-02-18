@@ -31,7 +31,10 @@ void FlightControl::handler(void)
     static DigitalOut blueLed(LED2);
     blueLed = !blueLed;
 
-    sensorGA.write(0x07, std::vector<uint8_t>{0x01, 0x02, 0x03});
+    //sensorGA.write(0x07, std::vector<uint8_t>{0x01, 0x02, 0x03});
+    sensorGA.read(0x0F, 1);
+    sensorM.read(0x0F, 1);
+    sensorM.read(0x28, 6);
 
     joystickData.X = (rand() & 0xFFFF) - 0x8000;
     joystickData.Y = (rand() & 0xFFFF) - 0x8000;

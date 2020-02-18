@@ -34,6 +34,13 @@ void I2CDevice::write(uint8_t registerAddress, std::vector<uint8_t> data)
 std::vector<uint8_t> I2CDevice::read(uint8_t registerAddress, uint8_t length)
 {
     std::vector<uint8_t> data(length);
-
+    if(bus.write(static_cast<int>(address), (const char*)&registerAddress, 1, true))
+    {
+        alarmLed = 1;
+    }
+    if(bus.read(static_cast<int>(address), (char*)&data[0], length))
+    {
+        alarmLed = 1;
+    }
     return data;
 }
