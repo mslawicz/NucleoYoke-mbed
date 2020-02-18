@@ -28,13 +28,10 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
  */
 void FlightControl::handler(void)
 {
-    static DigitalOut blueLed(LED2);
+    static DigitalOut blueLed(LED2);    //XXX test
     blueLed = !blueLed;
 
-    //sensorGA.write(0x07, std::vector<uint8_t>{0x01, 0x02, 0x03});
-    sensorGA.read(0x0F, 1);
-    sensorM.read(0x0F, 1);
-    sensorM.read(0x28, 6);
+    sensorGA.read((uint8_t)LSM9DS1reg::OUT_X_L_G, 6);
 
     joystickData.X = (rand() & 0xFFFF) - 0x8000;
     joystickData.Y = (rand() & 0xFFFF) - 0x8000;
@@ -106,6 +103,19 @@ void FlightControl::sendDataToSimulator(void)
  */
 void FlightControl::config(void)
 {
+    // Gyroscope ODR=59.5 Hz, full scale 245 dps
+    // int/out selection default
+    // low power disable, HPF enable, HPF=0.05 Hz
+    sensorGA.write((uint8_t)LSM9DS1reg::CTRL_REG1_G, std::vector<uint8_t>{0x40, 0x00, 0x46});
+    // Accelerometer ODR=50 Hz, full scale +=2g
+    sensorGA.write((uint8_t)LSM9DS1reg::CTRL_REG6_XL, std::vector<uint8_t>{0x40});
+    // INT1<-DRDY_G for check only
+    sensorGA.write((uint8_t)LSM9DS1reg::INT1_CTRL, std::vector<uint8_t>{0x02});
+    // Magnetometer X&Y high-performance mode, ODR=40 Hz
+    // full scale +-4 gauss
+    // continues conversion mode
+    // Z-axis high-performance mode
+    sensorM.write((uint8_t)LSM9DS1reg::CTRL_REG1_M, std::vector<uint8_t>{0x58, 0x00, 0x00, 0x80});
 }
 
 /*

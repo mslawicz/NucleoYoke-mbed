@@ -11,9 +11,6 @@
 #include "mbed.h"
 #include <vector>
 
-#define LSM9DS1_AG_ADD  0xD6
-#define LSM9DS1_M_ADD   0x3C
-
 class I2CDevice
 {
 public:

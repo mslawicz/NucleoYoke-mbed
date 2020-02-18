@@ -18,6 +18,18 @@
 #define I2C1_SCL    PB_8
 #define I2C1_SDA    PB_9
 
+#define LSM9DS1_AG_ADD  0xD6
+#define LSM9DS1_M_ADD   0x3C
+
+enum struct LSM9DS1reg : uint8_t
+{
+    CTRL_REG1_G = 0x10,
+    INT1_CTRL = 0x0C,
+    OUT_X_L_G = 0x18,
+    CTRL_REG6_XL = 0x20,
+    CTRL_REG1_M = 0x20
+};
+
 class FlightControl
 {
 public:
