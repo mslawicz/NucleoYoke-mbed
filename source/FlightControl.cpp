@@ -19,6 +19,7 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
     sensorM(i2cBus, LSM9DS1_M_ADD)
 {
     imuInterruptSignal.rise(callback(this, &FlightControl::imuInterruptHandler));
+    i2cBus.frequency(400000);
 }
 
 /*
@@ -27,8 +28,10 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
  */
 void FlightControl::handler(void)
 {
-    static DigitalOut redLed(LED3);
-    redLed = !redLed;
+    static DigitalOut blueLed(LED2);
+    blueLed = !blueLed;
+
+    sensorGA.write(0x07, std::vector<uint8_t>{0x01, 0x02, 0x03});
 
     joystickData.X = (rand() & 0xFFFF) - 0x8000;
     joystickData.Y = (rand() & 0xFFFF) - 0x8000;
