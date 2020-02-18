@@ -16,6 +16,9 @@
 //XXX pushbutton callback test
 void pushbuttonCallback(int level);
 
+// Initialise the digital pin LED1 as an output
+DigitalOut alarmLed(LED3);
+
 // Create a queue for flight control events calls
 EventQueue flightControlQueue;
 
@@ -44,6 +47,8 @@ FlightControl flightControl(flightControlQueue);
 
 int main()
 {
+    alarmLed = 0;
+
     debug("\r\nmain program start\r\n");
     printf("Nucleo Yoke v3\r\n");
     printf("type command 'h' for help\r\n");

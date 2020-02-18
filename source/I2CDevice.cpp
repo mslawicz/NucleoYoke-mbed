@@ -7,6 +7,8 @@
 
 #include "I2CDevice.h"
 
+extern DigitalOut alarmLed;
+
 I2CDevice::I2CDevice(I2C& bus, uint8_t deviceAddress) :
     bus(bus),
     address(deviceAddress)
@@ -18,6 +20,12 @@ I2CDevice::I2CDevice(I2C& bus, uint8_t deviceAddress) :
  */
 void I2CDevice::write(uint8_t registerAddress, std::vector<uint8_t> data)
 {
+    // insert register address byte at the front
+    data.insert(data.begin(), registerAddress);
+    if(bus.write(static_cast<int>(address), (const char*)&data[0], data.size()))
+    {
+        alarmLed = 1;
+    }
 }
 
 /*
