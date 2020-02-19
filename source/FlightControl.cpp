@@ -13,12 +13,11 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
     eventQueue(eventQueue),
     propellerPotentiometer(PC_1),
     mixturePotentiometer(PC_0),
-    imuInterruptSignal(USER_BUTTON),
+    imuInterruptSignal(LSM9DS1_INT1),
     i2cBus(I2C1_SDA, I2C1_SCL),
     sensorGA(i2cBus, LSM9DS1_AG_ADD),
     sensorM(i2cBus, LSM9DS1_M_ADD)
 {
-    imuInterruptSignal.rise(callback(this, &FlightControl::imuInterruptHandler));
     i2cBus.frequency(400000);
 }
 
@@ -117,6 +116,10 @@ void FlightControl::config(void)
     // continues conversion mode
     // Z-axis high-performance mode
     sensorM.write((uint8_t)LSM9DS1reg::CTRL_REG1_M, std::vector<uint8_t>{0x5C, 0x00, 0x00, 0x80});
+
+    imuInterruptSignal.rise(callback(this, &FlightControl::imuInterruptHandler));
+    // read gyroscope output registers for interrupt flag clearance
+    sensorGA.read((uint8_t)LSM9DS1reg::OUT_X_L_G, 6);
 }
 
 /*
