@@ -30,6 +30,9 @@ void FlightControl::handler(void)
     static DigitalOut blueLed(LED2);    //XXX test
     blueLed = !blueLed;
 
+    // in the case of absence of interrupt signal the handler will be called after the timeout anyway
+    imuIntTimeout.attach(callback(this, &FlightControl::imuInterruptHandler), 0.02f);
+
     sensorGA.read((uint8_t)LSM9DS1reg::OUT_X_L_G, 12);
     sensorM.read((uint8_t)LSM9DS1reg::OUT_X_L_M, 6);
 
@@ -118,8 +121,8 @@ void FlightControl::config(void)
     sensorM.write((uint8_t)LSM9DS1reg::CTRL_REG1_M, std::vector<uint8_t>{0x5C, 0x00, 0x00, 0x80});
 
     imuInterruptSignal.rise(callback(this, &FlightControl::imuInterruptHandler));
-    // read gyroscope output registers for interrupt flag clearance
-    sensorGA.read((uint8_t)LSM9DS1reg::OUT_X_L_G, 6);
+    // initial call of the interrupt handler (no IMU interrupts before the first run of the handler)
+    imuIntTimeout.attach(callback(this, &FlightControl::imuInterruptHandler), 0.1f);
 }
 
 /*

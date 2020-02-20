@@ -58,6 +58,7 @@ private:
     I2C i2cBus;                         // I2C bus for IMU sensor
     I2CDevice sensorGA;                 // IMU gyroscope and accelerometer sensor
     I2CDevice sensorM;                  // IMU magnetometer sensor
+    Timeout imuIntTimeout;              // timeout of the IMU sensor interrupts
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */
