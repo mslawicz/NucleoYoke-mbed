@@ -9,6 +9,9 @@
 #include "FlightControl.h"
 #include "platform/mbed_debug.h"
 
+//XXX global data for STM Studio monitoring
+VectorInt16 g_gyro, g_acc, g_mag;
+
 FlightControl::FlightControl(EventQueue& eventQueue) :
     eventQueue(eventQueue),
     propellerPotentiometer(PC_1),
@@ -33,14 +36,29 @@ void FlightControl::handler(void)
     // in the case of absence of interrupt signal the handler will be called after the timeout anyway
     imuIntTimeout.attach(callback(this, &FlightControl::imuInterruptHandler), 0.02f);
 
-    sensorGA.read((uint8_t)LSM9DS1reg::OUT_X_L_G, 12);
-    sensorM.read((uint8_t)LSM9DS1reg::OUT_X_L_M, 6);
+    auto sensorData = sensorGA.read((uint8_t)LSM9DS1reg::OUT_X_L_G, 12);
+    gyroscopeData.X = *reinterpret_cast<int16_t*>(&sensorData[0]);
+    gyroscopeData.Y = *reinterpret_cast<int16_t*>(&sensorData[2]);
+    gyroscopeData.Z = *reinterpret_cast<int16_t*>(&sensorData[4]);
+    accelerometerData.X = *reinterpret_cast<int16_t*>(&sensorData[6]);
+    accelerometerData.Y = *reinterpret_cast<int16_t*>(&sensorData[8]);
+    accelerometerData.Z = *reinterpret_cast<int16_t*>(&sensorData[10]);
+
+    sensorData = sensorM.read((uint8_t)LSM9DS1reg::OUT_X_L_M, 6);
+    magnetometerData.X = *reinterpret_cast<int16_t*>(&sensorData[0]);
+    magnetometerData.Y = *reinterpret_cast<int16_t*>(&sensorData[2]);
+    magnetometerData.Z = *reinterpret_cast<int16_t*>(&sensorData[4]);
 
     joystickData.X = (rand() & 0xFFFF) - 0x8000;
     joystickData.Y = (rand() & 0xFFFF) - 0x8000;
     joystickData.Z = (rand() & 0xFFFF) - 0x8000;
 
     pJoystick->sendReport(joystickData);
+
+    //XXX global data for STM Studio
+    g_gyro = gyroscopeData;
+    g_acc = accelerometerData;
+    g_mag = magnetometerData;
 }
 
 /*

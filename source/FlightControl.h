@@ -8,6 +8,7 @@
 #ifndef SOURCE_FLIGHTCONTROL_H_
 #define SOURCE_FLIGHTCONTROL_H_
 
+#include "main.h"
 #include "Console.h"
 #include "Display.h"
 #include "USBJoystick.h"
@@ -59,6 +60,9 @@ private:
     I2CDevice sensorGA;                 // IMU gyroscope and accelerometer sensor
     I2CDevice sensorM;                  // IMU magnetometer sensor
     Timeout imuIntTimeout;              // timeout of the IMU sensor interrupts
+    VectorInt16 gyroscopeData;          // raw data from gyroscope sensor
+    VectorInt16 accelerometerData;      // raw data from accelerometer sensor
+    VectorInt16 magnetometerData;       // raw data from magnetometer sensor
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */
