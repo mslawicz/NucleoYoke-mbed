@@ -41,7 +41,6 @@ public:
     void connect(void);
     void config(void);
 private:
-    void sendDataToSimulator(void);
     void imuInterruptHandler(void);
     EventQueue& eventQueue;             // event queue for flight control events
     //USBHID* pConnection{nullptr};       // pointer to USB HID object

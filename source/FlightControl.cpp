@@ -30,12 +30,11 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
  */
 void FlightControl::handler(void)
 {
-    static DigitalOut blueLed(LED2);    //XXX test
-    blueLed = !blueLed;
-
-    // in the case of absence of interrupt signal the handler will be called after the timeout anyway
+    // this timeout is set only for the case of lacking IMU interrupts
+    // the timeout should never happen, as the next interrupt should happen sooner
     imuIntTimeout.attach(callback(this, &FlightControl::imuInterruptHandler), 0.02f);
 
+    // read IMU sensor data
     auto sensorData = sensorGA.read((uint8_t)LSM9DS1reg::OUT_X_L_G, 12);
     gyroscopeData.X = *reinterpret_cast<int16_t*>(&sensorData[0]);
     gyroscopeData.Y = *reinterpret_cast<int16_t*>(&sensorData[2]);
@@ -53,6 +52,7 @@ void FlightControl::handler(void)
     joystickData.Y = (rand() & 0xFFFF) - 0x8000;
     joystickData.Z = (rand() & 0xFFFF) - 0x8000;
 
+    // send HID joystick report to PC
     pJoystick->sendReport(joystickData);
 
     //XXX global data for STM Studio
@@ -78,8 +78,8 @@ void FlightControl::connect(void)
 /*
  * prepares data in the output report and sends the report to simulator
  */
-void FlightControl::sendDataToSimulator(void)
-{
+//void FlightControl::sendDataToSimulator(void)
+//{
 //    outputReport.data[0] = 0;
 //
 //    // bytes 4-7 is the bitfield data register (buttons, switches, encoders)
@@ -117,7 +117,7 @@ void FlightControl::sendDataToSimulator(void)
 //    memcpy(outputReport.data+36, &fParameter, sizeof(fParameter));
 //
 //    pConnection->send_nb(&outputReport);
-}
+//}
 
 /*
  * configures Flight Control object
@@ -139,7 +139,8 @@ void FlightControl::config(void)
     sensorM.write((uint8_t)LSM9DS1reg::CTRL_REG1_M, std::vector<uint8_t>{0x5C, 0x00, 0x00, 0x80});
 
     imuInterruptSignal.rise(callback(this, &FlightControl::imuInterruptHandler));
-    // initial call of the interrupt handler (no IMU interrupts before the first run of the handler)
+    // this timeout calls imuInterruptHandler for the first time
+    // next calls will be executed upon IMU INT1 interrupt signal
     imuIntTimeout.attach(callback(this, &FlightControl::imuInterruptHandler), 0.1f);
 }
 
