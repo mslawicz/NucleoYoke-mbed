@@ -62,6 +62,12 @@ private:
     VectorInt16 gyroscopeData;          // raw data from gyroscope sensor
     VectorInt16 accelerometerData;      // raw data from accelerometer sensor
     VectorInt16 magnetometerData;       // raw data from magnetometer sensor
+    VectorFloat angularRate;            // measured IMU sensor angular rate in rad/s
+    VectorFloat acceleration;           // measured IMU sensor acceleration in g
+    VectorFloat magneticField;          // measured IMU sensor magnetic field in gauss
+    static constexpr float AngularRateResolution = 245.0f * 3.14159265f / 180.0f / 32768.0f;   // 1-bit resolution of angular rate in rad/s
+    static constexpr float AccelerationResolution = 2.0f / 32768.0f;   // 1-bit resolution of acceleration in g
+    static constexpr float MagneticFieldResolution = 4.0f / 32768.0f;   // 1-bit resolution of magnetic field in gauss
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */

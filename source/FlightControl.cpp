@@ -10,7 +10,7 @@
 #include "platform/mbed_debug.h"
 
 //XXX global data for STM Studio monitoring
-VectorInt16 g_gyro, g_acc, g_mag;
+VectorFloat g_gyro, g_acc, g_mag;
 
 FlightControl::FlightControl(EventQueue& eventQueue) :
     eventQueue(eventQueue),
@@ -48,6 +48,17 @@ void FlightControl::handler(void)
     magnetometerData.Y = *reinterpret_cast<int16_t*>(&sensorData[2]);
     magnetometerData.Z = *reinterpret_cast<int16_t*>(&sensorData[4]);
 
+    // calculate IMU sensor physical values
+    angularRate.X = AngularRateResolution * gyroscopeData.X;
+    angularRate.Y = AngularRateResolution * gyroscopeData.Y;
+    angularRate.Z = AngularRateResolution * gyroscopeData.Z;
+    acceleration.X = AccelerationResolution * accelerometerData.X;
+    acceleration.Y = AccelerationResolution * accelerometerData.Y;
+    acceleration.Z = AccelerationResolution * accelerometerData.Z;
+    magneticField.X = MagneticFieldResolution * magnetometerData.X;
+    magneticField.Y = MagneticFieldResolution * magnetometerData.Y;
+    magneticField.Z = MagneticFieldResolution * magnetometerData.Z;
+
     joystickData.X = (rand() & 0xFFFF) - 0x8000;
     joystickData.Y = (rand() & 0xFFFF) - 0x8000;
     joystickData.Z = (rand() & 0xFFFF) - 0x8000;
@@ -56,9 +67,9 @@ void FlightControl::handler(void)
     pJoystick->sendReport(joystickData);
 
     //XXX global data for STM Studio
-    g_gyro = gyroscopeData;
-    g_acc = accelerometerData;
-    g_mag = magnetometerData;
+    g_gyro = angularRate;
+    g_acc = acceleration;
+    g_mag = magneticField;
 }
 
 /*
