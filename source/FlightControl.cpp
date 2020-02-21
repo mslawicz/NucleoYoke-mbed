@@ -137,10 +137,10 @@ void FlightControl::config(void)
 {
     // INT1<-DRDY_G
     sensorGA.write((uint8_t)LSM9DS1reg::INT1_CTRL, std::vector<uint8_t>{0x02});
-    // Gyroscope ODR=119 Hz, full scale 245 dps, cutoff 31 Hz
+    // Gyroscope ODR=119 Hz, full scale 500 dps, cutoff 31 Hz
     // int/out selection default
     // low power disable, HPF enable, HPF=0.05 Hz
-    sensorGA.write((uint8_t)LSM9DS1reg::CTRL_REG1_G, std::vector<uint8_t>{0x61, 0x00, 0x47});
+    sensorGA.write((uint8_t)LSM9DS1reg::CTRL_REG1_G, std::vector<uint8_t>{0x69, 0x00, 0x47});
     // Accelerometer ODR=119 Hz, full scale +=2g, default bandwith
     sensorGA.write((uint8_t)LSM9DS1reg::CTRL_REG6_XL, std::vector<uint8_t>{0x60});
     // Magnetometer X&Y high-performance mode, ODR=80 Hz
