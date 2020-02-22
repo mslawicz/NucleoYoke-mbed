@@ -34,6 +34,10 @@ void FlightControl::handler(void)
     // the timeout should never happen, as the next interrupt should happen sooner
     imuIntTimeout.attach(callback(this, &FlightControl::imuInterruptHandler), 0.02f);
 
+    // measure time elapsed since the previous call
+    float deltaT = handlerTimer.read();
+    handlerTimer.reset();
+
     // read IMU sensor data
     auto sensorData = sensorGA.read((uint8_t)LSM9DS1reg::OUT_X_L_G, 12);
     gyroscopeData.X = *reinterpret_cast<int16_t*>(&sensorData[0]);
@@ -153,6 +157,9 @@ void FlightControl::config(void)
     // this timeout calls imuInterruptHandler for the first time
     // next calls will be executed upon IMU INT1 interrupt signal
     imuIntTimeout.attach(callback(this, &FlightControl::imuInterruptHandler), 0.1f);
+
+    // start handler timer
+    handlerTimer.start();
 }
 
 /*
