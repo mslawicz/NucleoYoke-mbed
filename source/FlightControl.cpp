@@ -11,6 +11,7 @@
 
 //XXX global data for STM Studio monitoring
 VectorFloat g_gyro, g_acc, g_mag;
+float g_pitch, g_roll, g_yaw;
 
 FlightControl::FlightControl(EventQueue& eventQueue) :
     eventQueue(eventQueue),
@@ -53,19 +54,42 @@ void FlightControl::handler(void)
     magnetometerData.Z = *reinterpret_cast<int16_t*>(&sensorData[4]);
 
     // calculate IMU sensor physical values
+    // angular rate in rad/s
     angularRate.X = AngularRateResolution * gyroscopeData.X;
     angularRate.Y = AngularRateResolution * gyroscopeData.Y;
     angularRate.Z = AngularRateResolution * gyroscopeData.Z;
+    // acceleration in g
     acceleration.X = AccelerationResolution * accelerometerData.X;
-    acceleration.Y = AccelerationResolution * accelerometerData.Y;
+    acceleration.Y = -AccelerationResolution * accelerometerData.Y;
     acceleration.Z = AccelerationResolution * accelerometerData.Z;
+    // magnetic field in gauss
     magneticField.X = MagneticFieldResolution * magnetometerData.X;
     magneticField.Y = MagneticFieldResolution * magnetometerData.Y;
     magneticField.Z = MagneticFieldResolution * magnetometerData.Z;
 
-    joystickData.X = (rand() & 0xFFFF) - 0x8000;
-    joystickData.Y = (rand() & 0xFFFF) - 0x8000;
-    joystickData.Z = (rand() & 0xFFFF) - 0x8000;
+    float accelerationXY = sqrt(acceleration.X * acceleration.X + acceleration.Y * acceleration.Y);
+    float accelerationXZ = sqrt(acceleration.X * acceleration.X + acceleration.Z * acceleration.Z);
+    float accelerationYZ = sqrt(acceleration.Y * acceleration.Y + acceleration.Z * acceleration.Z);
+    float sin2yaw = sin(yaw) * sin(yaw);
+    float cos2yaw = cos(yaw) * cos(yaw);
+
+    // calculate angular rate in pitch and roll directions
+    float angularRatePitch = cos2yaw * angularRate.Y + sin2yaw * angularRate.X;  // angular rate in pitch direction
+    float angularRateRoll = cos2yaw * angularRate.X + sin2yaw * angularRate.Y;   // angular rate in roll direction
+
+    // calculate acceleration in pitch and roll directions
+    float accelerationPitch = atan2(cos2yaw * acceleration.X + sin2yaw * acceleration.Y, cos2yaw * accelerationYZ + sin2yaw * accelerationXZ);
+    float accelerationRoll = atan2(cos2yaw * acceleration.Y + sin2yaw * acceleration.X, cos2yaw * accelerationXZ + sin2yaw * accelerationYZ);
+
+    // calculate pitch and roll using complementary filter
+    pitch = (1.0f - ComplementaryFilterFactor) * (pitch + angularRatePitch * deltaT) + ComplementaryFilterFactor * accelerationPitch;
+    roll = (1.0f - ComplementaryFilterFactor) * (roll + angularRateRoll * deltaT) + ComplementaryFilterFactor * accelerationRoll;
+
+    yaw = scale<float, float>(0.0f, 1.0f, propellerPotentiometer, -1.57f, 1.57f);   // for test only
+
+    joystickData.X = scale<float, int16_t>(-1.0f, 1.0f, roll, -32767, 32767);
+    joystickData.Y = scale<float, int16_t>(-1.0f, 1.0f, pitch, -32767, 32767);
+    joystickData.Z = scale<float, int16_t>(-1.0f, 1.0f, yaw, -32767, 32767);
 
     // send HID joystick report to PC
     pJoystick->sendReport(joystickData);
@@ -74,6 +98,9 @@ void FlightControl::handler(void)
     g_gyro = angularRate;
     g_acc = acceleration;
     g_mag = magneticField;
+    g_pitch = pitch;
+    g_roll = roll;
+    g_yaw = yaw;
 }
 
 /*

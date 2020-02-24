@@ -65,10 +65,12 @@ private:
     VectorFloat angularRate;            // measured IMU sensor angular rate in rad/s
     VectorFloat acceleration;           // measured IMU sensor acceleration in g
     VectorFloat magneticField;          // measured IMU sensor magnetic field in gauss
-    static constexpr float AngularRateResolution = 500.0f * 3.14159265f / 180.0f / 32768.0f;   // 1-bit resolution of angular rate in rad/s
-    static constexpr float AccelerationResolution = 2.0f / 32768.0f;   // 1-bit resolution of acceleration in g
-    static constexpr float MagneticFieldResolution = 4.0f / 32768.0f;   // 1-bit resolution of magnetic field in gauss
+    const float AngularRateResolution = 500.0f * 3.14159265f / 180.0f / 32768.0f;   // 1-bit resolution of angular rate in rad/s
+    const float AccelerationResolution = 2.0f / 32768.0f;   // 1-bit resolution of acceleration in g
+    const float MagneticFieldResolution = 4.0f / 32768.0f;   // 1-bit resolution of magnetic field in gauss
     Timer handlerTimer;
+    float pitch{0.0f}, roll{0.0f}, yaw{0.0f};             // orientation of the joystick
+    const float ComplementaryFilterFactor = 0.02f;
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */
