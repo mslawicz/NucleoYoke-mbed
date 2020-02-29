@@ -53,42 +53,45 @@ void FlightControl::handler(void)
     magnetometerData.Y = *reinterpret_cast<int16_t*>(&sensorData[2]);
     magnetometerData.Z = *reinterpret_cast<int16_t*>(&sensorData[4]);
 
-    // calculate IMU sensor physical values
+    // calculate IMU sensor physical values; using right hand rule
+    // X = roll axis = pointing North
+    // Y = pitch axis = pointing East
+    // Z = yaw axis = pointing down
     // angular rate in rad/s
-    angularRate.X = AngularRateResolution * gyroscopeData.X;
+    angularRate.X = -AngularRateResolution * gyroscopeData.Z;
     angularRate.Y = AngularRateResolution * gyroscopeData.Y;
-    angularRate.Z = AngularRateResolution * gyroscopeData.Z;
+    angularRate.Z = -AngularRateResolution * gyroscopeData.X;
     // acceleration in g
-    acceleration.X = AccelerationResolution * accelerometerData.X;
+    acceleration.X = -AccelerationResolution * accelerometerData.Z;
     acceleration.Y = -AccelerationResolution * accelerometerData.Y;
-    acceleration.Z = AccelerationResolution * accelerometerData.Z;
+    acceleration.Z = -AccelerationResolution * accelerometerData.X;
     // magnetic field in gauss
-    magneticField.X = MagneticFieldResolution * magnetometerData.X;
+    magneticField.X = -MagneticFieldResolution * magnetometerData.Z;
     magneticField.Y = MagneticFieldResolution * magnetometerData.Y;
-    magneticField.Z = MagneticFieldResolution * magnetometerData.Z;
+    magneticField.Z = -MagneticFieldResolution * magnetometerData.X;
 
     float accelerationXY = sqrt(acceleration.X * acceleration.X + acceleration.Y * acceleration.Y);
     float accelerationXZ = sqrt(acceleration.X * acceleration.X + acceleration.Z * acceleration.Z);
     float accelerationYZ = sqrt(acceleration.Y * acceleration.Y + acceleration.Z * acceleration.Z);
-    float sin2yaw = sin(yaw) * sin(yaw);
+    float sin2yaw = sin(yaw) * fabs(sin(yaw));
     float cos2yaw = cos(yaw) * cos(yaw);
 
-    // calculate angular rate in pitch and roll directions
-    float angularRatePitch = cos2yaw * angularRate.Y + sin2yaw * angularRate.X;  // angular rate in pitch direction
-    float angularRateRoll = cos2yaw * angularRate.X + sin2yaw * angularRate.Y;   // angular rate in roll direction
+    // calculate pitch and roll from accelerometer itself
+    float pitchAcc = atan2(acceleration.X, accelerationYZ);
+    float rollAcc = atan2(acceleration.Y, accelerationXZ);
 
-    // calculate acceleration in pitch and roll directions
-    float accelerationPitch = atan2(cos2yaw * acceleration.X + sin2yaw * acceleration.Y, cos2yaw * accelerationYZ + sin2yaw * accelerationXZ);
-    float accelerationRoll = atan2(cos2yaw * acceleration.Y + sin2yaw * acceleration.X, cos2yaw * accelerationXZ + sin2yaw * accelerationYZ);
+    // calculate sensor pitch and roll using complementary filter
+    pitch = (1.0f - ComplementaryFilterFactor) * (pitch + angularRate.Y * deltaT) + ComplementaryFilterFactor * pitchAcc;
+    roll = (1.0f - ComplementaryFilterFactor) * (roll + angularRate.X * deltaT) + ComplementaryFilterFactor * rollAcc;
 
-    // calculate pitch and roll using complementary filter
-    pitch = (1.0f - ComplementaryFilterFactor) * (pitch + angularRatePitch * deltaT) + ComplementaryFilterFactor * accelerationPitch;
-    roll = (1.0f - ComplementaryFilterFactor) * (roll + angularRateRoll * deltaT) + ComplementaryFilterFactor * accelerationRoll;
+    yaw = scale<float, float>(0.0f, 1.0f, propellerPotentiometer, -1.57f, 1.57f);   // XXX for test only
 
-    yaw = scale<float, float>(0.0f, 1.0f, propellerPotentiometer, -1.57f, 1.57f);   // for test only
+    // calculate joystick angles
+    float pitchJoy = pitch * cos2yaw + roll * sin2yaw;
+    float rollJoy = roll * cos2yaw - pitch * sin2yaw;
 
-    joystickData.X = scale<float, int16_t>(-1.0f, 1.0f, roll, -32767, 32767);
-    joystickData.Y = scale<float, int16_t>(-1.0f, 1.0f, pitch, -32767, 32767);
+    joystickData.X = scale<float, int16_t>(-1.0f, 1.0f, rollJoy, -32767, 32767);
+    joystickData.Y = scale<float, int16_t>(-1.0f, 1.0f, pitchJoy, -32767, 32767);
     joystickData.Z = scale<float, int16_t>(-1.0f, 1.0f, yaw, -32767, 32767);
 
     // send HID joystick report to PC
@@ -98,8 +101,8 @@ void FlightControl::handler(void)
     g_gyro = angularRate;
     g_acc = acceleration;
     g_mag = magneticField;
-    g_pitch = pitch;
-    g_roll = roll;
+    g_pitch = pitchJoy;
+    g_roll = rollJoy;
     g_yaw = yaw;
 }
 
