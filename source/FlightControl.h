@@ -71,6 +71,8 @@ private:
     Timer handlerTimer;
     float pitch{0.0f}, roll{0.0f}, yaw{0.0f};             // orientation of the joystick
     const float ComplementaryFilterFactor = 0.02f;
+    VectorInt16 minMagnetometerValue;       // minimum raw values from magnetometer sensor
+    VectorInt16 maxMagnetometerValue;       // maximum raw values from magnetometer sensor
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */

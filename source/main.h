@@ -24,6 +24,16 @@ struct VectorFloat
     float Z;
 };
 
+template<typename Type> Type minimum(Type value1, Type value2)
+{
+    return ((value1 < value2) ? value1 : value2);
+}
+
+template<typename Type> Type maximum(Type value1, Type value2)
+{
+    return ((value1 > value2) ? value1 : value2);
+}
+
 template<typename iType, typename oType> oType scale(iType iMin, iType iMax, iType input, oType oMin, oType oMax, bool limit = true)
 {
     auto result = static_cast<oType>(1.0f * (input-iMin) / (iMax-iMin) * (oMax-oMin) + oMin);
