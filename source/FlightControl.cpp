@@ -72,9 +72,9 @@ void FlightControl::handler(void)
     acceleration.Y = -AccelerationResolution * accelerometerData.Y;
     acceleration.Z = -AccelerationResolution * accelerometerData.X;
     // magnetic field in gauss
-    magneticField.X = -MagneticFieldResolution * magnetometerData.Z;
-    magneticField.Y = MagneticFieldResolution * magnetometerData.Y;
-    magneticField.Z = -MagneticFieldResolution * magnetometerData.X;
+    magneticField.X = -MagneticFieldResolution * (magnetometerData.Z - 0.5f * (minMagnetometerValue.Z + maxMagnetometerValue.Z));
+    magneticField.Y = MagneticFieldResolution * (magnetometerData.Y - 0.5f * (minMagnetometerValue.Y + maxMagnetometerValue.Y));
+    magneticField.Z = -MagneticFieldResolution * (magnetometerData.X - 0.5f * (minMagnetometerValue.X + maxMagnetometerValue.X));
 
     float accelerationXY = sqrt(acceleration.X * acceleration.X + acceleration.Y * acceleration.Y);
     float accelerationXZ = sqrt(acceleration.X * acceleration.X + acceleration.Z * acceleration.Z);
@@ -91,7 +91,7 @@ void FlightControl::handler(void)
     roll = (1.0f - ComplementaryFilterFactor) * (roll + angularRate.X * deltaT) + ComplementaryFilterFactor * rollAcc;
 
     //yaw = scale<float, float>(0.0f, 1.0f, propellerPotentiometer, -1.57f, 1.57f);   // XXX for test only
-    yaw = atan2(sqrt(magneticField.Y * magneticField.Y + magneticField.Z * magneticField.Z), sqrt(magneticField.X * magneticField.X + magneticField.Z * magneticField.Z));
+    yaw = atan2(magneticField.Y, magneticField.X);
 
     // calculate joystick angles
     float pitchJoy = pitch * cos2yaw + roll * sin2yaw;
