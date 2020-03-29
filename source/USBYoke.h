@@ -10,6 +10,9 @@
 
 #include "USBHID.h"
 
+#define REPORT_ID_JOYSTICK 1
+#define REPORT_ID_FF 2
+
 struct JoystickData
 {
     int16_t X;
