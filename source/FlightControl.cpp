@@ -123,6 +123,7 @@ void FlightControl::sendJoystickData(void)
     joystickData.Rz += (rand() % 101 - 50);
     joystickData.hat = rand() %9;
     joystickData.buttons += (rand() % 3 - 1);
+    static uint8_t cnt = 0;
 
     uint8_t index = 0;
     outputReport.data[index++] = REPORT_ID_JOYSTICK;
@@ -143,6 +144,17 @@ void FlightControl::sendJoystickData(void)
     outputReport.data[index++] = MSB(joystickData.buttons);
 
     outputReport.length = index;
+
+    //XXX test
+    if(cnt++ % 10 == 0)
+    {
+        index = 0;
+        outputReport.data[index++] = REPORT_ID_FF;
+        outputReport.data[index++] = 3;
+        outputReport.data[index++] = 4;
+        outputReport.length = index;
+    }
+
     pUSB->send_nb(&outputReport);
 }
 
