@@ -5,7 +5,7 @@
  *      Author: Marcin
  */
 
-#ifndef SOURCE_USBJOYSTICK_H_
+#ifndef SOURCE_USB_H_
 #define SOURCE_USBJOYSTICK_H_
 
 #include "USBHID.h"
@@ -35,4 +35,4 @@ private:
     uint8_t configurationDescriptor[41];
 };
 
-#endif /* SOURCE_USBJOYSTICK_H_ */
+#endif /* SOURCE_USB_H_ */

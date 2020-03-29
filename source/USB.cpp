@@ -5,8 +5,8 @@
  *      Author: Marcin
  */
 
-#include "USBJoystick.h"
 #include "usb_phy_api.h"
+#include "USB.h"
 
 USBJoystick::USBJoystick(uint16_t vendorId, uint16_t productId, uint16_t productRelease, bool blocking) :
     USBHID(get_usb_phy(), 0, 0, vendorId, productId, productRelease)
