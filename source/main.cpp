@@ -48,7 +48,7 @@ FlightControl flightControl(flightControlQueue);
 int main()
 {
     debug("\r\nmain program start\r\n");
-    printf("Nucleo Yoke v2\r\n");
+    printf("Nucleo Yoke v4\r\n");
     printf("type command 'h' for help\r\n");
 
     // Initialise the digital pin LED1 as an output
