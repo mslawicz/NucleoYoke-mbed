@@ -63,7 +63,7 @@ void FlightControl::handler(void)
     setControls();
 
     // send output report to simulator
-    sendDataToSimulator();
+    sendJoystickData();
 
     newDataReceived = false;
     testSignal = 0; //XXX
@@ -110,10 +110,20 @@ void FlightControl::parseReceivedData(void)
 }
 
 /*
- * prepares data in the output report and sends the report to simulator
+ * prepares joystick data in the output report and sends the report to PC
  */
-void FlightControl::sendDataToSimulator(void)
+void FlightControl::sendJoystickData(void)
 {
+    //XXX test
+    joystickData.X += (rand() % 101 - 50);
+    joystickData.Y += (rand() % 101 - 50);
+    joystickData.Z += (rand() % 101 - 50);
+    joystickData.Rx += (rand() % 101 - 50);
+    joystickData.Ry += (rand() % 101 - 50);
+    joystickData.Rz += (rand() % 101 - 50);
+    joystickData.hat = rand() %9;
+    joystickData.buttons += (rand() % 3 - 1);
+
     uint8_t index = 0;
     outputReport.data[index++] = REPORT_ID_JOYSTICK;
     outputReport.data[index++] = LSB(joystickData.X);
@@ -128,12 +138,11 @@ void FlightControl::sendDataToSimulator(void)
     outputReport.data[index++] = MSB(joystickData.Ry);
     outputReport.data[index++] = LSB(joystickData.Rz);
     outputReport.data[index++] = MSB(joystickData.Rz);
-    outputReport.data[index++] = MSB(joystickData.hat);
+    outputReport.data[index++] = joystickData.hat;
     outputReport.data[index++] = LSB(joystickData.buttons);
     outputReport.data[index++] = MSB(joystickData.buttons);
 
     outputReport.length = index;
-
     pUSB->send_nb(&outputReport);
 }
 

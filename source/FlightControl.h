@@ -68,7 +68,7 @@ public:
 private:
     void markSimulatorDataInactive(void);
     void parseReceivedData(void);
-    void sendDataToSimulator(void);
+    void sendJoystickData(void);
     void setControls(void);
     void updateIndicators(void);
     EventQueue& eventQueue;             // event queue for flight control events
