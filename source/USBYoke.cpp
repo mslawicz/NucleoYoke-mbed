@@ -157,7 +157,7 @@ const uint8_t* USBYoke::configuration_desc(uint8_t index)
         E_INTERRUPT,                        // bmAttributes
         LSB(MAX_HID_REPORT_SIZE),           // wMaxPacketSize (LSB)
         MSB(MAX_HID_REPORT_SIZE),           // wMaxPacketSize (MSB)
-        1                                  // bInterval (milliseconds)
+        1                                   // bInterval (milliseconds)
     };
 
     MBED_ASSERT(sizeof(configurationDescriptorTemp) == sizeof(configurationDescriptor));
@@ -165,29 +165,41 @@ const uint8_t* USBYoke::configuration_desc(uint8_t index)
     return configurationDescriptor;
 }
 
+///*
+// * sends HID joystick report to PC
+// */
+//bool USBYoke::sendReport(JoystickData& joystickData)
+//{
+//    HID_REPORT report;
+//    uint8_t index = 0;
+//    report.data[index++] = LSB(joystickData.X);
+//    report.data[index++] = MSB(joystickData.X);
+//    report.data[index++] = LSB(joystickData.Y);
+//    report.data[index++] = MSB(joystickData.Y);
+//    report.data[index++] = LSB(joystickData.Z);
+//    report.data[index++] = MSB(joystickData.Z);
+//    report.data[index++] = LSB(joystickData.Rx);
+//    report.data[index++] = MSB(joystickData.Rx);
+//    report.data[index++] = LSB(joystickData.Ry);
+//    report.data[index++] = MSB(joystickData.Ry);
+//    report.data[index++] = LSB(joystickData.Rz);
+//    report.data[index++] = MSB(joystickData.Rz);
+//    report.data[index++] = MSB(joystickData.hat);
+//    report.data[index++] = LSB(joystickData.buttons);
+//    report.data[index++] = MSB(joystickData.buttons);
+//
+//    report.length = index;
+//    return send(&report);
+//}
+
 /*
- * sends HID joystick report to PC
+ * sends HID report to PC
  */
-bool USBYoke::sendReport(JoystickData& joystickData)
+bool USBYoke::sendReport(uint8_t reportID, std::vector<uint8_t> data)
 {
     HID_REPORT report;
-    uint8_t index = 0;
-    report.data[index++] = LSB(joystickData.X);
-    report.data[index++] = MSB(joystickData.X);
-    report.data[index++] = LSB(joystickData.Y);
-    report.data[index++] = MSB(joystickData.Y);
-    report.data[index++] = LSB(joystickData.Z);
-    report.data[index++] = MSB(joystickData.Z);
-    report.data[index++] = LSB(joystickData.Rx);
-    report.data[index++] = MSB(joystickData.Rx);
-    report.data[index++] = LSB(joystickData.Ry);
-    report.data[index++] = MSB(joystickData.Ry);
-    report.data[index++] = LSB(joystickData.Rz);
-    report.data[index++] = MSB(joystickData.Rz);
-    report.data[index++] = MSB(joystickData.hat);
-    report.data[index++] = LSB(joystickData.buttons);
-    report.data[index++] = MSB(joystickData.buttons);
-
-    report.length = index;
+    data.insert(data.begin(), reportID);
+    memcpy(&report.data[0], &data[0], data.size());
+    report.length = data.size();
     return send(&report);
 }

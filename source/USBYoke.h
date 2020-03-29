@@ -9,6 +9,7 @@
 #define SOURCE_USBYOKE_H_
 
 #include "USBHID.h"
+#include <vector>
 
 #define REPORT_ID_JOYSTICK 1
 #define REPORT_ID_FF 2
@@ -31,7 +32,7 @@ public:
     USBYoke(uint16_t vendorId, uint16_t productId, uint16_t productRelease, bool blocking = false);
     virtual ~USBYoke();
     virtual const uint8_t* report_desc(); // returns pointer to the report descriptor; Warning: this method has to store the length of the report descriptor in reportLength
-    bool sendReport(JoystickData& joystickData);
+    bool sendReport(uint8_t reportID, std::vector<uint8_t> data);
 protected:
     virtual const uint8_t* configuration_desc(uint8_t index);   // Get configuration descriptor; returns pointer to the configuration descriptor
 private:
