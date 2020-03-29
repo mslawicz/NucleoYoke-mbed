@@ -8,40 +8,29 @@
 #ifndef SOURCE_FLIGHTCONTROL_H_
 #define SOURCE_FLIGHTCONTROL_H_
 
-#include "Servo.h"
-#include "WS2812.h"
-#include "HX711.h"
+#include "main.h"
 #include "Console.h"
 #include "Display.h"
+#include "USBJoystick.h"
+#include "I2CDevice.h"
 #include "mbed.h"
 #include "drivers/USBHID.h"
 
-enum class ControlMode : uint8_t
-{
-    force_feedback,
-    spring,
-    demo,
-    end
-};
+#define I2C1_SCL    PB_8
+#define I2C1_SDA    PB_9
 
-// data received from simulator in incoming USB report
-struct SimulatorData
+#define LSM9DS1_AG_ADD  0xD6
+#define LSM9DS1_M_ADD   0x3C
+#define LSM9DS1_INT1    PB_6
+
+enum struct LSM9DS1reg : uint8_t
 {
-    /*
-     * bits of boolean flags:
-     * 0 any gear is retractable
-     * 1 stick shaker is on
-     * 2 reverser is deployed
-     */
-    uint16_t booleanFlags;
-    uint8_t gearDeflection[3]; // gear deflection state: 0-up, 1-on the way, 2-down; array of 3 gear units
-    float flapsDeflection;  // flaps deflection ratio 0..1
-    float totalPitch;   // total pitch control input (sum of user yoke plus autopilot servo plus artificial stability) <-1.0f .. 1.0f>
-    float totalRoll;    // total roll control input (sum of user yoke plus autopilot servo plus artificial stability) <-1.0f .. 1.0f>
-    float totalYaw;     // total yaw control input (sum of user yoke plus autopilot servo plus artificial stability) <-1.0f .. 1.0f>
-    float throttle; // throttle position of the handle itself - this controls all the handles at once <0.0f .. 1.0f>
-    float airSpeed; // aircraft airspeed in relation to its Vno <0.0f .. 1.0f+> (may exceed 1.0f)
-    float propellerSpeed;   // propeller speed in [rpm]; the higher value of first 2 engines is used
+    INT1_CTRL = 0x0C,
+    CTRL_REG1_G = 0x10,
+    OUT_X_L_G = 0x18,
+    CTRL_REG6_XL = 0x20,
+    CTRL_REG1_M = 0x20,
+    OUT_X_L_M = 0x28
 };
 
 class FlightControl
@@ -50,43 +39,40 @@ public:
     FlightControl(EventQueue& eventQueue);
     void handler(void);
     void connect(void);
-    void displaySimulatorData(CommandVector cv);
-    void displayTensometerValues(CommandVector cv);
-    void changeControlMode(int change = 0);
+    void config(void);
 private:
-    void markSimulatorDataInactive(void);
-    void parseReceivedData(void);
-    void sendDataToSimulator(void);
-    void setControls(void);
-    void updateIndicators(void);
+    void imuInterruptHandler(void);
     EventQueue& eventQueue;             // event queue for flight control events
-    USBHID* pConnection{nullptr};       // pointer to USB HID object
-    WS2812 RGBLeds;                     // RGB LEDs object to indicate gear and flaps state
+    //USBHID* pConnection{nullptr};       // pointer to USB HID object
+    USBJoystick* pJoystick{nullptr};    // pointer to USB HID Joystick device
     static const uint8_t HIDBufferLength = 64;
-    static const uint16_t USB_VID = 0x0483;
-    static const uint16_t USB_PID = 0x5750;
-    static const uint16_t USB_VER = 0x0002;
+    static const uint16_t USB_VID = 0x0483; //STElectronics
+    static const uint16_t USB_PID = 0x5711; //joystick in FS mode + 1
+    static const uint16_t USB_VER = 0x0003; //Nucleo Yoke ver. 3
     HID_REPORT inputReport = {.length = HIDBufferLength, .data = {0}};      // report from simulator
     HID_REPORT outputReport = {.length = HIDBufferLength, .data = {0}};     // report to simulator
-    Timeout simulatorDataTimeout;         // timeout object for receiving simulator data
-    DigitalOut simulatorDataIndicator;    // indicator of received simulator data
-    SimulatorData simulatorData;          // structure of received simulator data
-    bool newDataReceived{false};          // true if new data has been received in handler
-    bool simulatorDataActive{false};      // true if simulator data is periodically being rceived and is active
-    Servo pitchServo;
-    Servo rollServo;
-    Servo throttleServo;
-    HX711 throttleTensometer;           // HX711 tensometer ADC for throttle input
-    ControlMode controlMode{ControlMode::force_feedback};
-    Timer controlTimer;                 // measures time between control loops
-    float throttleLeverPosition{0.0f};  // throttle lever calculated position <0..1>
     AnalogIn propellerPotentiometer;    // propeller pitch potentiometer (blue)
     AnalogIn mixturePotentiometer;      // mixture potentiometer (red)
-    float throttleLeverSpeed{0.0f};  // speed of the throttle lever
-    const float ThrottleLeverFrictionCoefficient = 0.3f;
-    const float ThrottleLeverSpeedCoefficient = 10.0f;
-    const float ThrottleFilterAlpha = 0.25f;
-    HX711 pitchTensometer;              // HX711 tensometer ADC for pitch input
+    InterruptIn imuInterruptSignal;     //IMU sensor interrupt signal
+    JoystickData joystickData;
+    I2C i2cBus;                         // I2C bus for IMU sensor
+    I2CDevice sensorGA;                 // IMU gyroscope and accelerometer sensor
+    I2CDevice sensorM;                  // IMU magnetometer sensor
+    Timeout imuIntTimeout;              // timeout of the IMU sensor interrupts
+    VectorInt16 gyroscopeData;          // raw data from gyroscope sensor
+    VectorInt16 accelerometerData;      // raw data from accelerometer sensor
+    VectorInt16 magnetometerData;       // raw data from magnetometer sensor
+    VectorFloat angularRate;            // measured IMU sensor angular rate in rad/s
+    VectorFloat acceleration;           // measured IMU sensor acceleration in g
+    VectorFloat magneticField;          // measured IMU sensor magnetic field in gauss
+    const float AngularRateResolution = 500.0f * 3.14159265f / 180.0f / 32768.0f;   // 1-bit resolution of angular rate in rad/s
+    const float AccelerationResolution = 2.0f / 32768.0f;   // 1-bit resolution of acceleration in g
+    const float MagneticFieldResolution = 4.0f / 32768.0f;   // 1-bit resolution of magnetic field in gauss
+    Timer handlerTimer;
+    float pitch{0.0f}, roll{0.0f}, yaw{0.0f};             // orientation of the joystick
+    const float ComplementaryFilterFactor = 0.02f;
+    VectorInt16 minMagnetometerValue;       // minimum raw values from magnetometer sensor
+    VectorInt16 maxMagnetometerValue;       // maximum raw values from magnetometer sensor
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */
