@@ -13,13 +13,13 @@
 #include "platform/mbed_thread.h"
 #include "platform/mbed_debug.h"
 
+const uint32_t FlightControlFrequency = 100;    // [Hz]
+constexpr uint32_t FlightControlPeriod = 1000 / FlightControlFrequency;     // flight control period [ms]
+
 //XXX pushbutton callback test
 void pushbuttonCallback(int level);
 
-// Initialise the digital pin LED1 as an output
-DigitalOut alarmLed(LED3);
-
-// Create a queue for flight control events calls
+// Create a queue of flight control events (RGB LEDs)
 EventQueue flightControlQueue;
 
 // Create a thread that'll run the flight control event queue's dispatch function
@@ -47,18 +47,14 @@ FlightControl flightControl(flightControlQueue);
 
 int main()
 {
-    alarmLed = 0;
-
     debug("\r\nmain program start\r\n");
-    printf("Nucleo Yoke v3\r\n");
+    printf("Nucleo Yoke v2\r\n");
     printf("type command 'h' for help\r\n");
 
     // Initialise the digital pin LED1 as an output
     DigitalOut systemLed(LED1);
 
-    // configure FlightControl object
-    flightControl.config();
-    // connect to PC
+    // connect to simulator
     flightControl.connect();
 
     // Start the flight control event queue's dispatch thread
@@ -70,6 +66,8 @@ int main()
     // register console commands
     console.registerCommand("h", "help (display command list)", callback(&console, &Console::displayHelp));
     console.registerCommand("lt", "list threads", callback(listThreads));
+    console.registerCommand("sd", "display simulator data", callback(&flightControl, &FlightControl::displaySimulatorData));
+    console.registerCommand("tv", "display tensometer values", callback(&flightControl, &FlightControl::displayTensometerValues));
 
     // start Console thread
     consoleThread.start(callback(&console, &Console::handler));
@@ -84,14 +82,18 @@ int main()
     display.print(2, 0, "Nucleo Yoke");
     display.update();
 
+    // display control mode
+    flightControl.changeControlMode();
+
     //XXX test of pushbutton
     Pushbutton encoderButton(PD_3, userInputQueue, pushbuttonCallback);
 
+    uint32_t loopCounter = 0;
     while (true)
     {
-        // heartbeat in main loop only
-        systemLed = !systemLed;
-        ThisThread::sleep_for(500);
+        systemLed = (++loopCounter % FlightControlFrequency) < (FlightControlFrequency >> 3);
+        flightControl.handler();
+        ThisThread::sleep_for(FlightControlPeriod);
     }
 }
 
@@ -108,5 +110,6 @@ void pushbuttonCallback(int level)
     if(level == 0)
     {
         // pushbutton pressed
+        flightControl.changeControlMode(1);
     }
 }

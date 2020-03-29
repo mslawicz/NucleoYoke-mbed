@@ -8,31 +8,10 @@
 #ifndef SOURCE_MAIN_H_
 #define SOURCE_MAIN_H_
 
+#include "Display.h"
 #include "mbed.h"
-
-struct VectorInt16
-{
-    int16_t X;
-    int16_t Y;
-    int16_t Z;
-};
-
-struct VectorFloat
-{
-    float X;
-    float Y;
-    float Z;
-};
-
-template<typename Type> Type minimum(Type value1, Type value2)
-{
-    return ((value1 < value2) ? value1 : value2);
-}
-
-template<typename Type> Type maximum(Type value1, Type value2)
-{
-    return ((value1 > value2) ? value1 : value2);
-}
+#include "EventQueue.h"
+#include "fonts.h"
 
 template<typename iType, typename oType> oType scale(iType iMin, iType iMax, iType input, oType oMin, oType oMax, bool limit = true)
 {
