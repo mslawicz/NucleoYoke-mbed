@@ -11,10 +11,10 @@
 #include "Servo.h"
 #include "WS2812.h"
 #include "HX711.h"
+#include "USBYoke.h"
 #include "Console.h"
 #include "Display.h"
 #include "mbed.h"
-#include "drivers/USBHID.h"
 
 enum class ControlMode : uint8_t
 {
@@ -22,6 +22,18 @@ enum class ControlMode : uint8_t
     spring,
     demo,
     end
+};
+
+struct JoystickData
+{
+    int16_t X;
+    int16_t Y;
+    int16_t Z;
+    int16_t Rx;
+    int16_t Ry;
+    int16_t Rz;
+    uint8_t hat;
+    uint16_t buttons;
 };
 
 // data received from simulator in incoming USB report
@@ -60,14 +72,15 @@ private:
     void setControls(void);
     void updateIndicators(void);
     EventQueue& eventQueue;             // event queue for flight control events
-    USBHID* pConnection{nullptr};       // pointer to USB HID object
+    USBYoke* pUSB{nullptr};	            // pointer to USB HID object
     WS2812 RGBLeds;                     // RGB LEDs object to indicate gear and flaps state
     static const uint8_t HIDBufferLength = 64;
     static const uint16_t USB_VID = 0x0483;
-    static const uint16_t USB_PID = 0x5750;
-    static const uint16_t USB_VER = 0x0002;
-    HID_REPORT inputReport = {.length = HIDBufferLength, .data = {0}};      // report from simulator
-    HID_REPORT outputReport = {.length = HIDBufferLength, .data = {0}};     // report to simulator
+    static const uint16_t USB_PID = 0x5711;		//joystick in FS mode + 1
+    //static const uint16_t USB_PID = 0x5750;
+    static const uint16_t USB_VER = 0x0004;
+    HID_REPORT inputReport = {.length = 0, .data = {0}};      // report from simulator
+    HID_REPORT outputReport = {.length = 0, .data = {0}};     // report to simulator
     Timeout simulatorDataTimeout;         // timeout object for receiving simulator data
     DigitalOut simulatorDataIndicator;    // indicator of received simulator data
     SimulatorData simulatorData;          // structure of received simulator data
@@ -87,6 +100,7 @@ private:
     const float ThrottleLeverSpeedCoefficient = 10.0f;
     const float ThrottleFilterAlpha = 0.25f;
     HX711 pitchTensometer;              // HX711 tensometer ADC for pitch input
+    JoystickData joystickData;          // joystick data to be sent to PC
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */

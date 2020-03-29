@@ -14,18 +14,6 @@
 #define REPORT_ID_JOYSTICK 1
 #define REPORT_ID_FF 2
 
-struct JoystickData
-{
-    int16_t X;
-    int16_t Y;
-    int16_t Z;
-    int16_t Rx;
-    int16_t Ry;
-    int16_t Rz;
-    uint8_t hat;
-    uint16_t buttons;
-};
-
 class USBYoke : public USBHID
 {
 public:
