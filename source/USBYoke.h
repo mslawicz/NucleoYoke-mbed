@@ -5,8 +5,8 @@
  *      Author: Marcin
  */
 
-#ifndef SOURCE_USB_H_
-#define SOURCE_USBJOYSTICK_H_
+#ifndef SOURCE_USBYOKE_H_
+#define SOURCE_USBYOKE_H_
 
 #include "USBHID.h"
 
@@ -22,11 +22,11 @@ struct JoystickData
     uint16_t buttons;
 };
 
-class USBJoystick : public USBHID
+class USBYoke : public USBHID
 {
 public:
-    USBJoystick(uint16_t vendorId, uint16_t productId, uint16_t productRelease, bool blocking = false);
-    virtual ~USBJoystick();
+    USBYoke(uint16_t vendorId, uint16_t productId, uint16_t productRelease, bool blocking = false);
+    virtual ~USBYoke();
     virtual const uint8_t* report_desc(); // returns pointer to the report descriptor; Warning: this method has to store the length of the report descriptor in reportLength
     bool sendReport(JoystickData& joystickData);
 protected:
@@ -35,4 +35,4 @@ private:
     uint8_t configurationDescriptor[41];
 };
 
-#endif /* SOURCE_USB_H_ */
+#endif /* SOURCE_USBYOKE_H_ */

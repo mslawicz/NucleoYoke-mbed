@@ -6,9 +6,10 @@
  */
 
 #include "usb_phy_api.h"
-#include "USB.h"
 
-USBJoystick::USBJoystick(uint16_t vendorId, uint16_t productId, uint16_t productRelease, bool blocking) :
+#include "USBYoke.h"
+
+USBYoke::USBYoke(uint16_t vendorId, uint16_t productId, uint16_t productRelease, bool blocking) :
     USBHID(get_usb_phy(), 0, 0, vendorId, productId, productRelease)
 {
     if (blocking)
@@ -22,12 +23,12 @@ USBJoystick::USBJoystick(uint16_t vendorId, uint16_t productId, uint16_t product
     }
 }
 
-USBJoystick::~USBJoystick()
+USBYoke::~USBYoke()
 {
     deinit();
 }
 
-const uint8_t* USBJoystick::report_desc()
+const uint8_t* USBYoke::report_desc()
 {
     static const uint8_t report_descriptor[] =
     {
@@ -84,7 +85,7 @@ const uint8_t* USBJoystick::report_desc()
                                + (1 * HID_DESCRIPTOR_LENGTH) \
                                + (2 * ENDPOINT_DESCRIPTOR_LENGTH))
 
-const uint8_t* USBJoystick::configuration_desc(uint8_t index)
+const uint8_t* USBYoke::configuration_desc(uint8_t index)
 {
     if (index != 0)
     {
@@ -148,7 +149,7 @@ const uint8_t* USBJoystick::configuration_desc(uint8_t index)
 /*
  * sends HID joystick report to PC
  */
-bool USBJoystick::sendReport(JoystickData& joystickData)
+bool USBYoke::sendReport(JoystickData& joystickData)
 {
     HID_REPORT report;
     uint8_t index = 0;
