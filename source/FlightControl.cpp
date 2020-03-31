@@ -157,10 +157,9 @@ void FlightControl::sendJoystickData(void)
         outputReport.data[index++] = 4;
         outputReport.data[index++] = LSB(cnt / 10);
         outputReport.length = 64; //index;
-        pUSB->send_nb(&outputReport);
     }
 
-    //pUSB->send_nb(&outputReport);
+    pUSB->send_nb(&outputReport);
 }
 
 /*
