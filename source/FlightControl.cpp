@@ -47,15 +47,18 @@ void FlightControl::handler(void)
     if((pUSB != nullptr) &&
        (pUSB->read_nb(&inputReport)))
     {
-        // new data from simulator has been received
-        newDataReceived = true;
-        simulatorDataIndicator = 1;
-        simulatorDataActive = true;
-        simulatorDataTimeout.attach(callback(this, &FlightControl::markSimulatorDataInactive), 0.2f);
-        parseReceivedData();
-        if(controlMode != ControlMode::demo)
+        if(*inputReport.data == REPORT_ID_FF)
         {
-            updateIndicators();
+            // new data from simulator has been received
+            newDataReceived = true;
+            simulatorDataIndicator = 1;
+            simulatorDataActive = true;
+            simulatorDataTimeout.attach(callback(this, &FlightControl::markSimulatorDataInactive), 0.2f);
+            parseReceivedData();
+            if(controlMode != ControlMode::demo)
+            {
+                updateIndicators();
+            }
         }
     }
 
@@ -152,6 +155,7 @@ void FlightControl::sendJoystickData(void)
         outputReport.data[index++] = REPORT_ID_FF;
         outputReport.data[index++] = 3;
         outputReport.data[index++] = 4;
+        outputReport.data[index++] = LSB(cnt / 10);
         outputReport.length = index;
     }
 
