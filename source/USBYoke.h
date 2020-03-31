@@ -14,6 +14,8 @@
 #define REPORT_ID_JOYSTICK 1
 #define REPORT_ID_FF 2
 
+#define HID_REPORT_SIZE 63
+
 class USBYoke : public USBHID
 {
 public:

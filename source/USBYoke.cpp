@@ -127,7 +127,7 @@ const uint8_t* USBYoke::configuration_desc(uint8_t index)
         INTERFACE_DESCRIPTOR,               // bDescriptorType
         0x00,                               // bInterfaceNumber
         0x00,                               // bAlternateSetting
-        0x01,                               // bNumEndpoints
+        0x02,                               // bNumEndpoints
         HID_CLASS,                          // bInterfaceClass
         HID_SUBCLASS_NONE,                  // bInterfaceSubClass
         HID_PROTOCOL_NONE,                  // bInterfaceProtocol

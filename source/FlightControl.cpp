@@ -47,7 +47,7 @@ void FlightControl::handler(void)
     if((pUSB != nullptr) &&
        (pUSB->read_nb(&inputReport)))
     {
-        if(*inputReport.data == REPORT_ID_FF)
+        if(1/**inputReport.data == REPORT_ID_FF*/)
         {
             // new data from simulator has been received
             newDataReceived = true;
@@ -149,17 +149,18 @@ void FlightControl::sendJoystickData(void)
     outputReport.length = index;
 
     //XXX test
-    if(cnt++ % 10 == 0)
+    if(cnt++ % 50 == 0)
     {
         index = 0;
         outputReport.data[index++] = REPORT_ID_FF;
         outputReport.data[index++] = 3;
         outputReport.data[index++] = 4;
         outputReport.data[index++] = LSB(cnt / 10);
-        outputReport.length = index;
+        outputReport.length = 64; //index;
+        pUSB->send_nb(&outputReport);
     }
 
-    pUSB->send_nb(&outputReport);
+    //pUSB->send_nb(&outputReport);
 }
 
 /*
