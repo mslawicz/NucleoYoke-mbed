@@ -47,7 +47,7 @@ void FlightControl::handler(void)
     if((pUSB != nullptr) &&
        (pUSB->read_nb(&inputReport)))
     {
-        if(1/**inputReport.data == REPORT_ID_FF*/)
+        if(*inputReport.data == REPORT_ID_FF)
         {
             // new data from simulator has been received
             newDataReceived = true;
@@ -121,11 +121,6 @@ void FlightControl::sendJoystickData(void)
     joystickData.X += (rand() % 101 - 50);
     joystickData.Y += (rand() % 101 - 50);
     joystickData.Z += (rand() % 101 - 50);
-    joystickData.Rx += (rand() % 101 - 50);
-    joystickData.Ry += (rand() % 101 - 50);
-    joystickData.Rz += (rand() % 101 - 50);
-    joystickData.hat = rand() %9;
-    joystickData.buttons += (rand() % 3 - 1);
     static uint8_t cnt = 0;
 
     uint8_t index = 0;
@@ -147,17 +142,6 @@ void FlightControl::sendJoystickData(void)
     outputReport.data[index++] = MSB(joystickData.buttons);
 
     outputReport.length = index;
-
-    //XXX test
-    if(cnt++ % 50 == 0)
-    {
-        index = 0;
-        outputReport.data[index++] = REPORT_ID_FF;
-        outputReport.data[index++] = 3;
-        outputReport.data[index++] = 4;
-        outputReport.data[index++] = LSB(cnt / 10);
-        outputReport.length = 64; //index;
-    }
 
     pUSB->send_nb(&outputReport);
 }
