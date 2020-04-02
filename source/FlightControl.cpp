@@ -137,6 +137,12 @@ void FlightControl::sendJoystickData(void)
     outputReport.data[index++] = MSB(joystickData.Ry);
     outputReport.data[index++] = LSB(joystickData.Rz);
     outputReport.data[index++] = MSB(joystickData.Rz);
+    outputReport.data[index++] = LSB(joystickData.slider);
+    outputReport.data[index++] = MSB(joystickData.slider);
+    outputReport.data[index++] = LSB(joystickData.dial);
+    outputReport.data[index++] = MSB(joystickData.dial);
+    outputReport.data[index++] = LSB(joystickData.wheel);
+    outputReport.data[index++] = MSB(joystickData.wheel);
     outputReport.data[index++] = joystickData.hat;
     outputReport.data[index++] = LSB(joystickData.buttons);
     outputReport.data[index++] = MSB(joystickData.buttons);
