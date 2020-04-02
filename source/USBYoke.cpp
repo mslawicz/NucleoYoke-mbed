@@ -39,20 +39,20 @@ const uint8_t* USBYoke::report_desc()
 			// joystick pointer
 			0x09, 0x01,                    //   USAGE (Pointer)
 			0xa1, 0x00,                    //   COLLECTION (Physical)
-			0x16, 0x01, 0x80,              //     LOGICAL_MINIMUM (-32767)
-			0x26, 0xff, 0x7f,              //     LOGICAL_MAXIMUM (32767)
-			0x09, 0x30,                    //     USAGE (X)
-			0x09, 0x31,                    //     USAGE (Y)
-			0x09, 0x32,                    //     USAGE (Z)
-			0x09, 0x33,                    //     USAGE (Rx)
-			0x09, 0x34,                    //     USAGE (Ry)
-			0x09, 0x35,                    //     USAGE (Rz)
-			0x09, 0x36,                    //     USAGE (Slider)
-			0x09, 0x37,                    //     USAGE (Dial)
-			0x09, 0x38,                    //     USAGE (Wheel)
-			0x75, 0x10,                    //     REPORT_SIZE (16)
-			0x95, 0x06,                    //     REPORT_COUNT (9)
-			0x81, 0x02,                    //     INPUT (Data,Var,Abs)
+                0x16, 0x01, 0x80,              //     LOGICAL_MINIMUM (-32767)
+                0x26, 0xff, 0x7f,              //     LOGICAL_MAXIMUM (32767)
+                0x09, 0x30,                    //     USAGE (X)
+                0x09, 0x31,                    //     USAGE (Y)
+                0x09, 0x32,                    //     USAGE (Z)
+                0x09, 0x33,                    //     USAGE (Rx)
+                0x09, 0x34,                    //     USAGE (Ry)
+                0x09, 0x35,                    //     USAGE (Rz)
+                0x09, 0x36,                    //     USAGE (Slider)
+                0x09, 0x37,                    //     USAGE (Dial)
+                0x09, 0x38,                    //     USAGE (Wheel)
+                0x75, 0x10,                    //     REPORT_SIZE (16)
+                0x95, 0x09,                    //     REPORT_COUNT (9)
+                0x81, 0x02,                    //     INPUT (Data,Var,Abs)
 			0xc0,                          //   END_COLLECTION
 			// HAT switch
 			0x09, 0x39,                    //   USAGE (Hat switch)
@@ -167,33 +167,6 @@ const uint8_t* USBYoke::configuration_desc(uint8_t index)
     memcpy(configurationDescriptor, configurationDescriptorTemp, sizeof(configurationDescriptor));
     return configurationDescriptor;
 }
-
-///*
-// * sends HID joystick report to PC
-// */
-//bool USBYoke::sendReport(JoystickData& joystickData)
-//{
-//    HID_REPORT report;
-//    uint8_t index = 0;
-//    report.data[index++] = LSB(joystickData.X);
-//    report.data[index++] = MSB(joystickData.X);
-//    report.data[index++] = LSB(joystickData.Y);
-//    report.data[index++] = MSB(joystickData.Y);
-//    report.data[index++] = LSB(joystickData.Z);
-//    report.data[index++] = MSB(joystickData.Z);
-//    report.data[index++] = LSB(joystickData.Rx);
-//    report.data[index++] = MSB(joystickData.Rx);
-//    report.data[index++] = LSB(joystickData.Ry);
-//    report.data[index++] = MSB(joystickData.Ry);
-//    report.data[index++] = LSB(joystickData.Rz);
-//    report.data[index++] = MSB(joystickData.Rz);
-//    report.data[index++] = MSB(joystickData.hat);
-//    report.data[index++] = LSB(joystickData.buttons);
-//    report.data[index++] = MSB(joystickData.buttons);
-//
-//    report.length = index;
-//    return send(&report);
-//}
 
 /*
  * sends HID report to PC

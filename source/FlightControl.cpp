@@ -118,10 +118,16 @@ void FlightControl::parseReceivedData(void)
 void FlightControl::sendJoystickData(void)
 {
     //XXX test
-    joystickData.X += (rand() % 101 - 50);
-    joystickData.Y += (rand() % 101 - 50);
-    joystickData.Z += (rand() % 101 - 50);
     static uint8_t cnt = 0;
+    joystickData.X = 16000 * sin(cnt++ * 6.28f / 256.0f);
+    joystickData.Y = joystickData.X;
+    joystickData.Z = joystickData.X;
+    joystickData.Rx = joystickData.X;
+    joystickData.Ry = joystickData.X;
+    joystickData.Rz = joystickData.X;
+    joystickData.slider = joystickData.X;
+    joystickData.dial = joystickData.X;
+    joystickData.wheel = joystickData.X;
 
     uint8_t index = 0;
     outputReport.data[index++] = REPORT_ID_JOYSTICK;
