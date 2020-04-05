@@ -29,7 +29,9 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
     autorudderPotentiometer(PC_4),
     leftBrakePotentiometer(PC_2),
     rightBrakePotentiometer(PC_3),
-    pitchTensometer(PD_0, PD_1, eventQueue, true)
+    pitchTensometer(PD_0, PD_1, eventQueue, true),
+    flapsUpSwitch(PE_7, PullUp),
+    flapsDownSwitch(PF_10, PullUp)
 {
     simulatorDataIndicator = 0;
     controlTimer.start();
@@ -165,10 +167,16 @@ void FlightControl::setControls(void)
     float timeElapsed = controlTimer.read();
     controlTimer.reset();
 
+    // set joystick axes
     joystickData.dial = scale<float, int16_t>(0.0f, 1.0f, propellerPotentiometer.read(), minAxisValue, maxAxisValue);
     joystickData.wheel = scale<float, int16_t>(0.0f, 1.0f, mixturePotentiometer.read(), minAxisValue, maxAxisValue);
     joystickData.Rx = scale<float, int16_t>(0.0f, 1.0f, leftBrakePotentiometer.read(), minAxisValue, maxAxisValue);
     joystickData.Ry = scale<float, int16_t>(0.0f, 1.0f, rightBrakePotentiometer.read(), minAxisValue, maxAxisValue);
+
+    // set joystick buttons
+    joystickData.buttons = 0;
+    joystickData.buttons |= (!flapsUpSwitch.read() << 0);   // button 0 - flaps up
+    joystickData.buttons |= (!flapsDownSwitch.read() << 1); // button 1 - flaps down
 }
 
 /*

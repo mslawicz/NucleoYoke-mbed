@@ -109,6 +109,8 @@ private:
     JoystickData joystickData;          // joystick data to be sent to PC
     const int16_t minAxisValue = -32767;    // minimum value of joystick axis
     const int16_t maxAxisValue = 32767;    // maximum value of joystick axis
+    DigitalIn flapsUpSwitch;            // flaps up switch
+    DigitalIn flapsDownSwitch;          // flaps down switch
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */
