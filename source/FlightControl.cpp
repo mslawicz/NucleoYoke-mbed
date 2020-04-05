@@ -24,8 +24,9 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
     rollServo(PB_5, 0.87e-3, 2.17e-3, 0.5f, true),
     throttleServo(PA_5, 1e-3, 2e-3, 0.0f, true),
     throttleTensometer(PD_12, PD_13, eventQueue, true),
-    propellerPotentiometer(PC_1),
-    mixturePotentiometer(PC_0),
+    propellerPotentiometer(PA_3),
+    mixturePotentiometer(PA_2),
+    autorudderPotentiometer(PC_4),
     pitchTensometer(PD_0, PD_1, eventQueue, true)
 {
     simulatorDataIndicator = 0;
@@ -62,7 +63,7 @@ void FlightControl::handler(void)
         }
     }
 
-    // set all mechanical controls
+    // set all joystick controls
     setControls();
 
     // send output report to simulator
@@ -126,8 +127,6 @@ void FlightControl::sendJoystickData(void)
     joystickData.Ry = joystickData.X;
     joystickData.Rz = joystickData.X;
     joystickData.slider = joystickData.X;
-    joystickData.dial = joystickData.X;
-    joystickData.wheel = joystickData.X;
 
     uint8_t index = 0;
     outputReport.data[index++] = REPORT_ID_JOYSTICK;
@@ -159,40 +158,15 @@ void FlightControl::sendJoystickData(void)
 }
 
 /*
- * set all servo according to current mode and user input
+ * set all control variables
  */
 void FlightControl::setControls(void)
 {
     float timeElapsed = controlTimer.read();
     controlTimer.reset();
 
-    // throttle lever calculations
-    float throttleLeverUserForce = throttleTensometer.getValue() > 0 ?
-            scale<float, float>(0.0005f, 0.3f, throttleTensometer.getValue(), 0.0f, 1.0f) :
-            scale<float, float>(-0.3f, -0.0005f, throttleTensometer.getValue(), -1.0f, 0.0f);
-    g_leverForce = throttleLeverUserForce;  //XXX
-    float throttleLeverFrictionForce = ThrottleLeverFrictionCoefficient * (throttleLeverSpeed >= 0.0f ? sqrt(throttleLeverSpeed) : -sqrt(-throttleLeverSpeed));
-    g_frictionForce = throttleLeverFrictionForce; //XXX
-    float totalForce = throttleLeverUserForce - throttleLeverFrictionForce;
-    g_totalForce = totalForce; //XXX
-    throttleLeverSpeed += ThrottleLeverSpeedCoefficient * totalForce * timeElapsed;
-    g_leverSpeed = simulatorData.throttle;  //XXX
-    float alpha = ((controlMode == ControlMode::force_feedback) && newDataReceived) ? ThrottleFilterAlpha : 0.0f;
-    // complementary filter for throttle lever position
-    throttleLeverPosition = (1.0f - alpha) * (throttleLeverPosition + throttleLeverSpeed * timeElapsed) + alpha * simulatorData.throttle;
-    if(throttleLeverPosition > 1.0f)
-    {
-        throttleLeverPosition = 1.0f;
-        throttleLeverSpeed = 0.0f;
-    }
-    else if(throttleLeverPosition < 0.0f)
-    {
-        throttleLeverPosition = 0.0f;
-        throttleLeverSpeed = 0.0f;
-    }
-    g_leverPosition = throttleLeverPosition; //XXX
-
-    throttleServo.setValue(throttleLeverPosition);
+    joystickData.dial = scale<float, int16_t>(0.0f, 1.0f, propellerPotentiometer.read(), minAxisValue, maxAxisValue);
+    joystickData.wheel = scale<float, int16_t>(0.0f, 1.0f, mixturePotentiometer.read(), minAxisValue, maxAxisValue);
 }
 
 /*

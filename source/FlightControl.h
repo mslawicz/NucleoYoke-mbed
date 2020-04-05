@@ -98,12 +98,15 @@ private:
     float throttleLeverPosition{0.0f};  // throttle lever calculated position <0..1>
     AnalogIn propellerPotentiometer;    // propeller pitch potentiometer (blue)
     AnalogIn mixturePotentiometer;      // mixture potentiometer (red)
+    AnalogIn autorudderPotentiometer;   // autorudder potentiometer (white)
     float throttleLeverSpeed{0.0f};  // speed of the throttle lever
     const float ThrottleLeverFrictionCoefficient = 0.3f;
     const float ThrottleLeverSpeedCoefficient = 10.0f;
     const float ThrottleFilterAlpha = 0.25f;
     HX711 pitchTensometer;              // HX711 tensometer ADC for pitch input
     JoystickData joystickData;          // joystick data to be sent to PC
+    const int16_t minAxisValue = -32767;    // minimum value of joystick axis
+    const int16_t maxAxisValue = 32767;    // maximum value of joystick axis
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */
