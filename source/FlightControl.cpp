@@ -27,6 +27,8 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
     propellerPotentiometer(PA_3),
     mixturePotentiometer(PA_2),
     autorudderPotentiometer(PC_4),
+    leftBrakePotentiometer(PC_2),
+    rightBrakePotentiometer(PC_3),
     pitchTensometer(PD_0, PD_1, eventQueue, true)
 {
     simulatorDataIndicator = 0;
@@ -123,8 +125,6 @@ void FlightControl::sendJoystickData(void)
     joystickData.X = 16000 * sin(cnt++ * 6.28f / 256.0f);
     joystickData.Y = joystickData.X;
     joystickData.Z = joystickData.X;
-    joystickData.Rx = joystickData.X;
-    joystickData.Ry = joystickData.X;
     joystickData.Rz = joystickData.X;
     joystickData.slider = joystickData.X;
 
@@ -167,6 +167,8 @@ void FlightControl::setControls(void)
 
     joystickData.dial = scale<float, int16_t>(0.0f, 1.0f, propellerPotentiometer.read(), minAxisValue, maxAxisValue);
     joystickData.wheel = scale<float, int16_t>(0.0f, 1.0f, mixturePotentiometer.read(), minAxisValue, maxAxisValue);
+    joystickData.Rx = scale<float, int16_t>(0.0f, 1.0f, leftBrakePotentiometer.read(), minAxisValue, maxAxisValue);
+    joystickData.Ry = scale<float, int16_t>(0.0f, 1.0f, rightBrakePotentiometer.read(), minAxisValue, maxAxisValue);
 }
 
 /*

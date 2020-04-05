@@ -99,6 +99,8 @@ private:
     AnalogIn propellerPotentiometer;    // propeller pitch potentiometer (blue)
     AnalogIn mixturePotentiometer;      // mixture potentiometer (red)
     AnalogIn autorudderPotentiometer;   // autorudder potentiometer (white)
+    AnalogIn leftBrakePotentiometer;    // left brake potentiometer (left slider on main panel)
+    AnalogIn rightBrakePotentiometer;   // right brake potentiometer (right slider on main panel)
     float throttleLeverSpeed{0.0f};  // speed of the throttle lever
     const float ThrottleLeverFrictionCoefficient = 0.3f;
     const float ThrottleLeverSpeedCoefficient = 10.0f;
