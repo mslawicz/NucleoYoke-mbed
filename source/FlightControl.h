@@ -91,20 +91,14 @@ private:
     bool simulatorDataActive{false};      // true if simulator data is periodically being rceived and is active
     Servo pitchServo;
     Servo rollServo;
-    Servo throttleServo;
     HX711 throttleTensometer;           // HX711 tensometer ADC for throttle input
     ControlMode controlMode{ControlMode::force_feedback};
     Timer controlTimer;                 // measures time between control loops
-    float throttleLeverPosition{0.0f};  // throttle lever calculated position <0..1>
     AnalogIn propellerPotentiometer;    // propeller pitch potentiometer (blue)
     AnalogIn mixturePotentiometer;      // mixture potentiometer (red)
     AnalogIn autorudderPotentiometer;   // autorudder potentiometer (white)
     AnalogIn leftBrakePotentiometer;    // left brake potentiometer (left slider on main panel)
     AnalogIn rightBrakePotentiometer;   // right brake potentiometer (right slider on main panel)
-    float throttleLeverSpeed{0.0f};  // speed of the throttle lever
-    const float ThrottleLeverFrictionCoefficient = 0.3f;
-    const float ThrottleLeverSpeedCoefficient = 10.0f;
-    const float ThrottleFilterAlpha = 0.25f;
     HX711 pitchTensometer;              // HX711 tensometer ADC for pitch input
     JoystickData joystickData;          // joystick data to be sent to PC
     const int16_t minAxisValue = -32767;    // minimum value of joystick axis

@@ -22,7 +22,6 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
     simulatorDataIndicator(LED2),      // blue LED
     pitchServo(PC_6, 1e-3, 2e-3, 0.5f),
     rollServo(PB_5, 0.87e-3, 2.17e-3, 0.5f, true),
-    throttleServo(PA_5, 1e-3, 2e-3, 0.0f, true),
     throttleTensometer(PD_12, PD_13, eventQueue, true),
     propellerPotentiometer(PA_3),
     mixturePotentiometer(PA_2),
@@ -164,8 +163,8 @@ void FlightControl::sendJoystickData(void)
  */
 void FlightControl::setControls(void)
 {
-    float timeElapsed = controlTimer.read();
-    controlTimer.reset();
+    //float timeElapsed = controlTimer.read();
+    //controlTimer.reset();
 
     // set joystick axes
     joystickData.dial = scale<float, int16_t>(0.0f, 1.0f, propellerPotentiometer.read(), minAxisValue, maxAxisValue);
