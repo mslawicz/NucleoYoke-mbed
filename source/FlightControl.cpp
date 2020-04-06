@@ -39,8 +39,7 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
 }
 
 /*
- * handler to be called periodically
- * nominal call period 10 ms
+ * handler to be called periodically every 10 ms
  */
 void FlightControl::handler(void)
 {
@@ -71,6 +70,9 @@ void FlightControl::handler(void)
 
     // send output report to simulator
     sendJoystickData();
+
+    // set pitch and roll servos
+    setServos();
 
     newDataReceived = false;
     testSignal = 0; //XXX
@@ -296,4 +298,12 @@ void FlightControl::displayTensometerValues(CommandVector cv)
     printf("object, data register, uncalibrated value, calibrated value\r\n");
     printf("pitch, 0x%06X, %f, %f\r\n", (unsigned int)pitchTensometer.getDataRegister(), pitchTensometer.getUncalibratedValue(), pitchTensometer.getValue());
     printf("throttle, 0x%06X, %f, %f\r\n", (unsigned int)throttleTensometer.getDataRegister(), throttleTensometer.getUncalibratedValue(), throttleTensometer.getValue());
+}
+
+/*
+ * set pitch and roll servos
+ */
+void FlightControl::setServos(void)
+{
+    pitchServo.setValue(autorudderPotentiometer.read());
 }

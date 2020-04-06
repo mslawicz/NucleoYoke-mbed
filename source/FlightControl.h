@@ -74,6 +74,7 @@ private:
     void sendJoystickData(void);
     void setControls(void);
     void updateIndicators(void);
+    void setServos(void);
     EventQueue& eventQueue;             // event queue for flight control events
     USBYoke* pUSB{nullptr};	            // pointer to USB HID object
     WS2812 RGBLeds;                     // RGB LEDs object to indicate gear and flaps state
