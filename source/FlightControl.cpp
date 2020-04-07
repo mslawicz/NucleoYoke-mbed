@@ -305,5 +305,5 @@ void FlightControl::displayTensometerValues(CommandVector cv)
  */
 void FlightControl::setServos(void)
 {
-    pitchServo.setValue(autorudderPotentiometer.read());
+    pitchServo.setValue(scale<float, float>(-1.0f, 1.0f, simulatorData.totalPitch, 0.0f, 1.0f));
 }

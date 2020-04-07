@@ -19,7 +19,7 @@ constexpr uint32_t FlightControlPeriod = 1000 / FlightControlFrequency;     // f
 //XXX pushbutton callback test
 void pushbuttonCallback(int level);
 
-// Create a queue of flight control events (RGB LEDs)
+// Create a queue of flight control events (RGB LEDs, HX711)
 EventQueue flightControlQueue;
 
 // Create a thread that'll run the flight control event queue's dispatch function
