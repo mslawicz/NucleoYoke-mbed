@@ -10,11 +10,7 @@
 #include "platform/mbed_debug.h"
 
 //XXX global variables for testing
-float g_leverForce;
-float g_frictionForce;
-float g_totalForce;
-float g_leverSpeed;
-float g_leverPosition;
+float g_pitchForce;
 
 FlightControl::FlightControl(EventQueue& eventQueue) :
     eventQueue(eventQueue),
@@ -22,13 +18,13 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
     simulatorDataIndicator(LED2),      // blue LED
     pitchServo(PC_6, 1e-3, 2e-3, 0.5f),
     rollServo(PB_5, 0.87e-3, 2.17e-3, 0.5f, true),
-    throttleTensometer(PD_12, PD_13, eventQueue, true),
     propellerPotentiometer(PA_3),
     mixturePotentiometer(PA_2),
     autorudderPotentiometer(PC_4),
     leftBrakePotentiometer(PC_2),
     rightBrakePotentiometer(PC_3),
     pitchTensometer(PD_0, PD_1, eventQueue, true),
+    rollTensometer(PD_12, PD_13, eventQueue, true),
     flapsUpSwitch(PE_7, PullUp),
     flapsDownSwitch(PF_10, PullUp)
 {
@@ -297,7 +293,7 @@ void FlightControl::displayTensometerValues(CommandVector cv)
 {
     printf("object, data register, uncalibrated value, calibrated value\r\n");
     printf("pitch, 0x%06X, %f, %f\r\n", (unsigned int)pitchTensometer.getDataRegister(), pitchTensometer.getUncalibratedValue(), pitchTensometer.getValue());
-    printf("throttle, 0x%06X, %f, %f\r\n", (unsigned int)throttleTensometer.getDataRegister(), throttleTensometer.getUncalibratedValue(), throttleTensometer.getValue());
+    printf("roll, 0x%06X, %f, %f\r\n", (unsigned int)rollTensometer.getDataRegister(), rollTensometer.getUncalibratedValue(), rollTensometer.getValue());
 }
 
 /*
@@ -305,5 +301,7 @@ void FlightControl::displayTensometerValues(CommandVector cv)
  */
 void FlightControl::setServos(void)
 {
-    pitchServo.setValue(scale<float, float>(-1.0f, 1.0f, simulatorData.totalPitch, 0.0f, 1.0f));
+    //pitchServo.setValue(scale<float, float>(-1.0f, 1.0f, simulatorData.totalPitch, 0.0f, 1.0f));
+    g_pitchForce = pitchTensometer.getValue();
+    pitchServo.setValue(scale<float, float>(-1.0f, 1.0f, 0.2f * g_pitchForce, 0.0f, 1.0f));
 }

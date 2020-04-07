@@ -9,10 +9,6 @@
 #include "main.h"
 #include "platform/mbed_critical.h"
 
-float g_tensUncalibr;   //XXX global variable for testing
-float g_tensCalibr;   //XXX global variable for testing
-float g_tensRef;        // XXX reference value of the tensometer
-
 void testFunction(void) {}
 
 HX711::HX711(PinName dataPin, PinName clkPin, EventQueue& eventQueue, bool reverse, uint8_t noOfPulses) :
@@ -54,9 +50,6 @@ void HX711::readData(void)
     uncalibratedValue = scale<int, float>(-0x800000, 0x7Fffff, static_cast<int>(dataRegister << 8) / 256, -1.0f, +1.0f);
     reference.calculateReference(uncalibratedValue);
     calibratedValue = uncalibratedValue + reference.getReference();
-    g_tensUncalibr = uncalibratedValue; //XXX
-    g_tensCalibr = calibratedValue; //XXX
-    g_tensRef = reference.getReference(); //XXX
     dataInput.enable_irq();
 }
 
