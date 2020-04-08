@@ -10,6 +10,7 @@
 #include "platform/mbed_debug.h"
 
 //XXX global variables for testing
+float g_pitchTensometer;
 float g_pitchForce;
 
 FlightControl::FlightControl(EventQueue& eventQueue) :
@@ -302,6 +303,10 @@ void FlightControl::displayTensometerValues(CommandVector cv)
 void FlightControl::setServos(void)
 {
     //pitchServo.setValue(scale<float, float>(-1.0f, 1.0f, simulatorData.totalPitch, 0.0f, 1.0f));
-    g_pitchForce = pitchTensometer.getValue();
-    pitchServo.setValue(scale<float, float>(-1.0f, 1.0f, 0.2f * g_pitchForce, 0.0f, 1.0f));
+    static float pitchForce = 0.0f;
+    g_pitchTensometer = pitchTensometer.getValue();
+    float alpha = autorudderPotentiometer.read();
+    alpha *= alpha;
+    g_pitchForce = pitchForce = (1.0f - alpha) * pitchForce + alpha * g_pitchTensometer;
+    pitchServo.setValue(scale<float, float>(-1.0f, 1.0f, g_pitchForce, 0.0f, 1.0f));
 }
