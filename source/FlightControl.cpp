@@ -20,7 +20,8 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
     imuInterruptSignal(LSM9DS1_INT1),
     i2cBus(I2C1_SDA, I2C1_SCL),
     sensorGA(i2cBus, LSM9DS1_AG_ADD),
-    sensorM(i2cBus, LSM9DS1_M_ADD)
+    sensorM(i2cBus, LSM9DS1_M_ADD),
+    ahrsFilter(0.1f)
 {
     i2cBus.frequency(400000);
 }

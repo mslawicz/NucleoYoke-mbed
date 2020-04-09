@@ -13,6 +13,7 @@
 #include "Display.h"
 #include "USBJoystick.h"
 #include "I2CDevice.h"
+#include "AHRS.h"
 #include "mbed.h"
 #include "drivers/USBHID.h"
 
@@ -70,6 +71,7 @@ private:
     Timer handlerTimer;
     float pitch{0.0f}, roll{0.0f}, yaw{0.0f};             // orientation of the joystick
     const float ComplementaryFilterFactor = 0.02f;
+    MadgwickFilter ahrsFilter;
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */
