@@ -43,7 +43,6 @@ public:
 private:
     void imuInterruptHandler(void);
     EventQueue& eventQueue;             // event queue for flight control events
-    //USBHID* pConnection{nullptr};       // pointer to USB HID object
     USBJoystick* pJoystick{nullptr};    // pointer to USB HID Joystick device
     static const uint8_t HIDBufferLength = 64;
     static const uint16_t USB_VID = 0x0483; //STElectronics
@@ -71,8 +70,6 @@ private:
     Timer handlerTimer;
     float pitch{0.0f}, roll{0.0f}, yaw{0.0f};             // orientation of the joystick
     const float ComplementaryFilterFactor = 0.02f;
-    VectorInt16 minMagnetometerValue;       // minimum raw values from magnetometer sensor
-    VectorInt16 maxMagnetometerValue;       // maximum raw values from magnetometer sensor
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */

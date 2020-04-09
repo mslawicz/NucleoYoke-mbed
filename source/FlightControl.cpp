@@ -50,14 +50,8 @@ void FlightControl::handler(void)
 
     sensorData = sensorM.read((uint8_t)LSM9DS1reg::OUT_X_L_M, 6);
     magnetometerData.X = *reinterpret_cast<int16_t*>(&sensorData[0]);
-    minMagnetometerValue.X = minimum<int16_t>(magnetometerData.X, minMagnetometerValue.X);
-    maxMagnetometerValue.X = maximum<int16_t>(magnetometerData.X, maxMagnetometerValue.X);
     magnetometerData.Y = *reinterpret_cast<int16_t*>(&sensorData[2]);
-    minMagnetometerValue.Y = minimum<int16_t>(magnetometerData.Y, minMagnetometerValue.Y);
-    maxMagnetometerValue.Y = maximum<int16_t>(magnetometerData.Y, maxMagnetometerValue.Y);
     magnetometerData.Z = *reinterpret_cast<int16_t*>(&sensorData[4]);
-    minMagnetometerValue.Z = minimum<int16_t>(magnetometerData.Z, minMagnetometerValue.Z);
-    maxMagnetometerValue.Z = maximum<int16_t>(magnetometerData.Z, maxMagnetometerValue.Z);
 
     // calculate IMU sensor physical values; using right hand rule
     // X = roll axis = pointing North
@@ -72,9 +66,9 @@ void FlightControl::handler(void)
     acceleration.Y = -AccelerationResolution * accelerometerData.Y;
     acceleration.Z = -AccelerationResolution * accelerometerData.X;
     // magnetic field in gauss
-    magneticField.X = -MagneticFieldResolution * (magnetometerData.Z - 0.5f * (minMagnetometerValue.Z + maxMagnetometerValue.Z));
-    magneticField.Y = MagneticFieldResolution * (magnetometerData.Y - 0.5f * (minMagnetometerValue.Y + maxMagnetometerValue.Y));
-    magneticField.Z = -MagneticFieldResolution * (magnetometerData.X - 0.5f * (minMagnetometerValue.X + maxMagnetometerValue.X));
+    magneticField.X = -MagneticFieldResolution * magnetometerData.Z;
+    magneticField.Y = MagneticFieldResolution * magnetometerData.Y;
+    magneticField.Z = -MagneticFieldResolution * magnetometerData.X;
 
     float accelerationXY = sqrt(acceleration.X * acceleration.X + acceleration.Y * acceleration.Y);
     float accelerationXZ = sqrt(acceleration.X * acceleration.X + acceleration.Z * acceleration.Z);
@@ -90,7 +84,6 @@ void FlightControl::handler(void)
     pitch = (1.0f - ComplementaryFilterFactor) * (pitch + angularRate.Y * deltaT) + ComplementaryFilterFactor * pitchAcc;
     roll = (1.0f - ComplementaryFilterFactor) * (roll + angularRate.X * deltaT) + ComplementaryFilterFactor * rollAcc;
 
-    //yaw = scale<float, float>(0.0f, 1.0f, propellerPotentiometer, -1.57f, 1.57f);   // XXX for test only
     yaw = atan2(magneticField.Y, magneticField.X);
 
     // calculate joystick angles
