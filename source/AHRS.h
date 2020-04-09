@@ -8,7 +8,7 @@
 #ifndef SOURCE_AHRS_H_
 #define SOURCE_AHRS_H_
 
-#include "mbed.h"
+#include <math.h>
 
 class MadgwickFilter
 {
@@ -21,7 +21,6 @@ public:
     float getYaw(void) {return atan2f(2.0f * q1 * q2 - 2.0f * q0 * q3, 2.0f * q0 * q0 + 2.0f * q1 * q1 - 1.0f);};
 private:
     static float invSqrt(float x);
-    void computeAngles();
     float q0{1.0f};
     float q1{0.0f};
     float q2{0.0f};

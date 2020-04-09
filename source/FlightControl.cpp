@@ -59,40 +59,27 @@ void FlightControl::handler(void)
     // Y = pitch axis = pointing East
     // Z = yaw axis = pointing down
     // angular rate in rad/s
-    angularRate.X = -AngularRateResolution * gyroscopeData.Z;
+    angularRate.X = AngularRateResolution * gyroscopeData.X;
     angularRate.Y = AngularRateResolution * gyroscopeData.Y;
-    angularRate.Z = -AngularRateResolution * gyroscopeData.X;
+    angularRate.Z = AngularRateResolution * gyroscopeData.Z;
     // acceleration in g
-    acceleration.X = -AccelerationResolution * accelerometerData.Z;
-    acceleration.Y = -AccelerationResolution * accelerometerData.Y;
-    acceleration.Z = -AccelerationResolution * accelerometerData.X;
+    acceleration.X = AccelerationResolution * accelerometerData.X;
+    acceleration.Y = AccelerationResolution * accelerometerData.Y;
+    acceleration.Z = AccelerationResolution * accelerometerData.Z;
     // magnetic field in gauss
-    magneticField.X = -MagneticFieldResolution * magnetometerData.Z;
+    magneticField.X = MagneticFieldResolution * magnetometerData.X;
     magneticField.Y = MagneticFieldResolution * magnetometerData.Y;
-    magneticField.Z = -MagneticFieldResolution * magnetometerData.X;
+    magneticField.Z = MagneticFieldResolution * magnetometerData.Z;
 
-    float accelerationXY = sqrt(acceleration.X * acceleration.X + acceleration.Y * acceleration.Y);
-    float accelerationXZ = sqrt(acceleration.X * acceleration.X + acceleration.Z * acceleration.Z);
-    float accelerationYZ = sqrt(acceleration.Y * acceleration.Y + acceleration.Z * acceleration.Z);
-    float sin2yaw = sin(yaw) * fabs(sin(yaw));
-    float cos2yaw = cos(yaw) * cos(yaw);
+    ahrsFilter.update9DOF(angularRate.X, angularRate.Y, angularRate.Z, acceleration.X,  acceleration.Y,  acceleration.Z, magneticField.X, magneticField.Y, magneticField.Z, deltaT);
+    //ahrsFilter.update6DOF(angularRate.X, angularRate.Y, angularRate.Z, acceleration.X,  acceleration.Y,  acceleration.Z, deltaT);
 
-    // calculate pitch and roll from accelerometer itself
-    float pitchAcc = atan2(acceleration.X, accelerationYZ);
-    float rollAcc = atan2(acceleration.Y, accelerationXZ);
+    pitch = ahrsFilter.getPitch();
+    roll = ahrsFilter.getRoll();
+    yaw = ahrsFilter.getYaw();
 
-    // calculate sensor pitch and roll using complementary filter
-    pitch = (1.0f - ComplementaryFilterFactor) * (pitch + angularRate.Y * deltaT) + ComplementaryFilterFactor * pitchAcc;
-    roll = (1.0f - ComplementaryFilterFactor) * (roll + angularRate.X * deltaT) + ComplementaryFilterFactor * rollAcc;
-
-    yaw = atan2(magneticField.Y, magneticField.X);
-
-    // calculate joystick angles
-    float pitchJoy = pitch * cos2yaw + roll * sin2yaw;
-    float rollJoy = roll * cos2yaw - pitch * sin2yaw;
-
-    joystickData.X = scale<float, int16_t>(-1.0f, 1.0f, rollJoy, -32767, 32767);
-    joystickData.Y = scale<float, int16_t>(-1.0f, 1.0f, pitchJoy, -32767, 32767);
+    joystickData.X = scale<float, int16_t>(-1.0f, 1.0f, roll, -32767, 32767);
+    joystickData.Y = scale<float, int16_t>(-1.0f, 1.0f, pitch, -32767, 32767);
     joystickData.Z = scale<float, int16_t>(-1.0f, 1.0f, yaw, -32767, 32767);
 
     // send HID joystick report to PC
@@ -102,8 +89,8 @@ void FlightControl::handler(void)
     g_gyro = angularRate;
     g_acc = acceleration;
     g_mag = magneticField;
-    g_pitch = pitchJoy;
-    g_roll = rollJoy;
+    g_pitch = pitch;
+    g_roll = roll;
     g_yaw = yaw;
 }
 
