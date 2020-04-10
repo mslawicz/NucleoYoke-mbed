@@ -36,7 +36,7 @@ template<typename Type> Type maximum(Type value1, Type value2)
 
 template<typename iType, typename oType> oType scale(iType iMin, iType iMax, iType input, oType oMin, oType oMax, bool limit = true)
 {
-    auto result = static_cast<oType>(1.0f * (input-iMin) / (iMax-iMin) * (oMax-oMin) + oMin);
+    float result = 1.0f * (input-iMin) / (iMax-iMin) * (oMax-oMin) + oMin;
     if(limit)
     {
         if(result < oMin)
@@ -48,7 +48,7 @@ template<typename iType, typename oType> oType scale(iType iMin, iType iMax, iTy
             result = oMax;
         }
     }
-    return result;
+    return static_cast<oType>(result);
 }
 
 #endif /* SOURCE_MAIN_H_ */
