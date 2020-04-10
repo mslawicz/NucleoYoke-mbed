@@ -80,7 +80,7 @@ void FlightControl::handler(void)
     float accelerationXZ = sqrt(acceleration.X * acceleration.X + acceleration.Z * acceleration.Z);
     float accelerationYZ = sqrt(acceleration.Y * acceleration.Y + acceleration.Z * acceleration.Z);
     float sin2yaw = sin(yaw) * fabs(sin(yaw));
-    float cos2yaw = cos(yaw) * cos(yaw);
+    float cos2yaw = cos(yaw) * fabs(cos(yaw));
 
     // calculate pitch and roll from accelerometer itself
     float pitchAcc = atan2(acceleration.X, accelerationYZ);
@@ -91,11 +91,14 @@ void FlightControl::handler(void)
     roll = (1.0f - ComplementaryFilterFactor) * (roll + angularRate.X * deltaT) + ComplementaryFilterFactor * rollAcc;
 
     //yaw = scale<float, float>(0.0f, 1.0f, propellerPotentiometer, -1.57f, 1.57f);   // XXX for test only
-    yaw = atan2(magneticField.Y, magneticField.X);
+    //yaw = atan2(magneticField.Y, magneticField.X);
+    yaw = 0.999f * (yaw + angularRate.Z * deltaT);
 
     // calculate joystick angles
-    float pitchJoy = pitch * cos2yaw + roll * sin2yaw;
-    float rollJoy = roll * cos2yaw - pitch * sin2yaw;
+//    float pitchJoy = pitch * cos2yaw + roll * sin2yaw;
+//    float rollJoy = roll * cos2yaw - pitch * sin2yaw;
+    float pitchJoy = pitch;
+    float rollJoy = roll;
 
     joystickData.X = scale<float, int16_t>(-1.0f, 1.0f, rollJoy, -32767, 32767);
     joystickData.Y = scale<float, int16_t>(-1.0f, 1.0f, pitchJoy, -32767, 32767);
