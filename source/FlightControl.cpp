@@ -17,10 +17,9 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
     eventQueue(eventQueue),
     propellerPotentiometer(PC_1),
     mixturePotentiometer(PC_0),
-    imuInterruptSignal(LSM9DS1_INT1),
+    imuInterruptSignal(LSM6DS3_INT1),
     i2cBus(I2C1_SDA, I2C1_SCL),
-    sensorGA(i2cBus, LSM9DS1_AG_ADD),
-    sensorM(i2cBus, LSM9DS1_M_ADD)
+    sensorGA(i2cBus, LSM6DS3_AG_ADD)
 {
     i2cBus.frequency(400000);
 }
@@ -40,24 +39,13 @@ void FlightControl::handler(void)
     handlerTimer.reset();
 
     // read IMU sensor data
-    auto sensorData = sensorGA.read((uint8_t)LSM9DS1reg::OUT_X_L_G, 12);
+    auto sensorData = sensorGA.read((uint8_t)LSM6DS3reg::OUT_X_L_G, 12);
     gyroscopeData.X = *reinterpret_cast<int16_t*>(&sensorData[0]);
     gyroscopeData.Y = *reinterpret_cast<int16_t*>(&sensorData[2]);
     gyroscopeData.Z = *reinterpret_cast<int16_t*>(&sensorData[4]);
     accelerometerData.X = *reinterpret_cast<int16_t*>(&sensorData[6]);
     accelerometerData.Y = *reinterpret_cast<int16_t*>(&sensorData[8]);
     accelerometerData.Z = *reinterpret_cast<int16_t*>(&sensorData[10]);
-
-    sensorData = sensorM.read((uint8_t)LSM9DS1reg::OUT_X_L_M, 6);
-    magnetometerData.X = *reinterpret_cast<int16_t*>(&sensorData[0]);
-    minMagnetometerValue.X = minimum<int16_t>(magnetometerData.X, minMagnetometerValue.X);
-    maxMagnetometerValue.X = maximum<int16_t>(magnetometerData.X, maxMagnetometerValue.X);
-    magnetometerData.Y = *reinterpret_cast<int16_t*>(&sensorData[2]);
-    minMagnetometerValue.Y = minimum<int16_t>(magnetometerData.Y, minMagnetometerValue.Y);
-    maxMagnetometerValue.Y = maximum<int16_t>(magnetometerData.Y, maxMagnetometerValue.Y);
-    magnetometerData.Z = *reinterpret_cast<int16_t*>(&sensorData[4]);
-    minMagnetometerValue.Z = minimum<int16_t>(magnetometerData.Z, minMagnetometerValue.Z);
-    maxMagnetometerValue.Z = maximum<int16_t>(magnetometerData.Z, maxMagnetometerValue.Z);
 
     // calculate IMU sensor physical values; using right hand rule
     // X = roll axis = pointing North
@@ -71,10 +59,6 @@ void FlightControl::handler(void)
     acceleration.X = -AccelerationResolution * accelerometerData.Z;
     acceleration.Y = -AccelerationResolution * accelerometerData.Y;
     acceleration.Z = -AccelerationResolution * accelerometerData.X;
-    // magnetic field in gauss
-    magneticField.X = -MagneticFieldResolution * (magnetometerData.Z - 0.5f * (minMagnetometerValue.Z + maxMagnetometerValue.Z));
-    magneticField.Y = MagneticFieldResolution * (magnetometerData.Y - 0.5f * (minMagnetometerValue.Y + maxMagnetometerValue.Y));
-    magneticField.Z = -MagneticFieldResolution * (magnetometerData.X - 0.5f * (minMagnetometerValue.X + maxMagnetometerValue.X));
 
     float accelerationXZ = sqrt(acceleration.X * acceleration.X + acceleration.Z * acceleration.Z);
     float accelerationYZ = sqrt(acceleration.Y * acceleration.Y + acceleration.Z * acceleration.Z);
@@ -107,7 +91,6 @@ void FlightControl::handler(void)
     //XXX global data for STM Studio
     g_gyro = angularRate;
     g_acc = acceleration;
-    g_mag = magneticField;
     g_pitch = joystickPitch;
     g_roll = joystickRoll;
     g_yaw = sensorYaw;
@@ -177,18 +160,13 @@ void FlightControl::connect(void)
 void FlightControl::config(void)
 {
     // INT1<-DRDY_G
-    sensorGA.write((uint8_t)LSM9DS1reg::INT1_CTRL, std::vector<uint8_t>{0x02});
+    sensorGA.write((uint8_t)LSM6DS3reg::INT1_CTRL, std::vector<uint8_t>{0x02});
     // Gyroscope ODR=119 Hz, full scale 500 dps, cutoff 31 Hz
     // int/out selection default
     // low power disable, HPF enable, HPF=0.05 Hz
-    sensorGA.write((uint8_t)LSM9DS1reg::CTRL_REG1_G, std::vector<uint8_t>{0x69, 0x00, 0x47});
+    sensorGA.write((uint8_t)LSM6DS3reg::CTRL_REG1_G, std::vector<uint8_t>{0x69, 0x00, 0x47});
     // Accelerometer ODR=119 Hz, full scale +=2g, default bandwith
-    sensorGA.write((uint8_t)LSM9DS1reg::CTRL_REG6_XL, std::vector<uint8_t>{0x60});
-    // Magnetometer X&Y high-performance mode, ODR=80 Hz
-    // full scale +-4 gauss
-    // continues conversion mode
-    // Z-axis high-performance mode
-    sensorM.write((uint8_t)LSM9DS1reg::CTRL_REG1_M, std::vector<uint8_t>{0x5C, 0x00, 0x00, 0x80});
+    sensorGA.write((uint8_t)LSM6DS3reg::CTRL_REG6_XL, std::vector<uint8_t>{0x60});
 
     imuInterruptSignal.rise(callback(this, &FlightControl::imuInterruptHandler));
     // this timeout calls imuInterruptHandler for the first time

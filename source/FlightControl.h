@@ -19,18 +19,15 @@
 #define I2C1_SCL    PB_8
 #define I2C1_SDA    PB_9
 
-#define LSM9DS1_AG_ADD  0xD6
-#define LSM9DS1_M_ADD   0x3C
-#define LSM9DS1_INT1    PB_6
+#define LSM6DS3_AG_ADD  0xD6
+#define LSM6DS3_INT1    PB_6
 
-enum struct LSM9DS1reg : uint8_t
+enum struct LSM6DS3reg : uint8_t
 {
     INT1_CTRL = 0x0C,
     CTRL_REG1_G = 0x10,
     OUT_X_L_G = 0x18,
-    CTRL_REG6_XL = 0x20,
-    CTRL_REG1_M = 0x20,
-    OUT_X_L_M = 0x28
+    CTRL_REG6_XL = 0x20
 };
 
 class FlightControl
@@ -57,22 +54,16 @@ private:
     JoystickData joystickData;
     I2C i2cBus;                         // I2C bus for IMU sensor
     I2CDevice sensorGA;                 // IMU gyroscope and accelerometer sensor
-    I2CDevice sensorM;                  // IMU magnetometer sensor
     Timeout imuIntTimeout;              // timeout of the IMU sensor interrupts
     VectorInt16 gyroscopeData;          // raw data from gyroscope sensor
     VectorInt16 accelerometerData;      // raw data from accelerometer sensor
-    VectorInt16 magnetometerData;       // raw data from magnetometer sensor
     VectorFloat angularRate;            // measured IMU sensor angular rate in rad/s
     VectorFloat acceleration;           // measured IMU sensor acceleration in g
-    VectorFloat magneticField;          // measured IMU sensor magnetic field in gauss
     const float AngularRateResolution = 500.0f * 3.14159265f / 180.0f / 32768.0f;   // 1-bit resolution of angular rate in rad/s
     const float AccelerationResolution = 2.0f / 32768.0f;   // 1-bit resolution of acceleration in g
-    const float MagneticFieldResolution = 4.0f / 32768.0f;   // 1-bit resolution of magnetic field in gauss
     Timer handlerTimer;
     float sensorPitch{0.0f}, sensorRoll{0.0f}, sensorYaw{0.0f};             // orientation of the IMU sensor
     const float ComplementaryFilterFactor = 0.02f;
-    VectorInt16 minMagnetometerValue;       // minimum raw values from magnetometer sensor
-    VectorInt16 maxMagnetometerValue;       // maximum raw values from magnetometer sensor
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */
