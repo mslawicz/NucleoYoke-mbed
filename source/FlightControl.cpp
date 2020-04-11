@@ -52,13 +52,13 @@ void FlightControl::handler(void)
     // Y = pitch axis = pointing East
     // Z = yaw axis = pointing down
     // angular rate in rad/s
-    angularRate.X = -AngularRateResolution * gyroscopeData.Z;
+    angularRate.X = -AngularRateResolution * gyroscopeData.X;
     angularRate.Y = AngularRateResolution * gyroscopeData.Y;
-    angularRate.Z = -AngularRateResolution * gyroscopeData.X;
+    angularRate.Z = -AngularRateResolution * gyroscopeData.Z;
     // acceleration in g
-    acceleration.X = -AccelerationResolution * accelerometerData.Z;
+    acceleration.X = -AccelerationResolution * accelerometerData.X;
     acceleration.Y = -AccelerationResolution * accelerometerData.Y;
-    acceleration.Z = -AccelerationResolution * accelerometerData.X;
+    acceleration.Z = -AccelerationResolution * accelerometerData.Z;
 
     float accelerationXZ = sqrt(acceleration.X * acceleration.X + acceleration.Z * acceleration.Z);
     float accelerationYZ = sqrt(acceleration.Y * acceleration.Y + acceleration.Z * acceleration.Z);
