@@ -69,7 +69,7 @@ private:
     const float AccelerationResolution = 2.0f / 32768.0f;   // 1-bit resolution of acceleration in g
     const float MagneticFieldResolution = 4.0f / 32768.0f;   // 1-bit resolution of magnetic field in gauss
     Timer handlerTimer;
-    float pitch{0.0f}, roll{0.0f}, yaw{0.0f};             // orientation of the joystick
+    float sensorPitch{0.0f}, sensorRoll{0.0f}, sensorYaw{0.0f};             // orientation of the IMU sensor
     const float ComplementaryFilterFactor = 0.02f;
     VectorInt16 minMagnetometerValue;       // minimum raw values from magnetometer sensor
     VectorInt16 maxMagnetometerValue;       // maximum raw values from magnetometer sensor

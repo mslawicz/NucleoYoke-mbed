@@ -76,32 +76,30 @@ void FlightControl::handler(void)
     magneticField.Y = MagneticFieldResolution * (magnetometerData.Y - 0.5f * (minMagnetometerValue.Y + maxMagnetometerValue.Y));
     magneticField.Z = -MagneticFieldResolution * (magnetometerData.X - 0.5f * (minMagnetometerValue.X + maxMagnetometerValue.X));
 
-    float accelerationXY = sqrt(acceleration.X * acceleration.X + acceleration.Y * acceleration.Y);
     float accelerationXZ = sqrt(acceleration.X * acceleration.X + acceleration.Z * acceleration.Z);
     float accelerationYZ = sqrt(acceleration.Y * acceleration.Y + acceleration.Z * acceleration.Z);
 
     // calculate pitch and roll from accelerometer itself
-    float pitchAcc = atan2(acceleration.X, accelerationYZ);
-    float rollAcc = atan2(acceleration.Y, accelerationXZ);
+    float accelerometerPitch = atan2(acceleration.X, accelerationYZ);
+    float accelerometerRoll = atan2(acceleration.Y, accelerationXZ);
 
     // calculate sensor pitch and roll using complementary filter
-    pitch = (1.0f - ComplementaryFilterFactor) * (pitch + angularRate.Y * deltaT) + ComplementaryFilterFactor * pitchAcc;
-    roll = (1.0f - ComplementaryFilterFactor) * (roll + angularRate.X * deltaT) + ComplementaryFilterFactor * rollAcc;
+    sensorPitch = (1.0f - ComplementaryFilterFactor) * (sensorPitch + angularRate.Y * deltaT) + ComplementaryFilterFactor * accelerometerPitch;
+    sensorRoll = (1.0f - ComplementaryFilterFactor) * (sensorRoll + angularRate.X * deltaT) + ComplementaryFilterFactor * accelerometerRoll;
 
-    //yaw = scale<float, float>(0.0f, 1.0f, propellerPotentiometer, -1.57f, 1.57f);   // XXX for test only
-    //yaw = atan2(magneticField.Y, magneticField.X);
-    yaw = 0.999f * (yaw + angularRate.Z * deltaT);
+    // calculate sensor relative yaw with autocalibration
+    sensorYaw = 0.999f * (sensorYaw + angularRate.Z * deltaT);
 
-    float sin2yaw = sin(yaw) * fabs(sin(yaw));
-    float cos2yaw = cos(yaw) * fabs(cos(yaw));
+    float sin2yaw = sin(sensorYaw) * fabs(sin(sensorYaw));
+    float cos2yaw = cos(sensorYaw) * fabs(cos(sensorYaw));
 
-    // calculate joystick angles
-    float pitchJoy = pitch * cos2yaw + roll * sin2yaw;
-    float rollJoy = roll * cos2yaw - pitch * sin2yaw;
+    // calculate joystick pitch and roll depending on the joystick yaw
+    float joystickPitch = sensorPitch * cos2yaw + sensorRoll * sin2yaw;
+    float joystickRoll = sensorRoll * cos2yaw - sensorPitch * sin2yaw;
 
-    joystickData.X = scale<float, int16_t>(-1.5f, 1.5f, rollJoy, -32767, 32767);
-    joystickData.Y = scale<float, int16_t>(-1.0f, 1.0f, pitchJoy, -32767, 32767);
-    joystickData.Z = scale<float, int16_t>(-1.0f, 1.0f, yaw, -32767, 32767);
+    joystickData.X = scale<float, int16_t>(-1.5f, 1.5f, joystickRoll, -32767, 32767);
+    joystickData.Y = scale<float, int16_t>(-1.0f, 1.0f, joystickPitch, -32767, 32767);
+    joystickData.Z = scale<float, int16_t>(-1.0f, 1.0f, sensorYaw, -32767, 32767);
 
     // send HID joystick report to PC
     pJoystick->sendReport(joystickData);
@@ -110,9 +108,9 @@ void FlightControl::handler(void)
     g_gyro = angularRate;
     g_acc = acceleration;
     g_mag = magneticField;
-    g_pitch = pitchJoy;
-    g_roll = rollJoy;
-    g_yaw = yaw;
+    g_pitch = joystickPitch;
+    g_roll = joystickRoll;
+    g_yaw = sensorYaw;
 }
 
 /*
