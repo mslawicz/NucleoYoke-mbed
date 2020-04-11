@@ -24,10 +24,10 @@
 
 enum struct LSM6DS3reg : uint8_t
 {
-    INT1_CTRL = 0x0C,
-    CTRL_REG1_G = 0x10,
-    OUT_X_L_G = 0x18,
-    CTRL_REG6_XL = 0x20
+    INT1_CTRL = 0x0D,
+    CTRL1_XL = 0x10,
+    CTRL7_G = 0x16,
+    OUT_X_L_G = 0x22,
 };
 
 class FlightControl
