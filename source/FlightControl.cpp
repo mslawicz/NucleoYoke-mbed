@@ -71,8 +71,16 @@ void FlightControl::handler(void)
     sensorPitch = (1.0f - ComplementaryFilterFactor) * (sensorPitch + angularRate.Y * deltaT) + ComplementaryFilterFactor * accelerometerPitch;
     sensorRoll = (1.0f - ComplementaryFilterFactor) * (sensorRoll + angularRate.X * deltaT) + ComplementaryFilterFactor * accelerometerRoll;
 
+    static float tilt = 0.0f;
+    tilt = tilt * 0.99f + 0.01f * (fabs(sensorPitch) + fabs(sensorRoll));
+
     // calculate sensor relative yaw with autocalibration
-    sensorYaw = 0.999f * (sensorYaw + angularRate.Z * deltaT);
+    sensorYaw += angularRate.Z * deltaT;
+
+    if(tilt < 0.1f)
+    {
+        sensorYaw *= 0.99f;
+    }
 
     float sin2yaw = sin(sensorYaw) * fabs(sin(sensorYaw));
     float cos2yaw = cos(sensorYaw) * fabs(cos(sensorYaw));
@@ -83,7 +91,7 @@ void FlightControl::handler(void)
 
     joystickData.X = scale<float, int16_t>(-1.5f, 1.5f, joystickRoll, -32767, 32767);
     joystickData.Y = scale<float, int16_t>(-1.0f, 1.0f, joystickPitch, -32767, 32767);
-    joystickData.Z = scale<float, int16_t>(-1.0f, 1.0f, sensorYaw, -32767, 32767);
+    joystickData.Z = scale<float, int16_t>(-0.75f, 0.75f, sensorYaw, -32767, 32767);
 
     // send HID joystick report to PC
     pJoystick->sendReport(joystickData);
@@ -91,8 +99,8 @@ void FlightControl::handler(void)
     //XXX global data for STM Studio
     g_gyro = angularRate;
     g_acc = acceleration;
-    g_pitch = joystickPitch;
-    g_roll = joystickRoll;
+    g_pitch = tilt;//joystickPitch;
+    g_roll = sensorRoll;//joystickRoll;
     g_yaw = sensorYaw;
 }
 
@@ -120,8 +128,8 @@ void FlightControl::config(void)
     // accelerometer ODR=104 Hz, full scale 2g, antialiasing 400 Hz
     // gyroscope ODR=104 Hz, full scale 500 dps,
     sensorGA.write((uint8_t)LSM6DS3reg::CTRL1_XL, std::vector<uint8_t>{0x40, 0x44});
-    // gyroscope HPF enable, HPF=0.0324 Hz
-    sensorGA.write((uint8_t)LSM6DS3reg::CTRL7_G, std::vector<uint8_t>{0x50});
+    // gyroscope HPF enable, HPF=0.0081 Hz
+    sensorGA.write((uint8_t)LSM6DS3reg::CTRL7_G, std::vector<uint8_t>{0x40});
 
 
     imuInterruptSignal.rise(callback(this, &FlightControl::imuInterruptHandler));
