@@ -142,6 +142,24 @@ void FlightControl::config(void)
 }
 
 /*
+ * display status of FlightControl
+ */
+void FlightControl::displayStatus(CommandVector cv)
+{
+    printf("IMU sensor pitch = %f\r\n", sensorPitch);
+    printf("IMU sensor roll = %f\r\n", sensorRoll);
+    printf("IMU sensor yaw = %f\r\n", sensorYaw);
+    printf("joystick X = %d\r\n", joystickData.X);
+    printf("joystick Y = %d\r\n", joystickData.Y);
+    printf("joystick Z = %d\r\n", joystickData.Z);
+    printf("joystick Rx = %d\r\n", joystickData.Rx);
+    printf("joystick Ry = %d\r\n", joystickData.Ry);
+    printf("joystick Rz = %d\r\n", joystickData.Rz);
+    printf("joystick hat = 0x%02X\r\n", joystickData.hat);
+    printf("joystick buttons = 0x%04X\r\n", joystickData.buttons);
+}
+
+/*
  * IMU sensor interrupt handler
  */
 void FlightControl::imuInterruptHandler(void)
