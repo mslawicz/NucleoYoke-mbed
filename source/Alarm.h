@@ -8,6 +8,7 @@
 #ifndef SOURCE_ALARM_H_
 #define SOURCE_ALARM_H_
 
+#include "Console.h"
 #include "mbed.h"
 
 enum class AlarmID
@@ -22,6 +23,8 @@ class Alarm
 public:
     Alarm();
     void set(AlarmID alarmId);
+    void display(CommandVector cv);
+    void clear(CommandVector cv);
 private:
     uint32_t alarmRegister{0};
     DigitalOut alarmLed;

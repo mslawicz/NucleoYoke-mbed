@@ -70,6 +70,8 @@ int main()
     console.registerCommand("h", "help (display command list)", callback(&console, &Console::displayHelp));
     console.registerCommand("lt", "list threads", callback(listThreads));
     console.registerCommand("fc", "display Flight Control status", callback(&flightControl, &FlightControl::displayStatus));
+    console.registerCommand("da", "display alarms", callback(&alarm, &Alarm::display));
+    console.registerCommand("ca", "clear alarms", callback(&alarm, &Alarm::clear));
 
     // start Console thread
     consoleThread.start(callback(&console, &Console::handler));
