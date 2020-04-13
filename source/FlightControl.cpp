@@ -71,24 +71,24 @@ void FlightControl::handler(void)
     sensorPitch = (1.0f - ComplementaryFilterFactor) * (sensorPitch + angularRate.Y * deltaT) + ComplementaryFilterFactor * accelerometerPitch;
     sensorRoll = (1.0f - ComplementaryFilterFactor) * (sensorRoll + angularRate.X * deltaT) + ComplementaryFilterFactor * accelerometerRoll;
 
-    static float tilt = 0.0f;
-    tilt = tilt * 0.99f + 0.01f * (fabs(sensorPitch) + fabs(sensorRoll));
-
     // calculate sensor relative yaw with autocalibration
     sensorYaw += angularRate.Z * deltaT;
 
-    if(tilt < 0.1f)
+    // autocalibration of yaw
+    float joystickDeflection = sqrt(sensorPitch * sensorPitch + sensorRoll * sensorRoll);
+    if(joystickDeflection < YawAutocalibrationThreshold)
     {
-        sensorYaw *= 0.99f;
+        sensorYaw *= YawAutocalibrationFactor;
     }
 
+    // calculate joystick pitch and roll depending on the joystick yaw
     float sin2yaw = sin(sensorYaw) * fabs(sin(sensorYaw));
     float cos2yaw = cos(sensorYaw) * fabs(cos(sensorYaw));
 
-    // calculate joystick pitch and roll depending on the joystick yaw
     float joystickPitch = sensorPitch * cos2yaw + sensorRoll * sin2yaw;
     float joystickRoll = sensorRoll * cos2yaw - sensorPitch * sin2yaw;
 
+    // scale joystick axes to USB joystick report range
     joystickData.X = scale<float, int16_t>(-1.5f, 1.5f, joystickRoll, -32767, 32767);
     joystickData.Y = scale<float, int16_t>(-1.0f, 1.0f, joystickPitch, -32767, 32767);
     joystickData.Z = scale<float, int16_t>(-0.75f, 0.75f, sensorYaw, -32767, 32767);
@@ -99,8 +99,8 @@ void FlightControl::handler(void)
     //XXX global data for STM Studio
     g_gyro = angularRate;
     g_acc = acceleration;
-    g_pitch = tilt;//joystickPitch;
-    g_roll = sensorRoll;//joystickRoll;
+    g_pitch = joystickPitch;
+    g_roll = joystickRoll;
     g_yaw = sensorYaw;
 }
 

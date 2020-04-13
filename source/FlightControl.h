@@ -64,6 +64,8 @@ private:
     Timer handlerTimer;
     float sensorPitch{0.0f}, sensorRoll{0.0f}, sensorYaw{0.0f};             // orientation of the IMU sensor
     const float ComplementaryFilterFactor = 0.02f;
+    const float YawAutocalibrationThreshold = 0.15f;    // joystick deflection threshold for disabling yaw autocalibration function
+    const float YawAutocalibrationFactor = 0.9999f;      // yaw autocalibration factor
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */
