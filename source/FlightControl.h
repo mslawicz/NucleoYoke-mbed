@@ -64,9 +64,6 @@ private:
     const float AccelerationResolution = 2.0f / 32768.0f;   // 1-bit resolution of acceleration in g
     Timer handlerTimer;                 // measures handler call period
     float sensorPitch{0.0f}, sensorRoll{0.0f}, sensorYaw{0.0f};             // orientation of the IMU sensor
-    const float ComplementaryFilterFactor = 0.02f;
-    const float YawAutocalibrationThreshold = 0.15f;    // joystick deflection threshold for disabling yaw autocalibration function
-    const float YawAutocalibrationFactor = 0.9999f;      // yaw autocalibration factor
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */

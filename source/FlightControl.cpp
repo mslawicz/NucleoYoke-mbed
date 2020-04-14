@@ -68,13 +68,16 @@ void FlightControl::handler(void)
     float accelerometerRoll = atan2(acceleration.Y, accelerationXZ);
 
     // calculate sensor pitch and roll using complementary filter
-    sensorPitch = (1.0f - ComplementaryFilterFactor) * (sensorPitch + angularRate.Y * deltaT) + ComplementaryFilterFactor * accelerometerPitch;
-    sensorRoll = (1.0f - ComplementaryFilterFactor) * (sensorRoll + angularRate.X * deltaT) + ComplementaryFilterFactor * accelerometerRoll;
+    const float SensorFilterFactor = 0.02f;
+    sensorPitch = (1.0f - SensorFilterFactor) * (sensorPitch + angularRate.Y * deltaT) + SensorFilterFactor * accelerometerPitch;
+    sensorRoll = (1.0f - SensorFilterFactor) * (sensorRoll + angularRate.X * deltaT) + SensorFilterFactor * accelerometerRoll;
 
     // calculate sensor relative yaw with autocalibration
     sensorYaw += angularRate.Z * deltaT;
 
     // autocalibration of yaw
+    const float YawAutocalibrationThreshold = 0.15f;    // joystick deflection threshold for disabling yaw autocalibration function
+    const float YawAutocalibrationFactor = 0.9999f;      // yaw autocalibration factor
     float joystickDeflection = sqrt(sensorPitch * sensorPitch + sensorRoll * sensorRoll);
     if(joystickDeflection < YawAutocalibrationThreshold)
     {
@@ -99,8 +102,8 @@ void FlightControl::handler(void)
     //XXX global data for STM Studio
     g_gyro = angularRate;
     g_acc = acceleration;
-    g_pitch = joystickPitch;
-    g_roll = joystickRoll;
+    g_pitch = sensorPitch;//joystickPitch;
+    g_roll = sensorRoll;//joystickRoll;
     g_yaw = sensorYaw;
 }
 
