@@ -19,9 +19,11 @@ FlightControl::FlightControl(EventQueue& eventQueue) :
     mixturePotentiometer(PC_0),
     imuInterruptSignal(LSM6DS3_INT1),
     i2cBus(I2C1_SDA, I2C1_SCL),
-    sensorGA(i2cBus, LSM6DS3_AG_ADD)
+    sensorGA(i2cBus, LSM6DS3_AG_ADD),
+    calibrationLed(LED2)
 {
     i2cBus.frequency(400000);
+    calibrationLed = 0;
 }
 
 /*
@@ -67,18 +69,46 @@ void FlightControl::handler(void)
     float accelerometerPitch = atan2(acceleration.X, accelerationYZ);
     float accelerometerRoll = atan2(acceleration.Y, accelerationXZ);
 
+    // store sensor values for calculation of deviation
+    float previousSensorPitch = sensorPitch;
+    float previousSensorRoll = sensorRoll;
+
     // calculate sensor pitch and roll using complementary filter
     const float SensorFilterFactor = 0.02f;
     sensorPitch = (1.0f - SensorFilterFactor) * (sensorPitch + angularRate.Y * deltaT) + SensorFilterFactor * accelerometerPitch;
     sensorRoll = (1.0f - SensorFilterFactor) * (sensorRoll + angularRate.X * deltaT) + SensorFilterFactor * accelerometerRoll;
 
-    // calculate sensor relative yaw with autocalibration
+    // calculate sensor pitch and roll variability
+    const float variabilityFilterFactor = 0.01f;
+    float reciprocalDeltaT = (deltaT > 0.0f) ? (1.0f / deltaT) : 1.0f;
+    sensorPitchVariability = (1.0f - variabilityFilterFactor) * sensorPitchVariability + variabilityFilterFactor * fabs(sensorPitch - previousSensorPitch) * reciprocalDeltaT;
+    sensorRollVariability = (1.0f - variabilityFilterFactor) * sensorRollVariability + variabilityFilterFactor * fabs(sensorRoll - previousSensorRoll) * reciprocalDeltaT;
+
+    // store sensor pitch and roll reference value
+    const float sensorVariabilityThreshold = 0.0025f;
+    if((sensorPitchVariability < sensorVariabilityThreshold) &&
+       (sensorRollVariability < sensorVariabilityThreshold))
+    {
+        sensorPitchReference = sensorPitch;
+        sensorRollReference = sensorRoll;
+        calibrationLed = 1;
+    }
+    else
+    {
+        calibrationLed = 0;
+    }
+
+    // calculate sensor calibrated values
+    float calibratedSensorPitch = sensorPitch - sensorPitchReference;
+    float calibratedSensorRoll = sensorRoll - sensorRollReference;
+
+    // calculate sensor relative yaw
     sensorYaw += angularRate.Z * deltaT;
 
     // autocalibration of yaw
     const float YawAutocalibrationThreshold = 0.15f;    // joystick deflection threshold for disabling yaw autocalibration function
     const float YawAutocalibrationFactor = 0.9999f;      // yaw autocalibration factor
-    float joystickDeflection = sqrt(sensorPitch * sensorPitch + sensorRoll * sensorRoll);
+    float joystickDeflection = sqrt(calibratedSensorPitch * calibratedSensorPitch + calibratedSensorRoll * calibratedSensorRoll);
     if(joystickDeflection < YawAutocalibrationThreshold)
     {
         sensorYaw *= YawAutocalibrationFactor;
@@ -88,8 +118,8 @@ void FlightControl::handler(void)
     float sin2yaw = sin(sensorYaw) * fabs(sin(sensorYaw));
     float cos2yaw = cos(sensorYaw) * fabs(cos(sensorYaw));
 
-    float joystickPitch = sensorPitch * cos2yaw + sensorRoll * sin2yaw;
-    float joystickRoll = sensorRoll * cos2yaw - sensorPitch * sin2yaw;
+    float joystickPitch = calibratedSensorPitch * cos2yaw + calibratedSensorRoll * sin2yaw;
+    float joystickRoll = calibratedSensorRoll * cos2yaw - calibratedSensorPitch * sin2yaw;
 
     // scale joystick axes to USB joystick report range
     joystickData.X = scale<float, int16_t>(-1.5f, 1.5f, joystickRoll, -32767, 32767);
@@ -102,8 +132,8 @@ void FlightControl::handler(void)
     //XXX global data for STM Studio
     g_gyro = angularRate;
     g_acc = acceleration;
-    g_pitch = sensorPitch;//joystickPitch;
-    g_roll = sensorRoll;//joystickRoll;
+    g_pitch = joystickPitch;
+    g_roll = joystickRoll;
     g_yaw = sensorYaw;
 }
 

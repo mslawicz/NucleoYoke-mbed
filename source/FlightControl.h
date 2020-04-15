@@ -64,6 +64,10 @@ private:
     const float AccelerationResolution = 2.0f / 32768.0f;   // 1-bit resolution of acceleration in g
     Timer handlerTimer;                 // measures handler call period
     float sensorPitch{0.0f}, sensorRoll{0.0f}, sensorYaw{0.0f};             // orientation of the IMU sensor
+    float sensorPitchVariability{0.0f}, sensorRollVariability{0.0f};
+    float sensorPitchReference{0.0f};
+    float sensorRollReference{0.0f};
+    DigitalOut calibrationLed;
 };
 
 #endif /* SOURCE_FLIGHTCONTROL_H_ */
