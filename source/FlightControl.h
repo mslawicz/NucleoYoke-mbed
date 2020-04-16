@@ -41,7 +41,6 @@ public:
 private:
     void imuInterruptHandler(void);
     EventQueue& eventQueue;             // event queue for flight control events
-    //USBHID* pConnection{nullptr};       // pointer to USB HID object
     USBJoystick* pJoystick{nullptr};    // pointer to USB HID Joystick device
     static const uint8_t HIDBufferLength = 64;
     static const uint16_t USB_VID = 0x0483; //STElectronics
@@ -65,8 +64,7 @@ private:
     Timer handlerTimer;                 // measures handler call period
     float sensorPitch{0.0f}, sensorRoll{0.0f}, sensorYaw{0.0f};             // orientation of the IMU sensor
     float sensorPitchVariability{0.0f}, sensorRollVariability{0.0f};
-    float sensorPitchReference{0.0f};
-    float sensorRollReference{0.0f};
+    float sensorPitchReference{0.0f}, sensorRollReference{0.0f};
     DigitalOut calibrationLed;
 };
 
