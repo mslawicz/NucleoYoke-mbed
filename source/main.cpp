@@ -9,7 +9,6 @@
 #include "FlightControl.h"
 #include "Statistics.h"
 #include "Alarm.h"
-#include "RotaryEncoder.h"  //XXX
 #include "Pushbutton.h" //XXX
 #include "platform/mbed_thread.h"
 #include "platform/mbed_debug.h"
